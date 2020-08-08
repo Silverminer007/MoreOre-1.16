@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "axis=z": { "model": "moreore:block/silver_portal_ew" },
+        "axis=y": { "model": "moreore:block/silver_portal_up" },
+        "axis=x": { "model": "moreore:block/silver_portal_ns" }
+    }
+}

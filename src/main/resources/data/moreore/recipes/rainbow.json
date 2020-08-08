@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "item": "moreore:rainbow_block"
+      }
+    ],
+    "result": {
+      "item": "moreore:rainbow",
+      "count": 9
+    }
+}

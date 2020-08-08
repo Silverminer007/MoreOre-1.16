@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "ooo",
+      "ooo",
+      "ooo"
+    ],
+    "key": {
+      "o": {
+        "item": "moreore:saphir"
+      }
+    },
+    "result": {
+      "item": "moreore:saphir_block"
+    }
+}

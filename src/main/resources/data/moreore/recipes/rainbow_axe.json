@@ -1,0 +1,14 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "item": "moreore:rainbow_rune"
+      },
+      {
+        "item": "minecraft:diamond_axe"
+      }
+    ],
+    "result": {
+      "item": "moreore:rainbow_axe"
+    }
+}

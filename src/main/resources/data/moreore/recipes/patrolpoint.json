@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "ooo",
+      "xax",
+      "xax"
+    ],
+    "key": {
+      "o": {
+        "item": "moreore:silver_wood"
+      },
+      "x": {
+        "item": "moreore:blue_stick"
+      },
+      "a": {
+        "item": "moreore:silver_planks"
+      }
+    },
+    "result": {
+      "item": "moreore:patrolpoint"
+    }
+}

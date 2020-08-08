@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "o o",
+      " x ",
+      "o o"
+    ],
+    "key": {
+      "o": {
+        "item": "minecraft:andesite"
+      },
+      "x": {
+        "tag": "moreore:saphir_rubin"
+      }
+    },
+    "result": {
+      "item": "moreore:beamer"
+    }
+}

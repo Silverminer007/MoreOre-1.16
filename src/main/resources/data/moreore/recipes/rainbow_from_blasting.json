@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "moreore:rainbow_ore"
+  },
+  "result": "moreore:rainbow",
+  "experience": 5.0,
+  "cookingtime": 75
+}

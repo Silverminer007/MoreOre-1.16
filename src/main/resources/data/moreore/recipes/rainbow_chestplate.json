@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "o o",
+      "ooo",
+      "ooo"
+    ],
+    "key": {
+      "o": {
+        "item": "moreore:rainbow_rune"
+      }
+    },
+    "result": {
+      "item": "moreore:rainbow_chestplate"
+    }
+}

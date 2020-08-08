@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "item": "moreore:rainbow"
+      },
+      {
+        "item": "moreore:rainbow"
+      },
+      {
+        "item": "moreore:rainbow"
+      },
+      {
+        "item": "moreore:rainbow"
+      },
+      {
+        "item": "moreore:rainbow"
+      }
+    ],
+    "result": {
+      "item": "moreore:rainbow_rune"
+    }
+}

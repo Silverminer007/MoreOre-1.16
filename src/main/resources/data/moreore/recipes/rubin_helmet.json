@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "ooo",
+      "o o",
+      "   "
+    ],
+    "key": {
+      "o": {
+        "item": "moreore:rubin"
+      }
+    },
+    "result": {
+      "item": "moreore:rubin_helmet"
+    }
+}

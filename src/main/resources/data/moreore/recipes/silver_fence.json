@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "oqo",
+      "oqo"
+    ],
+    "key": {
+      "o": {
+        "item": "moreore:silver_planks"
+      },
+      "q": {
+        "item": "minecraft:stick"
+      }
+    },
+    "result": {
+      "item": "moreore:silver_fence"
+    }
+}

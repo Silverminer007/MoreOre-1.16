@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "moreore:saphir_ore"
+  },
+  "result": "moreore:saphir",
+  "experience": 5.0,
+  "cookingtime": 75
+}

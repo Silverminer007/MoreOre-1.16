@@ -1,0 +1,32 @@
+{
+    "variants": {
+        "material=beamer":  { "model": "moreore:block/beamer" },
+        "material=gold_block":  { "model": "block/gold_block" },
+        "material=emerald_ore":  { "model": "block/emerald_ore" },
+        "material=stone":  { "model": "block/stone" },
+        "material=cobblestone":  { "model": "block/cobblestone" },
+        "material=dirt":  { "model": "block/dirt" },
+        "material=oak_planks":  { "model": "block/oak_planks" },
+        "material=ice":  { "model": "block/ice" },
+        "material=diamond_ore":  { "model": "block/diamond_ore" },
+        "material=bookshelf":  { "model": "block/bookshelf" },
+        "material=rainbow_block":  { "model": "moreore:block/rainbow_block" },
+        "material=emerald_block":  { "model": "block/emerald_block" },
+        "material=iron_block":  { "model": "block/iron_block" },
+        "material=alexandrit_block":  { "model": "moreore:block/alexandrit_block" },
+        "material=birch_planks":  { "model": "block/birch_planks" },
+        "material=rainbow_ore":  { "model": "moreore:block/rainbow_ore" },
+        "material=spruce_planks":  { "model": "block/spruce_planks" },
+        "material=grass_block":  { "model": "block/grass_block" },
+        "material=alexandrit_ore":  { "model": "moreore:block/alexandrit_ore" },
+        "material=silver_portal_frame":  { "model": "moreore:block/silver_portal_frame" },
+        "material=obsidian":  { "model": "block/obsidian" },
+        "material=coal_block":  { "model": "block/coal_block" },
+        "material=redstone_ore":  { "model": "block/redstone_ore" },
+        "material=redstone_block":  { "model": "block/redstone_block" },
+        "material=white_wool":  { "model": "block/white_wool" },
+        "material=crafting_table":  { "model": "block/crafting_table" },
+        "material=diamond_block":  { "model": "block/diamond_block" },
+        "material=andesite":  { "model": "block/andesite" }
+    }
+}

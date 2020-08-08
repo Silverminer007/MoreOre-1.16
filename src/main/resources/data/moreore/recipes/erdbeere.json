@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "item": "moreore:erdbeer_block"
+      }
+    ],
+    "result": {
+      "item": "moreore:erdbeere",
+      "count": 9
+    }
+}

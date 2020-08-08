@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "ooo",
+      "uuu",
+      "   "
+    ],
+    "key": {
+      "o": {
+        "item": "minecraft:green_dye"
+      },
+      "u": {
+        "item": "minecraft:white_wool"
+      }
+    },
+    "result": {
+      "item": "moreore:ohnezahn"
+    }
+}

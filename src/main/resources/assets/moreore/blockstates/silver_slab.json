@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "type=bottom": { "model": "moreore:block/silver_slab" },
+        "type=top": { "model": "moreore:block/silver_slab_top" },
+        "type=double": { "model": "moreore:block/silver_planks" }
+    }
+}

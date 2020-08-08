@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "ooo",
+      "ooo",
+      "ooo"
+    ],
+    "key": {
+      "o": {
+        "item": "moreore:silver_ingot"
+      }
+    },
+    "result": {
+      "item": "moreore:silver_block"
+    }
+}

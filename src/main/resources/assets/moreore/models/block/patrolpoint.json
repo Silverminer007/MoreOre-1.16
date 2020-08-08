@@ -1,0 +1,7 @@
+{
+    "parent": "block/cube_column",
+    "textures": {
+        "end": "moreore:block/patrolpoint_top",
+        "side": "moreore:block/patrolpoint_side"
+    }
+}

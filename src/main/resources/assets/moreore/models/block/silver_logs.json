@@ -1,0 +1,7 @@
+{
+    "parent": "block/cube_column",
+    "textures": {
+        "end": "moreore:block/silver_logs_top",
+        "side": "moreore:block/silver_logs"
+    }
+}

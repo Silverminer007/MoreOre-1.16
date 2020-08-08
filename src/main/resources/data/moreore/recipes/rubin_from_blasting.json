@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "moreore:rubin_ore"
+  },
+  "result": "moreore:rubin",
+  "experience": 5.0,
+  "cookingtime": 75
+}

@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "oo",
+      "oo",
+      "oo"
+    ],
+    "key": {
+      "o": {
+        "item": "minecraft:glass"
+      }
+    },
+    "result": {
+      "item": "moreore:glass_door"
+    }
+}

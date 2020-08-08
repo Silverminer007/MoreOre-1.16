@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "item": "moreore:alexandrit_block"
+      }
+    ],
+    "result": {
+      "item": "moreore:alexandrit",
+      "count": 9
+    }
+}

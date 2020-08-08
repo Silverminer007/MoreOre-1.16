@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "ooo",
+      "ooo",
+      "ooo"
+    ],
+    "key": {
+      "o": {
+        "item": "moreore:rainbow"
+      }
+    },
+    "result": {
+      "item": "moreore:rainbow_block"
+    }
+}

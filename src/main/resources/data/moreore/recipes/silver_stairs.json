@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "o  ",
+      "oo ",
+      "ooo"
+    ],
+    "key": {
+      "o": {
+        "item": "moreore:silver_planks"
+      }
+    },
+    "result": {
+      "item": "moreore:silver_stairs",
+      "count": 4
+    }
+}

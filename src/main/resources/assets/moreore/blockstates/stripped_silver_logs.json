@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "axis=y":  { "model": "moreore:block/stripped_silver_logs" },
+        "axis=z":   { "model": "moreore:block/stripped_silver_logs", "x": 90 },
+        "axis=x":   { "model": "moreore:block/stripped_silver_logs", "x": 90, "y": 90 }
+    }
+}

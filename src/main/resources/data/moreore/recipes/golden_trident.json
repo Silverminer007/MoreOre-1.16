@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "xxy",
+      "xix",
+      "yxx"
+    ],
+    "key": {
+      "x": {
+        "item": "minecraft:gold_block"
+      },
+      "y": {
+        "item": "moreore:alexandrit_block"
+      },
+      "i": {
+        "item": "minecraft:trident"
+      }
+    },
+    "result": {
+      "item": "moreore:golden_trident"
+    }
+}

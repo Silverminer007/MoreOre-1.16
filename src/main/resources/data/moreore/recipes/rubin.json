@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "item": "moreore:rubin_block"
+      }
+    ],
+    "result": {
+      "item": "moreore:rubin",
+      "count": 9
+    }
+}

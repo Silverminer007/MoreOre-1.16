@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "ooo",
+      "oxo",
+      "ooo"
+    ],
+    "key": {
+      "o": {
+        "item": "minecraft:water_bucket"
+      },
+      "x": {
+        "item": "moreore:burned_out_lava_sponge"
+      }
+    },
+    "result": {
+      "item": "moreore:lava_sponge"
+    }
+}

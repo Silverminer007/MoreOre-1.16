@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:silver_logs",
+    "moreore:cat_gold_block",
+    "minecraft:ice"
+  ]
+}

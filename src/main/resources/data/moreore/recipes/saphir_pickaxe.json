@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      " oo",
+      " io",
+      "i  "
+    ],
+    "key": {
+      "o": {
+        "item": "moreore:saphir"
+      },
+      "i": {
+        "item": "moreore:blue_stick"
+      }
+    },
+    "result": {
+      "item": "moreore:saphir_pickaxe"
+    }
+}

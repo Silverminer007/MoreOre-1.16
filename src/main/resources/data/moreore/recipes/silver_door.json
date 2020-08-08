@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "oo",
+      "oo",
+      "oo"
+    ],
+    "key": {
+      "o": {
+        "item": "moreore:silver_planks"
+      }
+    },
+    "result": {
+      "item": "moreore:silver_door"
+    }
+}

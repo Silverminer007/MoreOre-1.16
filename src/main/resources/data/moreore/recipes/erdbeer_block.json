@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "ooo",
+      "ooo",
+      "ooo"
+    ],
+    "key": {
+      "o": {
+        "item": "moreore:erdbeere"
+      }
+    },
+    "result": {
+      "item": "moreore:erdbeer_block"
+    }
+}

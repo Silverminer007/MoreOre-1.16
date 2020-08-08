@@ -1,0 +1,6 @@
+{
+    "parent": "block/cross",
+    "textures": {
+        "cross": "moreore:block/nut_bush_block_stage3"
+    }
+}

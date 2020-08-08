@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      " o ",
+      " o ",
+      " i "
+    ],
+    "key": {
+      "o": {
+        "item": "minecraft:emerald"
+      },
+      "i": {
+        "item": "moreore:blue_stick"
+      }
+    },
+    "result": {
+      "item": "moreore:emerald_sword"
+    }
+}

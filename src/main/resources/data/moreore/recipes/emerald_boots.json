@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "oxo",
+      "o o",
+      "   "
+    ],
+    "key": {
+      "o": {
+        "item": "minecraft:emerald"
+      },
+      "x": {
+        "item": "moreore:silver_ingot"
+      }
+    },
+    "result": {
+      "item": "moreore:emerald_boots"
+    }
+}

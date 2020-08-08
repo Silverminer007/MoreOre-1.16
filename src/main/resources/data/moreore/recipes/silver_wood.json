@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "bark",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "tag": "minecraft:silver_logs"
+    }
+  },
+  "result": {
+    "item": "moreore:silver_wood",
+    "count": 3
+  }
+}

@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "ooo",
+      " i ",
+      " i "
+    ],
+    "key": {
+      "o": {
+        "item": "minecraft:emerald"
+      },
+      "i": {
+        "item": "moreore:blue_stick"
+      }
+    },
+    "result": {
+      "item": "moreore:emerald_pickaxe"
+    }
+}

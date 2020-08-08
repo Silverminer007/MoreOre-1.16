@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "oo ",
+      "oi ",
+      "  i"
+    ],
+    "key": {
+      "o": {
+        "item": "moreore:silver_planks"
+      },
+      "i": {
+        "item": "minecraft:stick"
+      }
+    },
+    "result": {
+      "item": "minecraft:wooden_axe"
+    }
+}

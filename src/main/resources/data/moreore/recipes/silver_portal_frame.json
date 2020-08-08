@@ -1,0 +1,25 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "xax",
+      "oyo",
+      "xax"
+    ],
+    "key": {
+      "o": {
+        "item": "moreore:alexandrit_block"
+      },
+      "x": {
+        "item": "moreore:alexandrit"
+      },
+      "y": {
+        "item": "minecraft:ender_eye"
+      },
+      "a": {
+        "item": "minecraft:gold_block"
+      }
+    },
+    "result": {
+      "item": "moreore:silver_portal_frame"
+    }
+}

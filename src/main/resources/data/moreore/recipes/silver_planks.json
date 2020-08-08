@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "tag": "minecraft:silver_logs"
+      }
+    ],
+    "result": {
+      "item": "moreore:silver_planks",
+      "count": 4
+    }
+}

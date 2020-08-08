@@ -1,0 +1,7 @@
+{
+    "parent": "block/door_bottom",
+    "textures": {
+        "bottom": "moreore:block/glass_door_bottom",
+        "top": "moreore:block/glass_door_top"
+    }
+}

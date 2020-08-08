@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "oo ",
+      " i ",
+      " i "
+    ],
+    "key": {
+      "o": {
+        "item": "moreore:rubin"
+      },
+      "i": {
+        "item": "moreore:blue_stick"
+      }
+    },
+    "result": {
+      "item": "moreore:rubin_hoe"
+    }
+}

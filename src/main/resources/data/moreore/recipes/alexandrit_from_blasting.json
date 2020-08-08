@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "moreore:alexandrit_ore"
+  },
+  "result": "moreore:alexandrit",
+  "experience": 5.0,
+  "cookingtime": 75
+}
