@@ -8,7 +8,6 @@ import com.silverminer.moreore.init.blocks.OreBlocks;
 import com.silverminer.moreore.world.biomes.GoldenMountains;
 import com.silverminer.moreore.world.biomes.SilverTale;
 import com.silverminer.moreore.world.biomes.ModBiome;
-import com.silverminer.moreore.world.gen.structures.StructureGenConfig;
 
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.world.biome.Biome;
@@ -19,8 +18,6 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
-//import net.minecraft.world.gen.feature.structure.MineshaftConfig;//Belongs Mineshaft generation
-//import net.minecraft.world.gen.feature.structure.MineshaftStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.CountRangeConfig;
 import net.minecraft.world.gen.placement.Placement;
@@ -33,38 +30,20 @@ public class Generation {
 				continue;
 			}
 			if (biome instanceof SilverTale || biome instanceof GoldenMountains) {
-				if (StructureGenConfig.GENERATE_TEMPELS.get()) {
-					addSurfaceStructure(biome, FeatureInit.TEMPEL.get());
-				}
-				if (StructureGenConfig.GENERATE_SCHOOLS.get()) {
-					addSurfaceStructure(biome, FeatureInit.SCHOOL.get());
-				}
+				addStructure(biome, FeatureInit.TEMPEL.get());
+				addStructure(biome, FeatureInit.SCHOOL.get());
+
 				((ModBiome) biome).addSpawn(EntityClassification.CREATURE,
 						new Biome.SpawnListEntry(ModEntityTypesInit.VILLAGE_GUARDIAN.get(), 1, 1, 3));
-//				addStructure(biome, Feature.MINESHAFT, new MineshaftConfig(0.004D, MineshaftStructure.Type.NORMAL),
-//						GenerationStage.Decoration.UNDERGROUND_STRUCTURES);//Nur unter den Inseln
 			}
 			if (biome instanceof DesertBiome) {
-				if (StructureGenConfig.GENERATE_DESERT_TEMPEL.get()) {
-					addSurfaceStructure(biome, FeatureInit.DESERT_TEMPEL.get());
-				}
+				addStructure(biome, FeatureInit.DESERT_TEMPEL.get());
 			}
 		}
 	}
 
-	@SuppressWarnings("unused")
-	private static <P extends IFeatureConfig> void addStructure(Biome biome, Structure<P> structure, P config,
-			GenerationStage.Decoration deco) {
-		biome.func_235063_a_(structure.func_236391_a_(config));
-//		biome.addFeature(deco, structure.func_236391_a_(config)
-//				.withPlacement(Placement.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG)));
-	}
-
-	private static void addSurfaceStructure(Biome biome, Structure<NoFeatureConfig> structure) {
+	private static void addStructure(Biome biome, Structure<NoFeatureConfig> structure) {
 		biome.func_235063_a_(structure.func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
-//		biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES,
-//				structure.func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG)
-//						.withPlacement(Placement.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG)));
 	}
 
 	public static void generateOre() {

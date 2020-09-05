@@ -3,7 +3,6 @@ package com.silverminer.moreore.world.gen.tree;
 import java.util.Random;
 
 import com.silverminer.moreore.init.blocks.BiologicBlocks;
-import com.silverminer.moreore.init.blocks.OreBlocks;
 
 import net.minecraft.block.trees.BigTree;
 import net.minecraft.world.gen.blockstateprovider.SimpleBlockStateProvider;
@@ -19,8 +18,8 @@ import net.minecraft.world.gen.trunkplacer.MegaJungleTrunkPlacer;
 public class SilverTree extends BigTree {
 
 	public static final BaseTreeFeatureConfig SILVER_TREE_CONFIG = (new BaseTreeFeatureConfig.Builder(
-			new SimpleBlockStateProvider(OreBlocks.CAT_GOLD_BLOCK.get().getDefaultState()),
-			new SimpleBlockStateProvider(BiologicBlocks.GOLD_LEAVES.get().getDefaultState()),
+			new SimpleBlockStateProvider(BiologicBlocks.SILVER_LOG.get().getDefaultState()),
+			new SimpleBlockStateProvider(BiologicBlocks.SILVER_LEAVES.get().getDefaultState()),
 			new BlobFoliagePlacer(2, 0, 0, 0, 3), new ForkyTrunkPlacer(5, 2, 2), new TwoLayerFeature(1, 0, 2)))
 					.func_236700_a_().build();
 

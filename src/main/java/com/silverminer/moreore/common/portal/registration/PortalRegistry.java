@@ -12,10 +12,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.DimensionType;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -155,7 +155,7 @@ public final class PortalRegistry
 			getAddressBlockId(addBlock3.getBlock()),
 			getAddressBlockId(addBlock4.getBlock()));
 		
-		Portal portal = new Portal(world.func_230315_m_(), address, portalAxis, corner1, corner2, corner3, corner4);
+		Portal portal = new Portal(world.func_234923_W_(), address, portalAxis, corner1, corner2, corner3, corner4);
 		
 		Iterable<BlockPos> portalPositions = portal.getPortalPositions();
 		
@@ -214,7 +214,7 @@ public final class PortalRegistry
 	 * <code>true</code> if the block at the specified position is part of 
 	 * a registered portal, otherwise <code>false</code>.
 	 */
-	public static boolean isPortalAt(BlockPos pos, DimensionType dimension)
+	public static boolean isPortalAt(BlockPos pos, RegistryKey<World> dimension)
 	{
 		List<Portal> portals = getPortalsAt(pos, dimension);
 		return (portals != null) && (portals.size() > 0);
@@ -254,7 +254,7 @@ public final class PortalRegistry
 	 * A read-only list of found portals (may be empty) or <code>null</code> if
 	 * <code>pos</code> was <code>null</code>.
 	 */
-	public static List<Portal> getPortalsAt(BlockPos pos, DimensionType dimension)
+	public static List<Portal> getPortalsAt(BlockPos pos, RegistryKey<World> dimension)
 	{
 		if (pos == null) return null;
 		
@@ -271,7 +271,7 @@ public final class PortalRegistry
 	 * @return
 	 * A read-only list of found portals (may be empty).
 	 */
-	public static List<Portal> getPortalsInDimension(DimensionType dimension)
+	public static List<Portal> getPortalsInDimension(RegistryKey<World> dimension)
 	{
 		Set<Portal> uniquePortals = new HashSet<>(portals.values());
 

@@ -15,10 +15,10 @@ public class JonaBlocks {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MoreOre.MODID);
 
 	public static final RegistryObject<Block> OHNEZAHN = BLOCKS.register("ohnezahn", 
-			 () -> new Block(Block.Properties.from(Blocks.OAK_LOG)));
+			 () -> new Block(Block.Properties.from(Blocks.STONE)));
 
 	public static final RegistryObject<Block> ERDBEER_BLOCK = BLOCKS.register("erdbeer_block", 
-			 () -> new Block(Block.Properties.from(Blocks.OAK_LOG)));
+			 () -> new Block(Block.Properties.from(Blocks.STONE)));
 
 	public static final RegistryObject<Block> ERDBEER_BUSCH = InitBlocks.registerCutout("erdbeer_busch_block", 
 			() -> new ErdbeerBuschBlock(Block.Properties.create(Material.PLANTS).tickRandomly()

@@ -31,7 +31,8 @@ public class BiologicBlocks {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MoreOre.MODID);
 
 	public static final RegistryObject<Block> SILVER_SAPLING = InitBlocks.registerCutout("silver_saplings",
-			() -> new /*Silver*/Sapling(() -> new SilverTree(), Block.Properties.from(Blocks.OAK_SAPLING)));
+			() -> new Sapling(() -> new SilverTree(), Block.Properties.from(Blocks.OAK_SAPLING)));
+
 	public static final RegistryObject<Block> SILVER_PLANKS = BLOCKS.register("silver_planks",
 			() -> new Block(Block.Properties.from(Blocks.OAK_PLANKS)));
 
@@ -52,11 +53,8 @@ public class BiologicBlocks {
 	public static final RegistryObject<Block> SILVER_WOOD = BLOCKS.register("silver_wood",
 			() -> new Block(Block.Properties.from(Blocks.OAK_WOOD)));
 
-	public static final RegistryObject<Block> BANANA = InitBlocks.registerCutout("banana",
-			() -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(1.0F, 1.0F)
-					.sound(SoundType.METAL).func_235838_a_((light) -> {
-						return 1;
-					})));
+	public static final RegistryObject<Block> BANANA = InitBlocks.registerCutout("banana", () -> new Block(
+			Block.Properties.create(Material.ROCK).hardnessAndResistance(1.0F, 1.0F).sound(SoundType.METAL)));
 
 	public static final RegistryObject<Block> SILVER_DOOR = InitBlocks.registerCutout("silver_door",
 			() -> new ModDoorBlock(Block.Properties.from(Blocks.OAK_DOOR)));
@@ -81,7 +79,7 @@ public class BiologicBlocks {
 			() -> new SilverTrapdoorBlock(Block.Properties.from(BiologicBlocks.SILVER_PLANKS.get())));
 
 	public static final RegistryObject<Block> GOLD_SAPLING = InitBlocks.registerCutout("gold_saplings",
-			() -> new /*Gold*/Sapling(() -> new GoldTree(), Block.Properties.from(Blocks.OAK_SAPLING)));
+			() -> new Sapling(() -> new GoldTree(), Block.Properties.from(Blocks.OAK_SAPLING)));
 
 	public static final RegistryObject<Block> ICE_LEAVES = InitBlocks.registerCutout("ice_leaves",
 			() -> new LeavesBlock(Block.Properties.from(Blocks.OAK_LEAVES)));

@@ -41,7 +41,7 @@ public class SilverPortalFrameBlock extends Block {
 					world.destroyBlock(pos, true);
 					this.onReplaced(world.getBlockState(pos), world, pos, Blocks.AIR.getDefaultState(), false);
 				}
-				else if (!PortalRegistry.isPortalAt(pos, player.world.func_230315_m_())){
+				else if (!PortalRegistry.isPortalAt(pos, player.world.func_234923_W_())){
 					PortalRegistry.activatePortal(world, pos, hit.getFace());
 				}
 			}
@@ -58,7 +58,7 @@ public class SilverPortalFrameBlock extends Block {
 		{
 			// Deactivate damaged portals.
 
-			List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos, world.func_230315_m_());
+			List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos, world.func_234923_W_());
 			if (affectedPortals == null || affectedPortals.size() < 1) return;
 			Portal firstPortal = affectedPortals.get(0);
 
@@ -81,7 +81,7 @@ public class SilverPortalFrameBlock extends Block {
 			!(neighborBlock instanceof SilverPortalFrameBlock)){
 			// Deactivate all portals that share this frame block if an address block was removed or changed.
 
-			List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos, world.func_230315_m_());
+			List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos, world.func_234923_W_());
 
 			if (affectedPortals == null || affectedPortals.size() < 1) return;
 

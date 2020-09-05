@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
+import com.silverminer.moreore.init.TreeDecotratorInit;
 import com.silverminer.moreore.init.blocks.BiologicBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Direction;
@@ -17,14 +18,14 @@ import net.minecraft.world.gen.treedecorator.TreeDecorator;
 import net.minecraft.world.gen.treedecorator.TreeDecoratorType;
 
 public class BananaTreeDecorator extends TreeDecorator {
-	public static final Codec<BananaTreeDecorator> field_236866_a_ = Codec.FLOAT.fieldOf("probability")
-			.xmap(BananaTreeDecorator::new, (p_236868_0_) -> {
-				return p_236868_0_.probability;
+	public static final Codec<BananaTreeDecorator> CODEC = Codec.FLOAT.fieldOf("probability")
+			.xmap(BananaTreeDecorator::new, (decorator) -> {
+				return decorator.probability;
 			}).codec();
 	private final float probability;
 
 	public BananaTreeDecorator(float probabilityIn) {
-//		super(ModTreeDecoratorType.BANANA);
+		super();
 		this.probability = probabilityIn;
 	}
 
@@ -32,20 +33,20 @@ public class BananaTreeDecorator extends TreeDecorator {
 		this(p_i225867_1_.get("probability").asFloat(0.0F));
 	}
 
-	public void func_225576_a_(IWorld p_225576_1_, Random p_225576_2_, List<BlockPos> p_225576_3_,
-			List<BlockPos> p_225576_4_, Set<BlockPos> p_225576_5_, MutableBoundingBox p_225576_6_) {
-		if (!(p_225576_2_.nextFloat() >= this.probability)) {
-			int i = p_225576_3_.get(0).getY();
-			p_225576_3_.stream().filter((p_236867_1_) -> {
-				return p_236867_1_.getY() - i <= 2;
-			}).forEach((p_236869_5_) -> {
+	public void func_225576_a_(IWorld world, Random random, List<BlockPos> positions1, List<BlockPos> positions2,
+			Set<BlockPos> positions3, MutableBoundingBox boundingbox) {
+		if (!(random.nextFloat() >= this.probability)) {
+			int i = positions1.get(0).getY();
+			positions1.stream().filter((pos) -> {
+				return pos.getY() - i <= 2;
+			}).forEach((pos) -> {
 				for (Direction direction : Direction.Plane.HORIZONTAL) {
-					if (p_225576_2_.nextFloat() <= 0.25F) {
+					if (random.nextFloat() <= 0.25F) {
 						Direction direction1 = direction.getOpposite();
-						BlockPos blockpos = p_236869_5_.add(direction1.getXOffset(), 0, direction1.getZOffset());
-						if (Feature.func_236297_b_(p_225576_1_, blockpos)) {
+						BlockPos blockpos = pos.add(direction1.getXOffset(), 0, direction1.getZOffset());
+						if (Feature.func_236297_b_(world, blockpos)) {
 							BlockState blockstate = BiologicBlocks.BANANA.get().getDefaultState();
-							this.func_227423_a_(p_225576_1_, blockpos, blockstate, p_225576_5_, p_225576_6_);
+							this.func_227423_a_(world, blockpos, blockstate, positions3, boundingbox);
 						}
 					}
 				}
@@ -56,6 +57,6 @@ public class BananaTreeDecorator extends TreeDecorator {
 
 	@Override
 	protected TreeDecoratorType<?> func_230380_a_() {
-		return ModTreeDecoratorType.BANANA;
+		return TreeDecotratorInit.BANANA.get();
 	}
 }
