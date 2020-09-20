@@ -51,6 +51,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.spawner.WorldEntitySpawner;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -67,9 +68,9 @@ public class VillageGuardian extends AnimalEntity {
 	}
 
 	@Override
-	public AgeableEntity createChild(AgeableEntity ageable) {
-		VillageGuardian entity = new VillageGuardian(ModEntityTypesInit.VILLAGE_GUARDIAN.get(), this.world);
-		entity.onInitialSpawn(this.world, this.world.getDifficultyForLocation(new BlockPos(entity.getPositionVec())),
+	public AgeableEntity func_241840_a(ServerWorld worldIn, AgeableEntity ageable) {
+		VillageGuardian entity = new VillageGuardian(ModEntityTypesInit.VILLAGE_GUARDIAN.get(), worldIn);
+		entity.onInitialSpawn(worldIn, worldIn.getDifficultyForLocation(new BlockPos(entity.getPositionVec())),
 				SpawnReason.BREEDING, (ILivingEntityData) null, (CompoundNBT) null);
 		return entity;
 	}
@@ -96,10 +97,10 @@ public class VillageGuardian extends AnimalEntity {
 				}));
 	}
 
-	public static AttributeModifierMap.MutableAttribute func_234225_eI_() {
-		return MobEntity.func_233666_p_().func_233815_a_(Attributes.field_233818_a_, 20.0D)
+	public static AttributeModifierMap setCustomAttributes() {
+		return AnimalEntity.func_233666_p_().func_233815_a_(Attributes.field_233818_a_, 20.0D)
 				.func_233815_a_(Attributes.field_233821_d_, 0.3D).func_233815_a_(Attributes.field_233820_c_, 1.0D)
-				.func_233815_a_(Attributes.field_233823_f_, 7.0D);
+				.func_233815_a_(Attributes.field_233823_f_, 7.0D).func_233813_a_();
 	}
 
 	/**
@@ -307,7 +308,7 @@ public class VillageGuardian extends AnimalEntity {
 		}
 		if (item instanceof SpawnEggItem && ((SpawnEggItem) item).hasType(itemstack.getTag(), this.getType())) {
 			if (!this.world.isRemote) {
-				AgeableEntity ageableentity = this.createChild(this);
+				AgeableEntity ageableentity = this.func_241840_a((ServerWorld) this.world, this);
 				if (ageableentity != null) {
 					ageableentity.setGrowingAge(-24000);
 					ageableentity.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), 0.0F, 0.0F);

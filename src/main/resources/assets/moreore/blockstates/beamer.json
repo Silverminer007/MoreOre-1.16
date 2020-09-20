@@ -17,7 +17,6 @@
         "material=birch_planks":  { "model": "block/birch_planks" },
         "material=rainbow_ore":  { "model": "moreore:block/rainbow_ore" },
         "material=spruce_planks":  { "model": "block/spruce_planks" },
-        "material=grass_block":  { "model": "block/grass_block" },
         "material=alexandrit_ore":  { "model": "moreore:block/alexandrit_ore" },
         "material=silver_portal_frame":  { "model": "moreore:block/silver_portal_frame" },
         "material=obsidian":  { "model": "block/obsidian" },

@@ -16,9 +16,9 @@ import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 
-public abstract class ShrinesStructureStart<C extends IFeatureConfig> extends StructureStart<C> {
+public abstract class MoreoreStructureStart<C extends IFeatureConfig> extends StructureStart<C> {
 
-	public ShrinesStructureStart(Structure<C> structure, int chunkX, int chunkZ,
+	public MoreoreStructureStart(Structure<C> structure, int chunkX, int chunkZ,
 			MutableBoundingBox boundingbox, int p_i225874_5_, long seed) {
 		super(structure, chunkX, chunkZ, boundingbox, p_i225874_5_, seed);
 	}

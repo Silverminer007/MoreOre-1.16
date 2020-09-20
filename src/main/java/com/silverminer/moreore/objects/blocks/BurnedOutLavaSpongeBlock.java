@@ -2,15 +2,10 @@ package com.silverminer.moreore.objects.blocks;
 
 import java.util.Random;
 
-import com.silverminer.moreore.init.blocks.InitBlocks;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.WetSpongeBlock;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -20,15 +15,6 @@ public class BurnedOutLavaSpongeBlock extends WetSpongeBlock {
 
 	public BurnedOutLavaSpongeBlock(Properties properties) {
 		super(properties);
-	}
-
-	@Override
-	public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
-		worldIn.setBlockState(pos, InitBlocks.LAVA_SPONGE.get().getDefaultState(), 3);
-		worldIn.playEvent(2009, pos, 0);
-		worldIn.playSound((PlayerEntity) null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F,
-				(1.0F + worldIn.getRandom().nextFloat() * 0.2F) * 0.7F);
-
 	}
 
 	/**

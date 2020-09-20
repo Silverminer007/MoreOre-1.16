@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.silverminer.moreore.init.BiomeInit;
 import com.silverminer.moreore.init.EnchantmentInit;
 import com.silverminer.moreore.init.FeatureInit;
 import com.silverminer.moreore.init.ModEntityTypesInit;
@@ -49,7 +48,7 @@ public class MoreOre {
 	public static PortalWorldSaveData portalSaveData;
 	public static ArrayList<ComposterItems> composterItems = new ArrayList<ComposterItems>();
 	public static ArrayList<RegistryObject<Block>> cutoutBlocks = new ArrayList<RegistryObject<Block>>();
-	public static final ResourceLocation SILVER_DIM_TYPE = new ResourceLocation(MODID, "silver_dimension");
+	public static final ResourceLocation SILVER_DIM_TYPE = new ResourceLocation("dimensions", "silver_dimension");
 
 	public MoreOre() {
 		LOGGER.debug("Mod: MoreOre wurde geladen");
@@ -67,7 +66,6 @@ public class MoreOre {
 		JonaBlocks.BLOCKS.register(modEventBus);
 		OreBlocks.BLOCKS.register(modEventBus);
 		BiologicBlocks.BLOCKS.register(modEventBus);
-		BiomeInit.BIOMES.register(modEventBus);
 		FeatureInit.FEATURES.register(modEventBus);
 		ModEntityTypesInit.ENTITIES.register(modEventBus);
 		EnchantmentInit.ENCHANTMENTS.register(modEventBus);

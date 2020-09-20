@@ -27,6 +27,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -90,14 +91,15 @@ public class SilverPortalBlock extends BreakableBlock {
 						VoxelShapes.create(entity.getBoundingBox().offset((double) (-pos.getX()),
 								(double) (-pos.getY()), (double) (-pos.getZ()))),
 						state.getShape(worldIn, pos), IBooleanFunction.AND)) {
-			int cooldown = (entity instanceof ServerPlayerEntity) ? Config.playerTeleportationCooldown.get()
-					: entity.getPortalCooldown();
-			if (entity.timeUntilPortal > 0)
+			if (entity.func_242280_ah())
 				return;
 			RegistryKey<World> dim = entity.world.func_234923_W_() == RegistryKey
 					.func_240903_a_(Registry.field_239699_ae_, MoreOre.SILVER_DIM_TYPE) ? World.field_234918_g_
 							: RegistryKey.func_240903_a_(Registry.field_239699_ae_, MoreOre.SILVER_DIM_TYPE);
 			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+			if(worldIn instanceof ServerWorld) {
+				server = worldIn.getServer();
+			}
 			World world = server.getWorld(dim);
 			BlockPos destinationPos = SpawnPositionHelper.calculate(pos, world);
 			if (world.getWorldInfo().isHardcore()) {
@@ -120,10 +122,7 @@ public class SilverPortalBlock extends BreakableBlock {
 			} else {
 				Utils.teleportTo(entity, dim, destinationPos, Direction.NORTH);
 			}
-//			Utils.teleportTo(entity, dim, destinationPos, Direction.NORTH);
-			// Put the entity on "cooldown" in order to prevent it from instantly porting
-			// again.
-			entity.timeUntilPortal = cooldown;
+			entity.func_242279_ag();
 		}
 	}
 

@@ -11,6 +11,8 @@ import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.MoveToBlockGoal;
 import net.minecraft.entity.ai.goal.PanicGoal;
@@ -29,6 +31,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class SquirrelEntity extends AnimalEntity {
 
@@ -37,9 +40,9 @@ public class SquirrelEntity extends AnimalEntity {
 	}
 
 	@Override
-	public AgeableEntity createChild(AgeableEntity ageable) {
-		SquirrelEntity entity = new SquirrelEntity(ModEntityTypesInit.SQUIRREL.get(), this.world);
-		entity.onInitialSpawn(this.world, this.world.getDifficultyForLocation(new BlockPos(entity.getPositionVec())),
+	public AgeableEntity func_241840_a(ServerWorld worldIn, AgeableEntity ageable) {
+		SquirrelEntity entity = new SquirrelEntity(ModEntityTypesInit.SQUIRREL.get(), worldIn);
+		entity.onInitialSpawn(worldIn, worldIn.getDifficultyForLocation(new BlockPos(entity.getPositionVec())),
 				SpawnReason.BREEDING, (ILivingEntityData) null, (CompoundNBT) null);
 		return entity;
 	}
@@ -81,7 +84,7 @@ public class SquirrelEntity extends AnimalEntity {
 		Item item = itemstack.getItem();
 		if (item instanceof SpawnEggItem && ((SpawnEggItem) item).hasType(itemstack.getTag(), this.getType())) {
 			if (!this.world.isRemote) {
-				AgeableEntity ageableentity = this.createChild(this);
+				AgeableEntity ageableentity = this.func_241840_a((ServerWorld) this.world, this);
 				if (ageableentity != null) {
 					ageableentity.setGrowingAge(-24000);
 					ageableentity.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), 0.0F, 0.0F);
@@ -101,6 +104,12 @@ public class SquirrelEntity extends AnimalEntity {
 		} else {
 			return false;
 		}
+	}
+
+	public static AttributeModifierMap.MutableAttribute setCustomAttributes() {
+		return AnimalEntity.func_233666_p_().func_233815_a_(Attributes.field_233818_a_, 5.0D)
+				.func_233815_a_(Attributes.field_233821_d_, 0.3D).func_233815_a_(Attributes.field_233820_c_, 1.0D)
+				.func_233815_a_(Attributes.field_233823_f_, 7.0D);
 	}
 
 	public class EatNutGoal extends MoveToBlockGoal {

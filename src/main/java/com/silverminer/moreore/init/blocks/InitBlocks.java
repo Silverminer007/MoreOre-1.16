@@ -30,7 +30,7 @@ public class InitBlocks {
 			 () -> new Block(Block.Properties.from(Blocks.GLOWSTONE)));
 
 	public static final RegistryObject<Block> SILVER_PORTAL = BLOCKS.register("silver_portal", 
-			 () -> new SilverPortalBlock(/*Block.Properties.from(Blocks.NETHER_PORTAL)*/));
+			 () -> new SilverPortalBlock());
 
 	public static final RegistryObject<Block> LAVA_SPONGE = BLOCKS.register("lava_sponge", 
 			() -> new LavaSpongeBlock(Block.Properties.from(Blocks.SPONGE)));

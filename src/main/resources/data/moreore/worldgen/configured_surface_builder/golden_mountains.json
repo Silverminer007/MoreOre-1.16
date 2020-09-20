@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:default",
+  "config": {
+    "top_material": {
+      "Name": "minecraft:grass_block",
+      "Properties": {
+        "snowy": "false"
+      }
+    },
+    "under_material": {
+      "Name": "moreore:cat_gold_block"
+    },
+    "underwater_material": {
+      "Name": "moreore:cat_gold_block"
+    }
+  }
+}

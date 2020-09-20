@@ -12,7 +12,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.treedecorator.TreeDecorator;
 import net.minecraft.world.gen.treedecorator.TreeDecoratorType;
@@ -33,8 +33,14 @@ public class BananaTreeDecorator extends TreeDecorator {
 		this(p_i225867_1_.get("probability").asFloat(0.0F));
 	}
 
-	public void func_225576_a_(IWorld world, Random random, List<BlockPos> positions1, List<BlockPos> positions2,
-			Set<BlockPos> positions3, MutableBoundingBox boundingbox) {
+	@Override
+	protected TreeDecoratorType<?> func_230380_a_() {
+		return TreeDecotratorInit.BANANA.get();
+	}
+
+	@Override
+	public void func_225576_a_(ISeedReader seedReader, Random random, List<BlockPos> positions1,
+			List<BlockPos> positions2, Set<BlockPos> positions3, MutableBoundingBox boundingbox) {
 		if (!(random.nextFloat() >= this.probability)) {
 			int i = positions1.get(0).getY();
 			positions1.stream().filter((pos) -> {
@@ -44,19 +50,14 @@ public class BananaTreeDecorator extends TreeDecorator {
 					if (random.nextFloat() <= 0.25F) {
 						Direction direction1 = direction.getOpposite();
 						BlockPos blockpos = pos.add(direction1.getXOffset(), 0, direction1.getZOffset());
-						if (Feature.func_236297_b_(world, blockpos)) {
+						if (Feature.func_236297_b_(seedReader, blockpos)) {
 							BlockState blockstate = BiologicBlocks.BANANA.get().getDefaultState();
-							this.func_227423_a_(world, blockpos, blockstate, positions3, boundingbox);
+							this.func_227423_a_(seedReader, blockpos, blockstate, positions3, boundingbox);
 						}
 					}
 				}
 
 			});
 		}
-	}
-
-	@Override
-	protected TreeDecoratorType<?> func_230380_a_() {
-		return TreeDecotratorInit.BANANA.get();
 	}
 }

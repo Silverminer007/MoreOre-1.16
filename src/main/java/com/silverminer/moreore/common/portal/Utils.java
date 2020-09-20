@@ -183,7 +183,7 @@ public final class Utils {
 																			// player dimension
 		ServerWorld originServerWorld = server.getWorld(startRegistryKey);// Eigentlich originDimension
 //		player.dimension = destinationDimension;
-		player.func_241153_a_(destinationDimension, destination, false, false);
+		player.func_242111_a(destinationDimension, destination, 0.5f, false, false);
 		ServerWorld destinationServerWorld = server.getWorld(destinationDimension);
 		IWorldInfo worldInfo = player.world.getWorldInfo();
 //		net.minecraftforge.fml.network.NetworkHooks.sendDimensionDataPacket(player.connection.netManager, player);

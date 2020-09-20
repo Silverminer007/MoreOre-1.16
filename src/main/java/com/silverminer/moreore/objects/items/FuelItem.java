@@ -10,6 +10,7 @@ import com.silverminer.moreore.util.helpers.KeyboardHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Rarity;
@@ -25,12 +26,12 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtensibleEnum;
 
-
 public class FuelItem extends Item {
 
 	public FuelItem(Properties properties) {
 		super(properties);
 	}
+
 	@Override
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 		if (KeyboardHelper.isHoldingShift()) {
@@ -67,15 +68,20 @@ public class FuelItem extends Item {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
 		playerIn.addPotionEffect(new EffectInstance(Effects.ABSORPTION, 500, 255));
-		Utils.teleportTo(playerIn, playerIn.world.func_234923_W_(), playerIn.getBedPosition().get(), Direction.NORTH);
+		if (!worldIn.isRemote()) {
+			Utils.teleportTo(playerIn, worldIn.func_234923_W_(),
+					((ServerPlayerEntity) playerIn).func_241140_K_(), Direction.NORTH);
+		}
 		worldIn.setRainStrength(10.0f);
 
 		return super.onItemRightClick(worldIn, playerIn, handIn);
 	}
+
 	@Override
 	public int getBurnTime(ItemStack itemStack) {
 		return 600;
 	}
+
 	@Override
 	public ActionResultType onItemUse(ItemUseContext context) {
 		return ActionResultType.FAIL;

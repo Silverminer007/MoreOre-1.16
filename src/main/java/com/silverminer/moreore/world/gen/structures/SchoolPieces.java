@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.ISeedReader;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
@@ -29,8 +29,7 @@ public class SchoolPieces {
 
 	public static void generate(TemplateManager templateManager, BlockPos pos, Rotation rotation,
 			List<StructurePiece> pieces, Random random) {
-		pieces.add(new SchoolPieces.Piece(templateManager, location, pos,
-				rotation, 0));
+		pieces.add(new SchoolPieces.Piece(templateManager, location, pos, rotation, 0));
 	}
 
 	public static class Piece extends TemplateStructurePiece {
@@ -39,8 +38,7 @@ public class SchoolPieces {
 
 		public Piece(TemplateManager templateManager, ResourceLocation location, BlockPos pos, Rotation rotation,
 				int componentTypeIn) {
-			super(IStructurePieceType.register(SchoolPieces.Piece::new, SchoolStructure.SHORT_NAME),
-					componentTypeIn);
+			super(IStructurePieceType.register(SchoolPieces.Piece::new, SchoolStructure.SHORT_NAME), componentTypeIn);
 			this.location = location;
 			this.templatePosition = pos;
 			this.rotation = rotation;
@@ -87,7 +85,7 @@ public class SchoolPieces {
 		}
 
 		@Override
-		protected void handleDataMarker(String function, BlockPos pos, IWorld worldIn, Random rand,
+		protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand,
 				MutableBoundingBox sbb) {
 		}
 	}

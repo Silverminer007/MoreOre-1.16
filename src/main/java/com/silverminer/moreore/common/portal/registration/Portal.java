@@ -414,7 +414,7 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 		// :LegacyDimensionId
 		if (nbt.contains("dimension", 8)) // Type 3 means integer.
 		{
-			ResourceLocation dimensionRegistryKey = new ResourceLocation(nbt.getString("dimension"));
+			ResourceLocation dimensionRegistryKey = ResourceLocation.tryCreate(nbt.getString("dimension"));
 			dimension = RegistryKey.func_240903_a_(Registry.field_239699_ae_, dimensionRegistryKey);
 		} else {
 			dimension = World.field_234918_g_;

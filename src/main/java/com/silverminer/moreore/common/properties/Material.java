@@ -12,7 +12,7 @@ public enum Material implements IStringSerializable {
 	DIRT("dirt"), ICE("ice"), DIAMOND_ORE("diamond_ore"), BOOKSHELF("bookshelf"), GOLD_BLOCK("gold_block"),
 	RAINBOW_BLOCK("rainbow_block"), EMERALD_BLOCK("emerald_block"), DIAMOND_BLOCK("diamond_block"),
 	IRON_BLOCK("iron_block"), ALEXANDRIT_BLOCK("alexandrit_block"), RAINBOW_ORE("rainbow_ore"),
-	SPRUCE_PLANKS("spruce_planks"), GRASS_BLOCK("grass_block"), ALEXANDRIT_ORE("alexandrit_ore"),
+	SPRUCE_PLANKS("spruce_planks"), ALEXANDRIT_ORE("alexandrit_ore"),
 	SILVER_PORTAL_FRAME("silver_portal_frame"), OBSIDIAN("obsidian"), COAL_BLOCK("coal_block"),
 	REDSTONE_BLOCK("redstone_block"), REDSTONE_ORE("redstone_ore"), WHITE_WOOL("white_wool"),
 	CRAFTING_TABLE("crafting_table"), BIRCH_PLANKS("birch_planks");
