@@ -11,10 +11,6 @@
     },
     "decorators": [
       {
-        "probability": 0.2,
-        "type": "minecraft:cocoa"
-      },
-      {
         "type": "minecraft:trunk_vine"
       },
       {

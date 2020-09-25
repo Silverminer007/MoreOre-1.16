@@ -27,7 +27,9 @@
       "type": "minecraft:decorated"
     },
     "decorator": {
-      "config": {},
+      "config": {
+        "count": 3
+      },
       "type": "minecraft:square"
     }
   },

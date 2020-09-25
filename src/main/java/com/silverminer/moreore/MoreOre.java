@@ -6,7 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.silverminer.moreore.init.EnchantmentInit;
-import com.silverminer.moreore.init.FeatureInit;
+import com.silverminer.moreore.init.StructureFeatureInit;
 import com.silverminer.moreore.init.ModEntityTypesInit;
 import com.silverminer.moreore.init.TreeDecotratorInit;
 import com.silverminer.moreore.init.blocks.BiologicBlocks;
@@ -26,8 +26,6 @@ import com.silverminer.moreore.util.CommonEvents;
 import com.silverminer.moreore.util.items.ComposterItems;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.ComposterBlock;
-import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
@@ -35,8 +33,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 /**
- * @author Silverminer
- * @version Last Edit: Moreore-1.16.1-1.1.0-Beta1
+ * @author Silverminer007
+ * @version Last Edit: Moreore-1.16.3-1.1.0-Beta5
  * @since 25.04.2020
  * @comment This Mod adds Blocks, Items, Biomes, Dimensions, Structures, fun and
  *          much more!!! Have fun!!!
@@ -66,13 +64,9 @@ public class MoreOre {
 		JonaBlocks.BLOCKS.register(modEventBus);
 		OreBlocks.BLOCKS.register(modEventBus);
 		BiologicBlocks.BLOCKS.register(modEventBus);
-		FeatureInit.FEATURES.register(modEventBus);
+		StructureFeatureInit.FEATURES.register(modEventBus);
 		ModEntityTypesInit.ENTITIES.register(modEventBus);
 		EnchantmentInit.ENCHANTMENTS.register(modEventBus);
 		TreeDecotratorInit.TYPES.register(modEventBus);
-	}
-
-	public static void registerCompostable(float chance, IItemProvider itemIn) {
-		ComposterBlock.CHANCES.put(itemIn.asItem(), chance);
 	}
 }

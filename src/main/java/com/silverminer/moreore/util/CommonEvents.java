@@ -2,6 +2,8 @@ package com.silverminer.moreore.util;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.silverminer.moreore.MoreOre;
@@ -9,28 +11,33 @@ import com.silverminer.moreore.client.render.SquirrelRenderer;
 import com.silverminer.moreore.client.render.VillageGuardianRenderer;
 import com.silverminer.moreore.commands.ModCommands;
 import com.silverminer.moreore.common.portal.PortalWorldSaveData;
-import com.silverminer.moreore.init.FeatureInit;
+import com.silverminer.moreore.init.StructureFeatureInit;
 import com.silverminer.moreore.init.ModEntityTypesInit;
 import com.silverminer.moreore.init.blocks.BiologicBlocks;
-import com.silverminer.moreore.objects.blocks.ModLogBlock;
 import com.silverminer.moreore.objects.entitys.SquirrelEntity;
 import com.silverminer.moreore.objects.entitys.VillageGuardian;
 import com.silverminer.moreore.util.items.ComposterItems;
-import com.silverminer.moreore.world.gen.Generation;
+import com.silverminer.moreore.world.biomeprovider.SilverBiomeProvider;
+import com.silverminer.moreore.world.gen.features.OreFeatures;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.ComposterBlock;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome.Category;
+import net.minecraft.world.biome.Biome.RainType;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.RegistryObject;
@@ -43,20 +50,22 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 @SuppressWarnings("deprecation")
 public class CommonEvents {
 
-	public static final Logger LOGGER = LogManager.getLogger(CommonEvents.class);
+	protected static final Logger LOGGER = LogManager.getLogger(CommonEvents.class);
 
 	@EventBusSubscriber(modid = MoreOre.MODID, bus = EventBusSubscriber.Bus.MOD)
 	public static class ModEventBus {
+		protected static final Marker MARKER = MarkerManager.getMarker("ModEventBus");
+
 		@SubscribeEvent
 		public void onCommandsRegister(RegisterCommandsEvent event) {
-			LOGGER.debug("Registering Commands");
+			LOGGER.debug(MARKER, "Registering Commands");
 			CommandDispatcher<CommandSource> commandDispatcher = event.getDispatcher();
 			new ModCommands(commandDispatcher);
 		}
 
 		@SubscribeEvent
 		public static void setupClient(FMLClientSetupEvent event) {
-			LOGGER.debug("Firing Client Setup Event");
+			LOGGER.debug(MARKER, "Firing Client Setup Event");
 			for (RegistryObject<Block> block : MoreOre.cutoutBlocks) {
 				RenderTypeLookup.setRenderLayer(block.get(), RenderType.getCutout());
 			}
@@ -70,34 +79,34 @@ public class CommonEvents {
 		}
 
 		@SubscribeEvent
-		public static void loadCompleteEvent(FMLLoadCompleteEvent event) {
-			DeferredWorkQueue.runLater(Generation::generateOre);
-			MoreOre.LOGGER.info("Erz Generiert");
-			ModLogBlock.addLogStrippeAble((ModLogBlock) BiologicBlocks.SILVER_LOG.get(),
-					(ModLogBlock) BiologicBlocks.STRIPPED_SILVER_LOG.get());
-		}
-
-		@SubscribeEvent
 		public static void setup(final FMLCommonSetupEvent event) {
-			LOGGER.debug("Firening Setup Event");
-			DeferredWorkQueue.runLater(Generation::setupWorldGen);
+			LOGGER.debug(MARKER, "Firening Setup Event");
 			DeferredWorkQueue.runLater(() -> {
 				GlobalEntityTypeAttributes.put(ModEntityTypesInit.VILLAGE_GUARDIAN.get(),
 						VillageGuardian.setCustomAttributes());
-			});
-			DeferredWorkQueue.runLater(() -> {
-				GlobalEntityTypeAttributes.put(ModEntityTypesInit.SQUIRREL.get(),
-						SquirrelEntity.setCustomAttributes().func_233813_a_());
+				GlobalEntityTypeAttributes.put(ModEntityTypesInit.SQUIRREL.get(), SquirrelEntity.setCustomAttributes());
 			});
 
+			// Make every Item in this list Compostable in an composter block
 			for (ComposterItems item : MoreOre.composterItems) {
-				MoreOre.registerCompostable(item.getChance(), item.getItem().get().asItem());
+				ComposterBlock.CHANCES.put(item.getItem().get().asItem(), item.getChance());
 			}
+			// Add the SilverBiomeProvider to be use able in .json files for better Biome
+			// forming
+			Registry.register(Registry.field_239689_aA_, new ResourceLocation(MoreOre.MODID, "silver"),
+					SilverBiomeProvider.CODEC);
+		}
+
+		@SubscribeEvent
+		public static void loadCompleteEvent(FMLLoadCompleteEvent event) {
+			DeferredWorkQueue.runLater(OreFeatures::registerOres);
 		}
 	}
 
 	@EventBusSubscriber(modid = MoreOre.MODID, bus = EventBusSubscriber.Bus.FORGE)
 	public static class ForgeEventBus {
+		protected static final Marker MARKER = MarkerManager.getMarker("ForgeEventBus");
+
 		@SubscribeEvent
 		public static void onWorldLoad(WorldEvent.Load event) {
 			IWorld iworld = event.getWorld();
@@ -112,24 +121,32 @@ public class CommonEvents {
 			}
 		}
 
-		@SubscribeEvent
+		@SubscribeEvent(priority = EventPriority.HIGH)
 		public static void onBiomeLoad(BiomeLoadingEvent event) {
-			LOGGER.debug("The BiomeLoadEvent is Fired for Biome: {}", event.getName());
+			if (event.getName().toString().contains(MoreOre.MODID)) {
+				LOGGER.debug(MARKER, "The BiomeLoadEvent is Fired for Biome: {}", event.getName());
+			} else {
+				// Generates the ore in all biomes except its own, where the ores are already
+				// defined in the JSON file
+				event.getGeneration().func_242510_a(7, () -> OreFeatures.ALEXANDRIT);
+				event.getGeneration().func_242510_a(7, () -> OreFeatures.RAINBOW);
+			}
 			if (event.getCategory() == Category.RIVER) {
 				return;
 			}
 			if (event.getCategory() != Category.NETHER && event.getCategory() != Category.THEEND
 					&& event.getCategory() != Category.OCEAN) {
 
-				event.getGeneration()
-						.func_242516_a(FeatureInit.TEMPEL.get().func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
+				event.getGeneration().func_242516_a(
+						StructureFeatureInit.TEMPEL.get().func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
 
-				event.getGeneration()
-						.func_242516_a(FeatureInit.SCHOOL.get().func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
+				event.getGeneration().func_242516_a(
+						StructureFeatureInit.SCHOOL.get().func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
 
-				if (event.getCategory() == Category.DESERT) {
+				// Generate the Desert Tempel Structure in every Biome, where it doesn't rain
+				if (event.getClimate().field_242460_b == RainType.NONE) {
 					event.getGeneration().func_242516_a(
-							FeatureInit.DESERT_TEMPEL.get().func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
+							StructureFeatureInit.DESERT_TEMPEL.get().func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
 				}
 			}
 		}

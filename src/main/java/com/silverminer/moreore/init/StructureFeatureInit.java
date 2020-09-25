@@ -11,7 +11,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class FeatureInit {
+public class StructureFeatureInit {
 	public static final DeferredRegister<Structure<?>> FEATURES = DeferredRegister.create(ForgeRegistries.STRUCTURE_FEATURES, MoreOre.MODID);
 
 	public static final RegistryObject<Structure<NoFeatureConfig>> TEMPEL = register(TempelStructure.SHORT_NAME,

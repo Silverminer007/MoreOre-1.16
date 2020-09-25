@@ -1,7 +1,5 @@
 package com.silverminer.moreore.objects.entitys.goals;
 
-import com.silverminer.moreore.MoreOre;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.MobEntity;
@@ -57,15 +55,14 @@ public class MoveToPatrolPointGoal extends MoveToBlockGoal {
 	/**
 	 * Return true to set given position as destination
 	 */
-	@SuppressWarnings("deprecation")
 	protected boolean shouldMoveTo(IWorldReader worldIn, BlockPos pos) {
 		IChunk ichunk = worldIn.getChunk(pos.getX() >> 4, pos.getZ() >> 4, ChunkStatus.FULL, false);
 		if (ichunk == null) {
-			MoreOre.LOGGER.info("Chunk is null");
 			return false;
 		} else {
 			boolean isPatrolPoint = ichunk.getBlockState(pos).getBlock() == this.block;
-			boolean isAirUp = ichunk.getBlockState(pos.up()).isAir() && ichunk.getBlockState(pos.up(2)).isAir();
+			boolean isAirUp = ichunk.getBlockState(pos.up()).isAir(ichunk, pos)
+					&& ichunk.getBlockState(pos.up(2)).isAir(ichunk, pos);
 			return isPatrolPoint && isAirUp;
 		}
 	}
@@ -82,10 +79,11 @@ public class MoveToPatrolPointGoal extends MoveToBlockGoal {
 					blockpos$mutable.setPos(blockpos).move(x, y - 1, z);
 					if (this.shouldMoveTo(world, blockpos$mutable)) {
 						if (this.creature.isWithinHomeDistanceFromPosition(blockpos$mutable)) {
-							if(this.invalidPos.getX() == blockpos$mutable.getX() && this.invalidPos.getY() == blockpos$mutable.getY() && this.invalidPos.getZ() == blockpos$mutable.getZ()) {
+							if (this.invalidPos.getX() == blockpos$mutable.getX()
+									&& this.invalidPos.getY() == blockpos$mutable.getY()
+									&& this.invalidPos.getZ() == blockpos$mutable.getZ()) {
 								continue;
-							}
-							else {
+							} else {
 								this.destinationBlock = blockpos$mutable;
 								return true;
 							}

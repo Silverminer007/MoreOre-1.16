@@ -29,7 +29,7 @@ public class TempelStructure extends AbstractStructure<NoFeatureConfig> {
 	}
 
 	public int getSeedModifier() {
-		return 16987356;
+		return 1664499850;
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class TempelStructure extends AbstractStructure<NoFeatureConfig> {
 		}
 
 		@Override
-		public void func_230364_a_(DynamicRegistries p_230364_1_, ChunkGenerator chunkGenerator,
+		public void func_230364_a_(DynamicRegistries registries, ChunkGenerator chunkGenerator,
 				TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config) {
 			int i = chunkX * 16;
 			int j = chunkZ * 16;

@@ -1,4 +1,4 @@
-package com.silverminer.moreore.world.gen;
+package com.silverminer.moreore.world.biomeprovider.gen;
 
 public class VoronoiGenerator {
 	

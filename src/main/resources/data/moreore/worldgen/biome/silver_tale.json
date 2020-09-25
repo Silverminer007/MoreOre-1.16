@@ -16,6 +16,9 @@
     "foliage_color": 13487565
   },
   "starts": [
+    "minecraft:village_taiga",
+    "minecraft:ruined_portal_swamp",
+    "minecraft:shipwreck"
   ],
   "spawners": {
     "monster": [
@@ -57,6 +60,12 @@
       }
     ],
     "creature": [
+      {
+        "type": "moreore:village_guardian",
+        "weight": 2,
+        "minCount": 1,
+        "maxCount": 3
+      },
       {
         "type": "minecraft:sheep",
         "weight": 12,
@@ -141,7 +150,8 @@
       "minecraft:disk_clay",
       "minecraft:disk_gravel",
       "moreore:ore_alexandrit",
-      "moreore:ore_silver"
+      "moreore:ore_silver",
+      "moreore:ore_rainbow"
     ],
     [],
     [

@@ -1,33 +1,25 @@
 package com.silverminer.moreore.world.gen.structures;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.util.Rotation;
 import net.minecraft.util.SharedSeedRandom;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.SectionPos;
-import net.minecraft.util.registry.DynamicRegistries;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.provider.BiomeProvider;
-import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.feature.structure.StructureManager;
-import net.minecraft.world.gen.feature.structure.StructureStart;
-import net.minecraft.world.gen.feature.template.TemplateManager;
-import net.minecraft.world.gen.settings.StructureSeparationSettings;
 
 public abstract class AbstractStructure<C extends IFeatureConfig> extends Structure<C> {
+
+	protected static final Logger LOGGER = LogManager.getLogger(AbstractStructure.class);
 	public final int size;
 
 	public final String name;
@@ -101,112 +93,5 @@ public abstract class AbstractStructure<C extends IFeatureConfig> extends Struct
 		}
 
 		return false;
-	}
-
-	public static BlockPos getSurfaceStructurePosition(@Nonnull ChunkGenerator generator, int size, Rotation rotation,
-			int chunkX, int chunkZ) {
-		int xOffset = size * 16;
-		int zOffset = size * 16;
-
-		int x = (chunkX << 4);
-		int z = (chunkZ << 4);
-
-		return new BlockPos(x + (xOffset / 2), 0, z + (zOffset / 2));
-	}
-
-	public ChunkPos seperate(StructureSeparationSettings settings, long seed, SharedSeedRandom sharedSeedRand, int x,
-			int z) {
-		int spacing = this.getDistance();
-		int gridX = ((x / spacing) * spacing);
-		int gridZ = ((z / spacing) * spacing);
-
-		int offset = this.getSeparation() + 1;
-		sharedSeedRand.setLargeFeatureSeedWithSalt(seed, gridX, gridZ, this.getSeedModifier());
-		int offsetX = sharedSeedRand.nextInt(offset);
-		int offsetZ = sharedSeedRand.nextInt(offset);
-
-		int gridOffsetX = gridX + offsetX;
-		int gridOffsetZ = gridZ + offsetZ;
-
-		return new ChunkPos(gridOffsetX, gridOffsetZ);
-	}
-
-	@Nullable
-	@Override
-	public BlockPos func_236388_a_(IWorldReader world, StructureManager structureManager, BlockPos startPos,
-			int searchRadius, boolean skipExistingChunks, long seed, StructureSeparationSettings settings) {
-		settings = new StructureSeparationSettings(this.getDistance(), this.getSeparation(), this.getSeedModifier());
-		int i = settings.func_236668_a_();
-		int j = startPos.getX() >> 4;
-		int k = startPos.getZ() >> 4;
-		int l = 0;
-
-		for (SharedSeedRandom sharedseedrandom = new SharedSeedRandom(); l <= searchRadius; ++l) {
-			for (int i1 = -l; i1 <= l; ++i1) {
-				boolean flag = i1 == -l || i1 == l;
-
-				for (int j1 = -l; j1 <= l; ++j1) {
-					boolean flag1 = j1 == -l || j1 == l;
-					if (flag || flag1) {
-						int k1 = j + i * i1;
-						int l1 = k + i * j1;
-						ChunkPos chunkpos = this.seperate(settings, seed, sharedseedrandom, k1, l1);
-						IChunk ichunk = world.getChunk(chunkpos.x, chunkpos.z, ChunkStatus.STRUCTURE_STARTS);
-						StructureStart<?> structurestart = structureManager
-								.func_235013_a_(SectionPos.from(ichunk.getPos(), 0), this, ichunk);
-						if (structurestart != null && structurestart.isValid()) {
-							if (skipExistingChunks && structurestart.isRefCountBelowMax()) {
-								structurestart.incrementRefCount();
-								return structurestart.getPos();
-							}
-
-							if (!skipExistingChunks) {
-								return structurestart.getPos();
-							}
-						}
-
-						if (l == 0) {
-							break;
-						}
-					}
-				}
-
-				if (l == 0) {
-					break;
-				}
-			}
-		}
-
-		return null;
-	}
-
-	public StructureStart<?> func_236389_a_(DynamicRegistries registries, ChunkGenerator chunkGenerator,
-			BiomeProvider biomeProvider, TemplateManager templateManager, long seed, ChunkPos chunkPos, Biome biome,
-			int p_236389_8_, SharedSeedRandom random, StructureSeparationSettings settings, C config) {
-
-		ChunkPos chunkpos = this.seperate(
-				new StructureSeparationSettings(this.getDistance(), this.getSeparation(), this.getSeedModifier()), seed,
-				random, chunkPos.x, chunkPos.z);
-
-		if (chunkPos.x == chunkpos.x && chunkPos.z == chunkpos.z && this.func_230363_a_(chunkGenerator, biomeProvider,
-				seed, random, chunkPos.x, chunkPos.z, biome, chunkpos, config)) {
-
-			StructureStart<C> structurestart = this.func_236387_a_(chunkPos.x, chunkPos.z,
-					MutableBoundingBox.getNewBoundingBox(), p_236389_8_, seed);
-
-			structurestart.func_230364_a_(registries, chunkGenerator, templateManager, chunkPos.x, chunkPos.z, biome,
-					config);
-
-			if (structurestart.isValid()) {
-				return structurestart;
-			}
-		}
-
-		return StructureStart.DUMMY;
-	}
-
-	private StructureStart<C> func_236387_a_(int p_236387_1_, int p_236387_2_, MutableBoundingBox boundingbox,
-			int p_236387_4_, long p_236387_5_) {
-		return this.getStartFactory().create(this, p_236387_1_, p_236387_2_, boundingbox, p_236387_4_, p_236387_5_);
 	}
 }

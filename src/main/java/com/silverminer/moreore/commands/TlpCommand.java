@@ -10,7 +10,6 @@ import javax.annotation.Nullable;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import com.silverminer.moreore.MoreOre;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -165,11 +164,9 @@ public class TlpCommand {
 			double z, Set<SPlayerPositionLookPacket.Flags> relativeList, float yaw, float pitch,
 			@Nullable TlpCommand.Facing facing) {
 		if (entityIn instanceof ServerPlayerEntity) {
-			MoreOre.LOGGER.info(((ServerPlayerEntity)entityIn).getUniqueID());
 			if (source.getEntity() != null && source.getEntity() instanceof ServerPlayerEntity
 					&& entityIn == source.getEntity()) {
 				int level = ((ServerPlayerEntity) entityIn).experienceLevel;
-				MoreOre.LOGGER.info(String.valueOf(level));
 				boolean allowteleport = false;
 				if (!((ServerPlayerEntity) entityIn).isCreative()) {
 					if (level > 3) {

@@ -15,6 +15,9 @@
     "foliage_color": 12286215
   },
   "starts": [
+    "minecraft:mineshaft_mesa",
+    "minecraft:ruined_portal_mountain",
+    "minecraft:pillager_outpost"
   ],
   "spawners": {
     "monster": [
@@ -56,6 +59,12 @@
       }
     ],
     "creature": [
+      {
+        "type": "moreore:village_guardian",
+        "weight": 2,
+        "minCount": 1,
+        "maxCount": 3
+      },
       {
         "type": "minecraft:sheep",
         "weight": 12,
@@ -139,7 +148,8 @@
       "minecraft:disk_sand",
       "minecraft:disk_clay",
       "minecraft:disk_gravel",
-      "moreore:ore_alexandrit"
+      "moreore:ore_alexandrit",
+      "moreore:ore_rainbow"
     ],
     [],
     [

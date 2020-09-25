@@ -101,6 +101,7 @@ public class SilverPortalBlock extends BreakableBlock {
 				server = worldIn.getServer();
 			}
 			World world = server.getWorld(dim);
+			if(world == null) return;
 			BlockPos destinationPos = SpawnPositionHelper.calculate(pos, world);
 			if (world.getWorldInfo().isHardcore()) {
 				List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos, world.func_234923_W_());

@@ -46,7 +46,7 @@ public class DesertTempelStructure extends AbstractStructure<NoFeatureConfig> {
 
 	@Override
 	public int getSeedModifier() {
-		return 9832423;
+		return 309865502;
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class DesertTempelStructure extends AbstractStructure<NoFeatureConfig> {
 		}
 
 		@Override
-		public void func_230364_a_(DynamicRegistries p_230364_1_, ChunkGenerator chunkGenerator,
+		public void func_230364_a_(DynamicRegistries registries, ChunkGenerator chunkGenerator,
 				TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config) {
 			int i = chunkX * 16;
 			int j = chunkZ * 16;

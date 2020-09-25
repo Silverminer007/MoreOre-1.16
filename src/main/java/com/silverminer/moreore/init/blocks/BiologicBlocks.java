@@ -39,10 +39,11 @@ public class BiologicBlocks {
 	public static final RegistryObject<Block> LETUCE = InitBlocks.registerCutout("letuce",
 			() -> new LetuceBlock(Block.Properties.from(Blocks.WHEAT)));
 
-	public static final RegistryObject<Block> SILVER_LOG = BLOCKS.register("silver_logs",
-			() -> new ModLogBlock(Block.Properties.from(Blocks.OAK_LOG)));
 	public static final RegistryObject<Block> STRIPPED_SILVER_LOG = BLOCKS.register("stripped_silver_logs",
 			() -> new ModLogBlock(Block.Properties.from(Blocks.STRIPPED_OAK_LOG)));
+
+	public static final RegistryObject<Block> SILVER_LOG = BLOCKS.register("silver_logs",
+			() -> new ModLogBlock(Block.Properties.from(Blocks.OAK_LOG), () -> STRIPPED_SILVER_LOG.get()));
 
 	public static final RegistryObject<Block> SILVER_LEAVES = InitBlocks.registerCutout("silver_leaves",
 			() -> new LeavesBlock(Block.Properties.from(Blocks.OAK_LEAVES)));
