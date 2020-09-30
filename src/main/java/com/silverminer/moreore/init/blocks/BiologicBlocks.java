@@ -1,13 +1,13 @@
 package com.silverminer.moreore.init.blocks;
 
 import com.silverminer.moreore.MoreOre;
+import com.silverminer.moreore.objects.blocks.BananaBlock;
 import com.silverminer.moreore.objects.blocks.LetuceBlock;
 import com.silverminer.moreore.objects.blocks.ModDoorBlock;
 import com.silverminer.moreore.objects.blocks.ModLogBlock;
 import com.silverminer.moreore.objects.blocks.ModWoodButtonBlock;
 import com.silverminer.moreore.objects.blocks.NutBushBlock;
 import com.silverminer.moreore.objects.blocks.Sapling;
-import com.silverminer.moreore.objects.blocks.SilverTrapdoorBlock;
 import com.silverminer.moreore.world.gen.tree.GoldTree;
 import com.silverminer.moreore.world.gen.tree.IceTree;
 import com.silverminer.moreore.world.gen.tree.SilverTree;
@@ -19,10 +19,9 @@ import net.minecraft.block.FenceGateBlock;
 import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.SlabBlock;
-import net.minecraft.block.SoundType;
 import net.minecraft.block.StairsBlock;
+import net.minecraft.block.TrapDoorBlock;
 import net.minecraft.block.WallBlock;
-import net.minecraft.block.material.Material;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -54,8 +53,8 @@ public class BiologicBlocks {
 	public static final RegistryObject<Block> SILVER_WOOD = BLOCKS.register("silver_wood",
 			() -> new Block(Block.Properties.from(Blocks.OAK_WOOD)));
 
-	public static final RegistryObject<Block> BANANA = InitBlocks.registerCutout("banana", () -> new Block(
-			Block.Properties.create(Material.ROCK).hardnessAndResistance(1.0F, 1.0F).sound(SoundType.METAL)));
+	public static final RegistryObject<Block> BANANA = InitBlocks.registerCutout("banana", () -> new BananaBlock(
+			Block.Properties.from(Blocks.COCOA)));
 
 	public static final RegistryObject<Block> SILVER_DOOR = InitBlocks.registerCutout("silver_door",
 			() -> new ModDoorBlock(Block.Properties.from(Blocks.OAK_DOOR)));
@@ -77,7 +76,7 @@ public class BiologicBlocks {
 			() -> new WallBlock(Block.Properties.from(BiologicBlocks.SILVER_PLANKS.get())));
 
 	public static final RegistryObject<Block> SILVER_TRAPDOOR = BLOCKS.register("silver_trapdoor",
-			() -> new SilverTrapdoorBlock(Block.Properties.from(BiologicBlocks.SILVER_PLANKS.get())));
+			() -> new TrapDoorBlock(Block.Properties.from(Blocks.OAK_TRAPDOOR)));
 
 	public static final RegistryObject<Block> GOLD_SAPLING = InitBlocks.registerCutout("gold_saplings",
 			() -> new Sapling(() -> new GoldTree(), Block.Properties.from(Blocks.OAK_SAPLING)));

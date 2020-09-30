@@ -1,5 +1,20 @@
 {
-    "variants": {
-        "": { "model": "moreore:block/banana" }
-    }
+	"variants": {
+		"facing=north": {
+			"model": "moreore:block/banana",
+			"y": 180
+		},
+		"facing=south": {
+			"model": "moreore:block/banana",
+			"y": 0
+		},
+		"facing=east": {
+			"model": "moreore:block/banana",
+			"y": 270
+		},
+		"facing=west": {
+			"model": "moreore:block/banana",
+			"y": 90
+		}
+	}
 }

@@ -1,6 +1,6 @@
 {
-    "parent": "block/cross",
-    "textures": {
-        "cross": "moreore:block/banana"
-    }
+	"parent": "block/cross",
+	"textures": {
+		"cross": "moreore:block/banana"
+	}
 }
