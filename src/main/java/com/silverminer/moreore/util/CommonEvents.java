@@ -21,7 +21,9 @@ import com.silverminer.moreore.world.biomeprovider.SilverBiomeProvider;
 import com.silverminer.moreore.world.gen.features.OreFeatures;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.ComposterBlock;
+import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.command.CommandSource;
@@ -91,6 +93,15 @@ public class CommonEvents {
 			for (ComposterItems item : MoreOre.composterItems) {
 				ComposterBlock.CHANCES.put(item.getItem().get().asItem(), item.getChance());
 			}
+
+			// Add the Saplings to the allowed Blocks of the Flower Pot
+			((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(BiologicBlocks.GOLD_SAPLING.get().getRegistryName(),
+					() -> BiologicBlocks.POTTET_GOLD_SAPLING.get());
+			((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(BiologicBlocks.SILVER_SAPLING.get().getRegistryName(),
+					() -> BiologicBlocks.POTTET_SILVER_SAPLING.get());
+			((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(BiologicBlocks.ICE_SAPLING.get().getRegistryName(),
+					() -> BiologicBlocks.POTTET_ICE_SAPLING.get());
+
 			// Add the SilverBiomeProvider to be use able in .json files for better Biome
 			// forming
 			Registry.register(Registry.field_239689_aA_, new ResourceLocation(MoreOre.MODID, "silver"),

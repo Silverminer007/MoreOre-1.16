@@ -53,8 +53,8 @@ public class BiologicBlocks {
 	public static final RegistryObject<Block> SILVER_WOOD = BLOCKS.register("silver_wood",
 			() -> new Block(Block.Properties.from(Blocks.OAK_WOOD)));
 
-	public static final RegistryObject<Block> BANANA = InitBlocks.registerCutout("banana", () -> new BananaBlock(
-			Block.Properties.from(Blocks.COCOA)));
+	public static final RegistryObject<Block> BANANA = InitBlocks.registerCutout("banana",
+			() -> new BananaBlock(Block.Properties.from(Blocks.COCOA)));
 
 	public static final RegistryObject<Block> SILVER_DOOR = InitBlocks.registerCutout("silver_door",
 			() -> new ModDoorBlock(Block.Properties.from(Blocks.OAK_DOOR)));
@@ -96,16 +96,15 @@ public class BiologicBlocks {
 	public static final RegistryObject<Block> NUT_BUSH = InitBlocks.registerCutout("nut_bush_block",
 			() -> new NutBushBlock(Block.Properties.from(Blocks.SWEET_BERRY_BUSH)));
 
-	@SuppressWarnings("deprecation")
 	public static final RegistryObject<Block> POTTET_ICE_SAPLING = BLOCKS.register("pottet_ice_saplings",
-			() -> new FlowerPotBlock(BiologicBlocks.ICE_SAPLING.get(), Block.Properties.from(Blocks.FLOWER_POT)));
+			() -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, () -> BiologicBlocks.ICE_SAPLING.get(),
+					Block.Properties.from(Blocks.FLOWER_POT)));
 
-	@SuppressWarnings("deprecation")
 	public static final RegistryObject<Block> POTTET_SILVER_SAPLING = BLOCKS.register("pottet_silver_saplings",
-			() -> new FlowerPotBlock(BiologicBlocks.SILVER_SAPLING.get(), Block.Properties.from(Blocks.FLOWER_POT)));
+			() -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT,
+					() -> BiologicBlocks.SILVER_SAPLING.get(), Block.Properties.from(Blocks.FLOWER_POT)));
 
-	@SuppressWarnings("deprecation")
 	public static final RegistryObject<Block> POTTET_GOLD_SAPLING = BLOCKS.register("pottet_gold_saplings",
-			() -> new FlowerPotBlock(BiologicBlocks.GOLD_SAPLING.get(),
+			() -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, () -> BiologicBlocks.GOLD_SAPLING.get(),
 					Block.Properties.from(Blocks.POTTED_OAK_SAPLING)));
 }

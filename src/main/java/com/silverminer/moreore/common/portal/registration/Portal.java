@@ -6,7 +6,6 @@ import com.silverminer.moreore.common.portal.Utils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -194,160 +193,6 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 	}
 
 	/**
-	 * Gets a possible spawn location for an entity of the specified height.
-	 * 
-	 * @param world        The {@link World} the portal is located in.
-	 * @param entityHeight The height of the entity the spawn point should be
-	 *                     searched for.
-	 * @return A {@link BlockPos} representing a possible spawn location or
-	 *         <code>null</code>.
-	 */
-	public BlockPos getPortDestination(World world, int entityHeight) {
-		if (world == null || entityHeight < 1)
-			return null;
-
-		// Horizontal portal.
-
-		if (axis == Axis.Y) {
-			List<BlockPos> framePositions = getFramePositions();
-
-			BlockPos spawnLocation = null;
-
-			// Check for valid spawn positions on top of the frame blocks.
-
-			for (BlockPos framePos : framePositions) {
-				spawnLocation = framePos.up();
-				if (canEntitySpawnAt(world, spawnLocation, entityHeight))
-					return spawnLocation;
-			}
-
-			// Check for valid spawn positions below the portal blocks starting at the
-			// center.
-
-			BlockPos portal1 = corner1.getInnerCornerPos();
-			BlockPos portal2 = corner4.getInnerCornerPos();
-			Axis[] portalAxis = new Axis[] { Axis.X, Axis.Z };
-			int[] mins = new int[2];
-			int[] maxs = new int[2];
-
-			for (int i = 0; i < portalAxis.length; i++) {
-				if (Utils.getAxisValue(portal1, portalAxis[i]) < Utils.getAxisValue(portal2, portalAxis[i])) {
-					mins[i] = Utils.getAxisValue(portal1, portalAxis[i]);
-					maxs[i] = Utils.getAxisValue(portal2, portalAxis[i]);
-				} else {
-					mins[i] = Utils.getAxisValue(portal2, portalAxis[i]);
-					maxs[i] = Utils.getAxisValue(portal1, portalAxis[i]);
-				}
-			}
-
-			int minX = mins[0];
-			int maxX = maxs[0];
-			int minZ = mins[1];
-			int maxZ = maxs[1];
-			int y = portal1.getY() - entityHeight;
-			int width = Math.abs(maxX - minX) + 1;
-			int height = Math.abs(maxZ - minZ) + 1;
-			int halfWidth = Math.floorDiv(width, 2);
-			int halfHeight = Math.floorDiv(height, 2);
-
-			Direction[] zAxisFacings = new Direction[] { Direction.SOUTH, Direction.NORTH };
-			BlockPos center = new BlockPos(minX + halfWidth, y, minZ + halfHeight);
-			BlockPos currentPos;
-
-			for (int z = 0; z <= halfHeight; z++) {
-				for (Direction zFacing : zAxisFacings) {
-					for (int x = 0; x <= halfWidth; x++) {
-						currentPos = center.east(x).offset(zFacing, z);
-
-						if (currentPos.getX() <= maxX && currentPos.getZ() <= maxZ) {
-							if (canEntitySpawnAt(world, currentPos, entityHeight))
-								return currentPos;
-						}
-
-						currentPos = center.west(x).offset(zFacing, z);
-
-						if (currentPos.getX() >= minX && currentPos.getZ() >= minZ) {
-							if (canEntitySpawnAt(world, currentPos, entityHeight))
-								return currentPos;
-						}
-					}
-				}
-			}
-
-			return null;
-		}
-
-		// Vertical portal.
-
-		BlockPos portal1 = corner1.getInnerCornerPos();
-		BlockPos portal2 = corner4.getInnerCornerPos();
-		int width = 0, height = 0, lowBound = 0, highBound = 0;
-
-		// Get the axis for possible spawn locations and the corresponding
-		// axis values for the 2 corner portal blocks.
-		Axis cornerAxis = Utils.getOrthogonalTo(axis);
-		int portal1AxisValue = Utils.getAxisValue(portal1, cornerAxis);
-		int portal2AxisValue = Utils.getAxisValue(portal2, cornerAxis);
-
-		width = Math.abs(portal1AxisValue - portal2AxisValue) + 1;
-		height = Math.abs(portal1.getY() - portal2.getY()) + 1;
-
-		if (portal1AxisValue < portal2AxisValue) {
-			lowBound = portal1AxisValue;
-			highBound = portal2AxisValue;
-		} else {
-			lowBound = portal2AxisValue;
-			highBound = portal1AxisValue;
-		}
-
-		int halfWidth = Math.floorDiv(width, 2);
-		int middle = lowBound + halfWidth;
-		int startHeight = (portal1.getY() < portal2.getY()) ? portal1.getY() : portal2.getY();
-
-		// e.g. Axis.Z and AxisDirection.POSITIVE returns Direction.SOUTH.
-		Direction searchDirPositive = Direction.getFacingFromAxis(AxisDirection.POSITIVE, cornerAxis);
-		Direction searchDirNegative = Direction.getFacingFromAxis(AxisDirection.NEGATIVE, cornerAxis);
-
-		BlockPos feetPos = null;
-		BlockPos searchStartPos1 = (axis == Axis.Z) ? new BlockPos(middle, startHeight, portal1.south(1).getZ())
-				: new BlockPos(portal1.east(1).getX(), startHeight, middle);
-
-		BlockPos searchStartPos2 = (axis == Axis.Z) ? new BlockPos(middle, startHeight, portal1.north(1).getZ())
-				: new BlockPos(portal1.west(1).getX(), startHeight, middle);
-
-		BlockPos[] searchStartPositions = new BlockPos[] { searchStartPos1, searchStartPos2 };
-
-		BlockPos currentFeetPos;
-
-		// Find the lowest position where the entity can spawn at either side.
-		// Search order is south before north and east before west.
-
-		for (int y = 0; y <= height - entityHeight; y++) {
-			for (BlockPos startPos : searchStartPositions) {
-				currentFeetPos = startPos.up(y);
-
-				for (int x = 0; x <= halfWidth; x++) {
-					feetPos = currentFeetPos.offset(searchDirPositive, x);
-
-					if (Utils.getAxisValue(feetPos, cornerAxis) <= highBound) {
-						if (canEntitySpawnAt(world, feetPos, entityHeight))
-							return feetPos;
-					}
-
-					feetPos = currentFeetPos.offset(searchDirNegative, x);
-
-					if (Utils.getAxisValue(feetPos, cornerAxis) >= lowBound) {
-						if (canEntitySpawnAt(world, feetPos, entityHeight))
-							return feetPos;
-					}
-				}
-			}
-		}
-
-		return null;
-	}
-
-	/**
 	 * Determines if the portals address blocks have changed.
 	 * 
 	 * @param world The world.
@@ -412,7 +257,7 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 
 		// Handle legacy dimension id tags. This allows old worlds to load properly.
 		// :LegacyDimensionId
-		if (nbt.contains("dimension", 8)) // Type 3 means integer.
+		if (nbt.contains("dimension", 8)) // Type 8 means string.
 		{
 			ResourceLocation dimensionRegistryKey = ResourceLocation.tryCreate(nbt.getString("dimension"));
 			dimension = RegistryKey.func_240903_a_(Registry.field_239699_ae_, dimensionRegistryKey);
@@ -498,28 +343,6 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 				return false;
 		} else if (!corner4.equals(other.corner4))
 			return false;
-
-		return true;
-	}
-
-	/**
-	 * Check if an entity of the specified height can spawn at the specified
-	 * position.
-	 * 
-	 * @param world        The {@link World} to check in.
-	 * @param pos          The position of the lowest point (feet) of the entity.
-	 * @param entityHeight The entities height.
-	 * @return <code>true</code> if the entity can spawn at the location, otherwise
-	 *         <code>false</code>.
-	 */
-	private boolean canEntitySpawnAt(World world, BlockPos pos, int entityHeight) {
-		if (world == null || pos == null || entityHeight < 1)
-			return false;
-
-		for (int i = 0; i < entityHeight; i++) {
-			if (!world.isAirBlock(pos.up(i)))
-				return false;
-		}
 
 		return true;
 	}
