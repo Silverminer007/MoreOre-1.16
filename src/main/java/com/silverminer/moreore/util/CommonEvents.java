@@ -11,8 +11,8 @@ import com.silverminer.moreore.client.render.SquirrelRenderer;
 import com.silverminer.moreore.client.render.VillageGuardianRenderer;
 import com.silverminer.moreore.commands.ModCommands;
 import com.silverminer.moreore.common.portal.PortalWorldSaveData;
-import com.silverminer.moreore.init.StructureFeatureInit;
 import com.silverminer.moreore.init.ModEntityTypesInit;
+import com.silverminer.moreore.init.ModStructureFeatures;
 import com.silverminer.moreore.init.blocks.BiologicBlocks;
 import com.silverminer.moreore.objects.entitys.SquirrelEntity;
 import com.silverminer.moreore.objects.entitys.VillageGuardian;
@@ -33,7 +33,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.Biome.RainType;
-import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -87,6 +86,7 @@ public class CommonEvents {
 				GlobalEntityTypeAttributes.put(ModEntityTypesInit.VILLAGE_GUARDIAN.get(),
 						VillageGuardian.setCustomAttributes());
 				GlobalEntityTypeAttributes.put(ModEntityTypesInit.SQUIRREL.get(), SquirrelEntity.setCustomAttributes());
+				StructureUtils.setupWorldGen();
 			});
 
 			// Make every Item in this list Compostable in an composter block
@@ -148,16 +148,13 @@ public class CommonEvents {
 			if (event.getCategory() != Category.NETHER && event.getCategory() != Category.THEEND
 					&& event.getCategory() != Category.OCEAN) {
 
-				event.getGeneration().func_242516_a(
-						StructureFeatureInit.TEMPEL.get().func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
+				event.getGeneration().func_242516_a(ModStructureFeatures.SCHOOL);
 
-				event.getGeneration().func_242516_a(
-						StructureFeatureInit.SCHOOL.get().func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
+				event.getGeneration().func_242516_a(ModStructureFeatures.TEMPEL);
 
 				// Generate the Desert Tempel Structure in every Biome, where it doesn't rain
 				if (event.getClimate().field_242460_b == RainType.NONE) {
-					event.getGeneration().func_242516_a(
-							StructureFeatureInit.DESERT_TEMPEL.get().func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
+					event.getGeneration().func_242516_a(ModStructureFeatures.DESERT_TEMPEL);
 				}
 			}
 		}

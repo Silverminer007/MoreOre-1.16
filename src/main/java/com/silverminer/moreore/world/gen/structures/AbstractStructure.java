@@ -16,6 +16,7 @@ import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.gen.settings.StructureSeparationSettings;
 
 public abstract class AbstractStructure<C extends IFeatureConfig> extends Structure<C> {
 
@@ -93,5 +94,29 @@ public abstract class AbstractStructure<C extends IFeatureConfig> extends Struct
 		}
 
 		return false;
+	}
+
+	@Override
+	public ChunkPos func_236392_a_(StructureSeparationSettings settings, long seed, SharedSeedRandom sharedSeedRand,
+			int x, int z) {
+		int spacing = this.getDistance();
+		int separation = this.getSeparation();
+
+		int k = Math.floorDiv(x, spacing);
+		int l = Math.floorDiv(z, spacing);
+
+		sharedSeedRand.setLargeFeatureSeedWithSalt(seed, k, l, getSeedModifier());
+
+		int i1;
+		int j1;
+		if (this.func_230365_b_()) {
+			i1 = sharedSeedRand.nextInt(spacing - separation);
+			j1 = sharedSeedRand.nextInt(spacing - separation);
+		} else {
+			i1 = (sharedSeedRand.nextInt(spacing - separation) + sharedSeedRand.nextInt(spacing - separation)) / 2;
+			j1 = (sharedSeedRand.nextInt(spacing - separation) + sharedSeedRand.nextInt(spacing - separation)) / 2;
+		}
+
+		return new ChunkPos(k * spacing + i1, l * spacing + j1);
 	}
 }

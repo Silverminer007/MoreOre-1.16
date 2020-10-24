@@ -21,7 +21,7 @@ version="${version}" #mandatory
  # A display name for the mod
 displayName="MoreOre" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
-#updateJSONURL="http://myurl.me/" #optional
+updateJSONURL="https://github.com/Silverminer007/MoreOre-1.16/raw/master/updateJSON.json" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
 displayURL="https://github.com/Silverminer007/MoreOre-1.16/" #optional
 # A file name (in the root of the mod JAR) containing a logo for display

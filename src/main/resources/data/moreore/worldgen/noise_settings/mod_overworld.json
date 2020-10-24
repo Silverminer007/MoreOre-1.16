@@ -10,21 +10,6 @@
       "count": 128
     },
     "structures": {
-      "moreore:tempel": {
-        "spacing": 80,
-        "separation": 20,
-        "salt": 1664499850
-      },
-      "moreore:desert_tempel": {
-        "spacing": 80,
-        "separation": 20,
-        "salt": 309865502
-      },
-      "moreore:school": {
-        "spacing": 80,
-        "separation": 20,
-        "salt": 112262959
-      },
       "minecraft:buried_treasure": {
         "spacing": 1,
         "separation": 0,
