@@ -1,7 +1,7 @@
 package com.silverminer.moreore.init;
 
 import com.silverminer.moreore.MoreOre;
-import com.silverminer.moreore.world.gen.tree.treedecorator.BananaTreeDecorator;
+import com.silverminer.moreore.common.world.gen.tree.treedecorator.BananaTreeDecorator;
 
 import net.minecraft.world.gen.treedecorator.TreeDecoratorType;
 import net.minecraftforge.fml.RegistryObject;

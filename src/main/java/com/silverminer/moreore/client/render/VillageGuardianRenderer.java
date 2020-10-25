@@ -2,7 +2,7 @@ package com.silverminer.moreore.client.render;
 
 import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.client.model.VillageGuardianModel;
-import com.silverminer.moreore.objects.entitys.VillageGuardian;
+import com.silverminer.moreore.common.objects.entitys.VillageGuardian;
 
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;

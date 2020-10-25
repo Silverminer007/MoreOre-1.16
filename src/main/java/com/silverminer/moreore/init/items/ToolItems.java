@@ -1,10 +1,10 @@
 package com.silverminer.moreore.init.items;
 
-import com.silverminer.moreore.objects.items.Golden_Trident;
-import com.silverminer.moreore.objects.items.ModHoeItem;
 import com.silverminer.moreore.util.enums.ModItemTier;
 import com.silverminer.moreore.util.items.ModItemGroups;
 import com.silverminer.moreore.MoreOre;
+import com.silverminer.moreore.common.objects.items.Golden_Trident;
+import com.silverminer.moreore.common.objects.items.ModHoeItem;
 
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.Item;

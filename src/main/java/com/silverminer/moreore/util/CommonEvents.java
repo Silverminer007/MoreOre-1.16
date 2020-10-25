@@ -9,16 +9,16 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.client.render.SquirrelRenderer;
 import com.silverminer.moreore.client.render.VillageGuardianRenderer;
-import com.silverminer.moreore.commands.ModCommands;
+import com.silverminer.moreore.common.commands.ModCommands;
+import com.silverminer.moreore.common.objects.entitys.SquirrelEntity;
+import com.silverminer.moreore.common.objects.entitys.VillageGuardian;
 import com.silverminer.moreore.common.portal.PortalWorldSaveData;
+import com.silverminer.moreore.common.world.biomeprovider.SilverBiomeProvider;
+import com.silverminer.moreore.common.world.gen.features.OreFeatures;
 import com.silverminer.moreore.init.ModEntityTypesInit;
 import com.silverminer.moreore.init.ModStructureFeatures;
 import com.silverminer.moreore.init.blocks.BiologicBlocks;
-import com.silverminer.moreore.objects.entitys.SquirrelEntity;
-import com.silverminer.moreore.objects.entitys.VillageGuardian;
 import com.silverminer.moreore.util.items.ComposterItems;
-import com.silverminer.moreore.world.biomeprovider.SilverBiomeProvider;
-import com.silverminer.moreore.world.gen.features.OreFeatures;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -147,8 +147,6 @@ public class CommonEvents {
 			}
 			if (event.getCategory() != Category.NETHER && event.getCategory() != Category.THEEND
 					&& event.getCategory() != Category.OCEAN) {
-
-				event.getGeneration().func_242516_a(ModStructureFeatures.SCHOOL);
 
 				event.getGeneration().func_242516_a(ModStructureFeatures.TEMPEL);
 

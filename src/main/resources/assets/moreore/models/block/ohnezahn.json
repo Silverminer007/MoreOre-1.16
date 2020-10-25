@@ -1,7 +1,0 @@
-{
-	"parent": "minecraft:block/cube_column",
-	"textures": {
-		"end": "moreore:block/ohnezahn_top",
-		"side": "moreore:block/ohnezahn_side"
-	}
-}

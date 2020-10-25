@@ -1,13 +1,13 @@
 package com.silverminer.moreore.init.items;
 
-import com.silverminer.moreore.objects.items.FuelItem;
-import com.silverminer.moreore.objects.items.ModSpawnEggItem;
 import com.silverminer.moreore.util.items.ComposterItems;
 import com.silverminer.moreore.util.items.ModItemGroups;
 
 import java.util.function.Supplier;
 
 import com.silverminer.moreore.MoreOre;
+import com.silverminer.moreore.common.objects.items.FuelItem;
+import com.silverminer.moreore.common.objects.items.ModSpawnEggItem;
 import com.silverminer.moreore.init.ModEntityTypesInit;
 
 import net.minecraft.item.Item;

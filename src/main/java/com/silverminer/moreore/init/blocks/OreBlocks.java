@@ -1,7 +1,7 @@
 package com.silverminer.moreore.init.blocks;
 
 import com.silverminer.moreore.MoreOre;
-import com.silverminer.moreore.objects.blocks.GemstoneOreBlock;
+import com.silverminer.moreore.common.objects.blocks.GemstoneOreBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;

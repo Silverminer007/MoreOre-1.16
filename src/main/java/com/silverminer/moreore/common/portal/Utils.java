@@ -148,9 +148,7 @@ public final class Utils {
 						destination.getZ() + 0.5d, getYaw(facing), 0.0f);
 			}
 
-			// Play teleportation sound.
-			if (Config.teleportationSoundEnabled.get())
-				player.connection.sendPacket(new SPlaySoundEventPacket(1032, BlockPos.ZERO, 0, false));
+			player.connection.sendPacket(new SPlaySoundEventPacket(1032, BlockPos.ZERO, 0, false));
 		} else {
 			if (interdimensional) {
 				teleportNonPlayerEntityToDimension(entity, dimension, destination, getYaw(facing));
@@ -188,8 +186,10 @@ public final class Utils {
 		IWorldInfo worldInfo = player.world.getWorldInfo();
 //		net.minecraftforge.fml.network.NetworkHooks.sendDimensionDataPacket(player.connection.netManager, player);
 //The Method on top is Removed in Minecraft 1.16
-		//player.connection.sendPacket(new SRespawnPacket(destinationDimension, IWorldInfo.byHashing(worldInfo.getSeed()),//Diese Methode muss wieder aktiviert werden, ich weiﬂ nur nicht wie
-		//		worldInfo.getGenerator(), player.interactionManager.getGameType()));
+		// player.connection.sendPacket(new SRespawnPacket(destinationDimension,
+		// IWorldInfo.byHashing(worldInfo.getSeed()),//Diese Methode muss wieder
+		// aktiviert werden, ich weiﬂ nur nicht wie
+		// worldInfo.getGenerator(), player.interactionManager.getGameType()));
 		player.connection
 				.sendPacket(new SServerDifficultyPacket(worldInfo.getDifficulty(), worldInfo.isDifficultyLocked()));
 		PlayerList playerlist = server.getPlayerList();
@@ -233,8 +233,8 @@ public final class Utils {
 	 * @param destination The position to port to.
 	 * @param yaw         The rotation yaw the entity should have after porting.
 	 */
-	private static void teleportNonPlayerEntityToDimension(Entity entity, RegistryKey<World> dimension, BlockPos destination,
-			float yaw) {
+	private static void teleportNonPlayerEntityToDimension(Entity entity, RegistryKey<World> dimension,
+			BlockPos destination, float yaw) {
 		if (!entity.world.isRemote && entity.isAlive() && entity.isNonBoss()) {
 			MinecraftServer server = entity.getServer();
 			ServerWorld startWorld = server.getWorld(entity.world.func_234923_W_());

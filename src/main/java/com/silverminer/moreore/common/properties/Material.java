@@ -2,7 +2,7 @@ package com.silverminer.moreore.common.properties;
 
 import java.util.ArrayList;
 
-import com.silverminer.moreore.objects.blocks.BeamerBlock;
+import com.silverminer.moreore.common.objects.blocks.BeamerBlock;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.IStringSerializable;

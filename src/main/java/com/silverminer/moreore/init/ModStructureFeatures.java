@@ -1,9 +1,8 @@
 package com.silverminer.moreore.init;
 
 import com.silverminer.moreore.MoreOre;
-import com.silverminer.moreore.world.gen.structures.DesertTempelStructure;
-import com.silverminer.moreore.world.gen.structures.SchoolStructure;
-import com.silverminer.moreore.world.gen.structures.TempelStructure;
+import com.silverminer.moreore.common.world.gen.structures.DesertTempelStructure;
+import com.silverminer.moreore.common.world.gen.structures.TempelStructure;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.WorldGenRegistries;
@@ -13,9 +12,6 @@ import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.structure.Structure;
 
 public class ModStructureFeatures {
-	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> SCHOOL = register(
-			SchoolStructure.SHORT_NAME,
-			StructureFeatureInit.SCHOOL.get().func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
 
 	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> TEMPEL = register(
 			TempelStructure.SHORT_NAME,

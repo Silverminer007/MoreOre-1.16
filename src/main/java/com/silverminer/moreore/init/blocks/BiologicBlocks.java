@@ -1,16 +1,16 @@
 package com.silverminer.moreore.init.blocks;
 
 import com.silverminer.moreore.MoreOre;
-import com.silverminer.moreore.objects.blocks.BananaBlock;
-import com.silverminer.moreore.objects.blocks.LetuceBlock;
-import com.silverminer.moreore.objects.blocks.ModDoorBlock;
-import com.silverminer.moreore.objects.blocks.ModLogBlock;
-import com.silverminer.moreore.objects.blocks.ModWoodButtonBlock;
-import com.silverminer.moreore.objects.blocks.NutBushBlock;
-import com.silverminer.moreore.objects.blocks.Sapling;
-import com.silverminer.moreore.world.gen.tree.GoldTree;
-import com.silverminer.moreore.world.gen.tree.IceTree;
-import com.silverminer.moreore.world.gen.tree.SilverTree;
+import com.silverminer.moreore.common.objects.blocks.BananaBlock;
+import com.silverminer.moreore.common.objects.blocks.LetuceBlock;
+import com.silverminer.moreore.common.objects.blocks.ModDoorBlock;
+import com.silverminer.moreore.common.objects.blocks.ModLogBlock;
+import com.silverminer.moreore.common.objects.blocks.ModWoodButtonBlock;
+import com.silverminer.moreore.common.objects.blocks.NutBushBlock;
+import com.silverminer.moreore.common.objects.blocks.Sapling;
+import com.silverminer.moreore.common.world.gen.tree.GoldTree;
+import com.silverminer.moreore.common.world.gen.tree.IceTree;
+import com.silverminer.moreore.common.world.gen.tree.SilverTree;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;

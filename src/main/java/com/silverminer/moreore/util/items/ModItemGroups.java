@@ -2,7 +2,6 @@ package com.silverminer.moreore.util.items;
 
 import java.util.function.Supplier;
 
-import com.silverminer.moreore.init.items.JonaItems;
 import com.silverminer.moreore.init.items.OreItems;
 import com.silverminer.moreore.init.items.ToolItems;
 import com.silverminer.moreore.init.items.FootItems;
@@ -19,8 +18,6 @@ public class ModItemGroups extends ItemGroup {
 			() -> new ItemStack(OreItems.SILVER_ORE.get()));
 
 	public static final ItemGroup BIOLOGIC = new ModItemGroups("biologic", () -> new ItemStack(FootItems.BANANA.get()));
-
-	public static final ItemGroup JONA = new ModItemGroups("jona", () -> new ItemStack(JonaItems.OHNEZAHN.get()));
 
 	public ModItemGroups(final String name, final Supplier<ItemStack> iconSupplier) {
 		super(name);

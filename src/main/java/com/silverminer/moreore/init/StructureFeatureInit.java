@@ -4,10 +4,9 @@ import java.util.ArrayList;
 
 import com.google.common.collect.ImmutableList;
 import com.silverminer.moreore.MoreOre;
-import com.silverminer.moreore.world.gen.structures.AbstractStructure;
-import com.silverminer.moreore.world.gen.structures.DesertTempelStructure;
-import com.silverminer.moreore.world.gen.structures.SchoolStructure;
-import com.silverminer.moreore.world.gen.structures.TempelStructure;
+import com.silverminer.moreore.common.world.gen.structures.AbstractStructure;
+import com.silverminer.moreore.common.world.gen.structures.DesertTempelStructure;
+import com.silverminer.moreore.common.world.gen.structures.TempelStructure;
 
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
@@ -22,9 +21,6 @@ public class StructureFeatureInit {
 
 	public static final RegistryObject<TempelStructure> TEMPEL = register(TempelStructure.SHORT_NAME,
 			new TempelStructure(NoFeatureConfig.field_236558_a_));
-
-	public static final RegistryObject<SchoolStructure> SCHOOL = register(SchoolStructure.SHORT_NAME,
-			new SchoolStructure(NoFeatureConfig.field_236558_a_));
 
 	public static final RegistryObject<DesertTempelStructure> DESERT_TEMPEL = register(DesertTempelStructure.SHORT_NAME,
 			new DesertTempelStructure(NoFeatureConfig.field_236558_a_));

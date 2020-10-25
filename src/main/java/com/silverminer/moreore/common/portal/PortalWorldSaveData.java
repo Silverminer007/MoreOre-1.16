@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.silverminer.moreore.MoreOre;
-import com.silverminer.moreore.common.portal.registration.PortalRegistry;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.server.ServerWorld;

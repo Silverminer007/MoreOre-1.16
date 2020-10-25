@@ -1,15 +1,14 @@
 package com.silverminer.moreore.init.blocks;
 
-import com.silverminer.moreore.objects.blocks.BeamerBlock;
-import com.silverminer.moreore.objects.blocks.BurnedOutLavaSpongeBlock;
-import com.silverminer.moreore.objects.blocks.LavaSpongeBlock;
-import com.silverminer.moreore.objects.blocks.PatrolPointBlock;
-import com.silverminer.moreore.objects.blocks.SilverPortalBlock;
-import com.silverminer.moreore.objects.blocks.SilverPortalFrameBlock;
-
 import java.util.function.Supplier;
 
 import com.silverminer.moreore.MoreOre;
+import com.silverminer.moreore.common.objects.blocks.BeamerBlock;
+import com.silverminer.moreore.common.objects.blocks.BurnedOutLavaSpongeBlock;
+import com.silverminer.moreore.common.objects.blocks.LavaSpongeBlock;
+import com.silverminer.moreore.common.objects.blocks.PatrolPointBlock;
+import com.silverminer.moreore.common.objects.blocks.SilverPortalBlock;
+import com.silverminer.moreore.common.objects.blocks.SilverPortalFrameBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;

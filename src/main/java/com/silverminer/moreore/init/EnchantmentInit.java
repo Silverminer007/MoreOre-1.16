@@ -1,7 +1,7 @@
 package com.silverminer.moreore.init;
 
 import com.silverminer.moreore.MoreOre;
-import com.silverminer.moreore.enchantments.GetHomeEnchantment;
+import com.silverminer.moreore.common.enchantments.GetHomeEnchantment;
 import com.silverminer.moreore.init.items.ToolItems;
 
 import net.minecraft.enchantment.Enchantment;

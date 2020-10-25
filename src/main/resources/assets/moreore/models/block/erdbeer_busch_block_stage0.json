@@ -1,6 +1,0 @@
-{
-    "parent": "block/cross",
-    "textures": {
-        "cross": "moreore:block/erdbeer_busch_block_stage0"
-    }
-}

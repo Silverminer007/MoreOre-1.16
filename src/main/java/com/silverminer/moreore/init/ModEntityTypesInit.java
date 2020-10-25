@@ -1,8 +1,9 @@
 package com.silverminer.moreore.init;
 
 import com.silverminer.moreore.MoreOre;
-import com.silverminer.moreore.objects.entitys.SquirrelEntity;
-import com.silverminer.moreore.objects.entitys.VillageGuardian;
+import com.silverminer.moreore.common.objects.entitys.SquirrelEntity;
+import com.silverminer.moreore.common.objects.entitys.VillageGuardian;
+
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;

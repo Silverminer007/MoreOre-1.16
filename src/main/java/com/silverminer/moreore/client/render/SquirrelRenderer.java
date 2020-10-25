@@ -2,7 +2,7 @@ package com.silverminer.moreore.client.render;
 
 import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.client.model.SquirrelModel;
-import com.silverminer.moreore.objects.entitys.SquirrelEntity;
+import com.silverminer.moreore.common.objects.entitys.SquirrelEntity;
 
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
