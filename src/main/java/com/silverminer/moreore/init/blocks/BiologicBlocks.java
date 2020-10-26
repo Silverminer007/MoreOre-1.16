@@ -6,10 +6,11 @@ import com.silverminer.moreore.common.objects.blocks.LetuceBlock;
 import com.silverminer.moreore.common.objects.blocks.ModDoorBlock;
 import com.silverminer.moreore.common.objects.blocks.ModLogBlock;
 import com.silverminer.moreore.common.objects.blocks.ModWoodButtonBlock;
-import com.silverminer.moreore.common.objects.blocks.NutBushBlock;
+import com.silverminer.moreore.common.objects.blocks.NutLeavesBlock;
 import com.silverminer.moreore.common.objects.blocks.Sapling;
 import com.silverminer.moreore.common.world.gen.tree.GoldTree;
 import com.silverminer.moreore.common.world.gen.tree.IceTree;
+import com.silverminer.moreore.common.world.gen.tree.NutBush;
 import com.silverminer.moreore.common.world.gen.tree.SilverTree;
 
 import net.minecraft.block.Block;
@@ -93,9 +94,6 @@ public class BiologicBlocks {
 	public static final RegistryObject<Block> SILVER_WOOD_BUTTON = BLOCKS.register("silver_wood_button",
 			() -> new ModWoodButtonBlock(Block.Properties.from(Blocks.OAK_BUTTON)));
 
-	public static final RegistryObject<Block> NUT_BUSH = InitBlocks.registerCutout("nut_bush_block",
-			() -> new NutBushBlock(Block.Properties.from(Blocks.SWEET_BERRY_BUSH)));
-
 	public static final RegistryObject<Block> POTTET_ICE_SAPLING = BLOCKS.register("pottet_ice_saplings",
 			() -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, () -> BiologicBlocks.ICE_SAPLING.get(),
 					Block.Properties.from(Blocks.FLOWER_POT)));
@@ -107,4 +105,17 @@ public class BiologicBlocks {
 	public static final RegistryObject<Block> POTTET_GOLD_SAPLING = BLOCKS.register("pottet_gold_saplings",
 			() -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, () -> BiologicBlocks.GOLD_SAPLING.get(),
 					Block.Properties.from(Blocks.POTTED_OAK_SAPLING)));
+
+	public static final RegistryObject<Block> POTTET_NUT_BUSH_SAPLING = BLOCKS.register("pottet_nut_bush_sapling",
+			() -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, () -> BiologicBlocks.NUT_BUSH_SAPLING.get(),
+					Block.Properties.from(Blocks.POTTED_OAK_SAPLING)));
+
+	public static final RegistryObject<Block> NUT_BUSH_SAPLING = InitBlocks.registerCutout("nut_bush_sapling",
+			() -> new Sapling(() -> new NutBush(), Block.Properties.from(Blocks.OAK_SAPLING)));
+
+	public static final RegistryObject<Block> NUT_BUSH_LOG = BLOCKS.register("nut_bush_log",
+			() -> new ModLogBlock(Block.Properties.from(Blocks.OAK_LOG).notSolid()));
+
+	public static final RegistryObject<Block> NUT_BUSH_LEAVES = InitBlocks.registerCutout("nut_bush_leaves",
+			() -> new NutLeavesBlock(Block.Properties.from(Blocks.OAK_LEAVES)));
 }

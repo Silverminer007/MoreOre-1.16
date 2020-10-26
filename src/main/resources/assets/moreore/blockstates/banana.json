@@ -1,19 +1,51 @@
 {
 	"variants": {
-		"facing=north": {
-			"model": "moreore:block/banana",
+		"facing=north,age=2": {
+			"model": "moreore:block/banana_stage2",
 			"y": 180
 		},
-		"facing=south": {
-			"model": "moreore:block/banana",
+		"facing=south,age=2": {
+			"model": "moreore:block/banana_stage2",
 			"y": 0
 		},
-		"facing=east": {
-			"model": "moreore:block/banana",
+		"facing=east,age=2": {
+			"model": "moreore:block/banana_stage2",
 			"y": 270
 		},
-		"facing=west": {
-			"model": "moreore:block/banana",
+		"facing=west,age=2": {
+			"model": "moreore:block/banana_stage2",
+			"y": 90
+		},
+		"facing=north,age=1": {
+			"model": "moreore:block/banana_stage1",
+			"y": 180
+		},
+		"facing=south,age=1": {
+			"model": "moreore:block/banana_stage1",
+			"y": 0
+		},
+		"facing=east,age=1": {
+			"model": "moreore:block/banana_stage1",
+			"y": 270
+		},
+		"facing=west,age=1": {
+			"model": "moreore:block/banana_stage1",
+			"y": 90
+		},
+		"facing=north,age=0": {
+			"model": "moreore:block/banana_stage0",
+			"y": 180
+		},
+		"facing=south,age=0": {
+			"model": "moreore:block/banana_stage0",
+			"y": 0
+		},
+		"facing=east,age=0": {
+			"model": "moreore:block/banana_stage0",
+			"y": 270
+		},
+		"facing=west,age=0": {
+			"model": "moreore:block/banana_stage0",
 			"y": 90
 		}
 	}

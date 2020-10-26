@@ -1,0 +1,6 @@
+{
+    "variants": {
+        "age=0": { "model": "moreore:block/nut_bush_leaves_stage0" },
+        "age=1": { "model": "moreore:block/nut_bush_leaves_stage1" }
+    }
+}

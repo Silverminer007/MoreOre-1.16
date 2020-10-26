@@ -1,9 +1,10 @@
 {
 	"homepage": "https://github.com/Silverminer007/MoreOre-1.16",
 	"promos": {
-		"1.16.3-latest": "1.16.3-1.1.0-Beta11"
+		"1.16.3-latest": "1.16.3-1.1.0-Beta12"
 	},
 	"1.16.3": {
-		"1.16.3-1.1.0-Beta11": "Implemented VersionCheck"
+		"1.16.3-1.1.0-Beta11": "Implemented VersionCheck",
+		"1.16.3-1.1.0-Beta12": "Updated Portal Saved Data, moved jona's things in external mod, updated Banana, removed nut_bush_block, added Nut\"Tree/Bush\" with Leaves, Nuts, Log and a Sapling, Squirrels are now bred with nuts, the rainbow axe has now a texture"
 	}
 }

@@ -1,9 +1,9 @@
 package com.silverminer.moreore.common.objects.entitys;
 
-import com.silverminer.moreore.common.objects.blocks.NutBushBlock;
+import com.silverminer.moreore.common.objects.blocks.NutLeavesBlock;
 import com.silverminer.moreore.init.ModEntityTypesInit;
 import com.silverminer.moreore.init.blocks.BiologicBlocks;
-import com.silverminer.moreore.init.items.FootItems;
+import com.silverminer.moreore.init.items.TreeItems;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -13,12 +13,18 @@ import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.BreedGoal;
+import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.MoveToBlockGoal;
 import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.CatEntity;
+import net.minecraft.entity.passive.FoxEntity;
+import net.minecraft.entity.passive.OcelotEntity;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
@@ -50,10 +56,14 @@ public class SquirrelEntity extends AnimalEntity {
 	@Override
 	public void registerGoals() {
 		this.goalSelector.addGoal(0, new SwimGoal(this));
-//		this.goalSelector.addGoal(1, new FollowParentGoal(this, 0.9D));
+		this.goalSelector.addGoal(1, new FollowParentGoal(this, 0.9D));
 		this.goalSelector.addGoal(2, new BreedGoal(this, 0.9D));
-		this.goalSelector.addGoal(3, new TemptGoal(this, 0.9D, Ingredient.fromItems(FootItems.LETUCE.get()), false));
+		this.goalSelector.addGoal(3, new TemptGoal(this, 0.9D, Ingredient.fromItems(TreeItems.NUTS.get()), false));
 		this.goalSelector.addGoal(4, new PanicGoal(this, 0.9D));
+		this.goalSelector.addGoal(4, new AvoidEntityGoal<WolfEntity>(this, WolfEntity.class, 10, 0.5D, 1.0D));
+		this.goalSelector.addGoal(4, new AvoidEntityGoal<CatEntity>(this, CatEntity.class, 10, 0.5D, 1.0D));
+		this.goalSelector.addGoal(4, new AvoidEntityGoal<OcelotEntity>(this, OcelotEntity.class, 10, 0.5D, 1.0D));
+		this.goalSelector.addGoal(4, new AvoidEntityGoal<FoxEntity>(this, FoxEntity.class, 10, 0.5D, 1.0D));
 		this.goalSelector.addGoal(5, new EatNutGoal(0.9D, 25, 256));
 	}
 
@@ -62,7 +72,7 @@ public class SquirrelEntity extends AnimalEntity {
 	 * (wheat, carrots or seeds depending on the animal type)
 	 */
 	public boolean isBreedingItem(ItemStack stack) {
-		return stack.getItem() == FootItems.LETUCE.get();
+		return stack.getItem() == TreeItems.NUTS.get();
 	}
 
 	public boolean processInteract(PlayerEntity player, Hand hand) {
@@ -107,9 +117,9 @@ public class SquirrelEntity extends AnimalEntity {
 	}
 
 	public static AttributeModifierMap setCustomAttributes() {
-		return AnimalEntity.func_233666_p_().func_233815_a_(Attributes.field_233818_a_, 5.0D)
-				.func_233815_a_(Attributes.field_233821_d_, 0.3D).func_233815_a_(Attributes.field_233820_c_, 1.0D)
-				.func_233815_a_(Attributes.field_233823_f_, 7.0D).func_233813_a_();
+		return AnimalEntity.func_233666_p_().func_233815_a_(Attributes.field_233818_a_, 6.0D)
+				.func_233815_a_(Attributes.field_233821_d_, 0.5D).func_233815_a_(Attributes.field_233820_c_, 1.0D)
+				.func_233815_a_(Attributes.field_233823_f_, 2.0D).func_233813_a_();
 	}
 
 	public class EatNutGoal extends MoveToBlockGoal {
@@ -120,11 +130,11 @@ public class SquirrelEntity extends AnimalEntity {
 		}
 
 		public double getTargetDistanceSq() {
-			return 2.0D;
+			return 0.0D;
 		}
 
 		public boolean shouldMove() {
-			return this.timeoutCounter % 100 == 0;
+			return this.timeoutCounter % 10 == 0;
 		}
 
 		/**
@@ -132,7 +142,8 @@ public class SquirrelEntity extends AnimalEntity {
 		 */
 		protected boolean shouldMoveTo(IWorldReader worldIn, BlockPos pos) {
 			BlockState blockstate = worldIn.getBlockState(pos);
-			return blockstate.getBlock() == BiologicBlocks.NUT_BUSH.get() && blockstate.get(NutBushBlock.AGE) >= 2;
+			return blockstate.getBlock() == BiologicBlocks.NUT_BUSH_LOG.get()
+					|| blockstate.getBlock() == BiologicBlocks.NUT_BUSH_LEAVES.get();
 		}
 
 		/**
@@ -156,25 +167,23 @@ public class SquirrelEntity extends AnimalEntity {
 			if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(SquirrelEntity.this.world,
 					SquirrelEntity.this)) {
 				BlockState blockstate = SquirrelEntity.this.world.getBlockState(this.destinationBlock);
-				if (blockstate.getBlock() == BiologicBlocks.NUT_BUSH.get()) {
-					int i = blockstate.get(NutBushBlock.AGE);
-					blockstate.with(NutBushBlock.AGE, Integer.valueOf(1));
-					int j = 1 + SquirrelEntity.this.world.rand.nextInt(2) + (i == 3 ? 1 : 0);
+				if (blockstate.getBlock() == BiologicBlocks.NUT_BUSH_LEAVES.get()) {
+					int j = 1 + SquirrelEntity.this.world.rand.nextInt(2);
 					ItemStack itemstack = SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
 					if (itemstack.isEmpty()) {
 						SquirrelEntity.this.setItemStackToSlot(EquipmentSlotType.MAINHAND,
-								new ItemStack(FootItems.NUTS.get()));
+								new ItemStack(TreeItems.NUTS.get()));
 						--j;
 					}
 
 					if (j > 0) {
 						Block.spawnAsEntity(SquirrelEntity.this.world, this.destinationBlock,
-								new ItemStack(FootItems.NUTS.get(), j));
+								new ItemStack(TreeItems.NUTS.get(), j));
 					}
 
 					SquirrelEntity.this.playSound(SoundEvents.ITEM_SWEET_BERRIES_PICK_FROM_BUSH, 1.0F, 1.0F);
 					SquirrelEntity.this.world.setBlockState(this.destinationBlock,
-							blockstate.with(NutBushBlock.AGE, Integer.valueOf(1)), 2);
+							blockstate.with(NutLeavesBlock.AGE, 0), 2);
 				}
 			}
 		}

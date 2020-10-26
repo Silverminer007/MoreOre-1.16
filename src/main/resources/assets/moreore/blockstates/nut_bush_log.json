@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "axis=y":   { "model": "moreore:block/nut_bush_log" },
+        "axis=z":   { "model": "moreore:block/nut_bush_log", "x": 90 },
+        "axis=x":   { "model": "moreore:block/nut_bush_log", "x": 90, "y": 90 }
+    }
+}

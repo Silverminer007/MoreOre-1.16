@@ -6,6 +6,8 @@ import com.silverminer.moreore.util.items.ModItemGroups;
 import com.silverminer.moreore.MoreOre;
 
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.BlockNamedItem;
+import net.minecraft.item.Food;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -61,4 +63,12 @@ public class TreeItems {
 	public static final RegistryObject<Item> SILVER_WOOD_BUTTON = ITEMS.register("silver_wood_button",
 			() -> new BlockItem(BiologicBlocks.SILVER_WOOD_BUTTON.get(),
 					new Item.Properties().group(ModItemGroups.BIOLOGIC)));
+
+	public static final RegistryObject<Item> NUTS = InitItems.registerCompostItems("nut",
+			() -> new BlockNamedItem(BiologicBlocks.NUT_BUSH_SAPLING.get(), new Item.Properties().group(ModItemGroups.BIOLOGIC)
+					.food(new Food.Builder().hunger(2).saturation(1.0f).fastToEat().build())),
+			0.3F);
+
+	public static final RegistryObject<Item> NUT_BUSH_LEAVES = InitItems.registerCompostItems("nut_bush_leaves",
+			() -> new BlockItem(BiologicBlocks.NUT_BUSH_LEAVES.get(), new Item.Properties().group(ModItemGroups.BIOLOGIC)), 0.3F);
 }

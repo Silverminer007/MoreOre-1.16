@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
+import com.silverminer.moreore.common.objects.blocks.BananaBlock;
 import com.silverminer.moreore.init.TreeDecotratorInit;
 import com.silverminer.moreore.init.blocks.BiologicBlocks;
 import net.minecraft.block.BlockState;
@@ -29,8 +30,8 @@ public class BananaTreeDecorator extends TreeDecorator {
 		this.probability = probabilityIn;
 	}
 
-	public <T> BananaTreeDecorator(Dynamic<T> p_i225867_1_) {
-		this(p_i225867_1_.get("probability").asFloat(0.0F));
+	public <T> BananaTreeDecorator(Dynamic<T> dynamic) {
+		this(dynamic.get("probability").asFloat(0.3F));
 	}
 
 	@Override
@@ -51,7 +52,9 @@ public class BananaTreeDecorator extends TreeDecorator {
 						Direction direction1 = direction.getOpposite();
 						BlockPos blockpos = pos.add(direction1.getXOffset(), 0, direction1.getZOffset());
 						if (Feature.func_236297_b_(seedReader, blockpos)) {
-							BlockState blockstate = BiologicBlocks.BANANA.get().getDefaultState();
+							BlockState blockstate = BiologicBlocks.BANANA.get().getDefaultState()
+									.with(BananaBlock.AGE, random.nextInt(3) - 1)
+									.with(BananaBlock.HORIZONTAL_FACING, Direction.Plane.HORIZONTAL.random(random));
 							this.func_227423_a_(seedReader, blockpos, blockstate, positions3, boundingbox);
 						}
 					}
