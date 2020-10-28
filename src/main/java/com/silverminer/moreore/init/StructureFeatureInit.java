@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.common.world.gen.structures.AbstractStructure;
 import com.silverminer.moreore.common.world.gen.structures.DesertTempelStructure;
+import com.silverminer.moreore.common.world.gen.structures.NutBushPlantationStructure;
 import com.silverminer.moreore.common.world.gen.structures.TempelStructure;
 
 import net.minecraft.world.gen.feature.NoFeatureConfig;
@@ -17,13 +18,17 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class StructureFeatureInit {
 	public static final ArrayList<AbstractStructure<NoFeatureConfig>> STRUCTURES_LIST = new ArrayList<AbstractStructure<NoFeatureConfig>>();
 
-	public static final DeferredRegister<Structure<?>> FEATURES = DeferredRegister.create(ForgeRegistries.STRUCTURE_FEATURES, MoreOre.MODID);
+	public static final DeferredRegister<Structure<?>> FEATURES = DeferredRegister
+			.create(ForgeRegistries.STRUCTURE_FEATURES, MoreOre.MODID);
 
 	public static final RegistryObject<TempelStructure> TEMPEL = register(TempelStructure.SHORT_NAME,
 			new TempelStructure(NoFeatureConfig.field_236558_a_));
 
 	public static final RegistryObject<DesertTempelStructure> DESERT_TEMPEL = register(DesertTempelStructure.SHORT_NAME,
 			new DesertTempelStructure(NoFeatureConfig.field_236558_a_));
+
+	public static final RegistryObject<NutBushPlantationStructure> NUT_BUSH_PLANTATION = register(
+			NutBushPlantationStructure.SHORT_NAME, new NutBushPlantationStructure(NoFeatureConfig.field_236558_a_));
 
 	private static <T extends AbstractStructure<NoFeatureConfig>> RegistryObject<T> register(String name, T structure) {
 		if (!Structure.field_236365_a_.containsValue(structure)) {

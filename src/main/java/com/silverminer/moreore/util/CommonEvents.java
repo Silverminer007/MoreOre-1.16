@@ -41,15 +41,13 @@ import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
 
-@SuppressWarnings("deprecation")
 public class CommonEvents {
 
 	protected static final Logger LOGGER = LogManager.getLogger(CommonEvents.class);
@@ -85,12 +83,6 @@ public class CommonEvents {
 		@SubscribeEvent
 		public static void setup(final FMLCommonSetupEvent event) {
 			LOGGER.debug(MARKER, "Firening Setup Event");
-			DeferredWorkQueue.runLater(() -> {
-				GlobalEntityTypeAttributes.put(ModEntityTypesInit.VILLAGE_GUARDIAN.get(),
-						VillageGuardian.setCustomAttributes());
-				GlobalEntityTypeAttributes.put(ModEntityTypesInit.SQUIRREL.get(), SquirrelEntity.setCustomAttributes());
-				StructureUtils.setupWorldGen();
-			});
 
 			// Make every Item in this list Compostable in an composter block
 			for (ComposterItems item : MoreOre.composterItems) {
@@ -114,8 +106,14 @@ public class CommonEvents {
 		}
 
 		@SubscribeEvent
-		public static void loadCompleteEvent(FMLLoadCompleteEvent event) {
-			DeferredWorkQueue.runLater(OreFeatures::registerOres);
+		public static void parallelDispatch(ParallelDispatchEvent event) {
+			event.enqueueWork(OreFeatures::registerOres);
+			event.enqueueWork(() -> {
+				GlobalEntityTypeAttributes.put(ModEntityTypesInit.VILLAGE_GUARDIAN.get(),
+						VillageGuardian.setCustomAttributes());
+				GlobalEntityTypeAttributes.put(ModEntityTypesInit.SQUIRREL.get(), SquirrelEntity.setCustomAttributes());
+				StructureUtils.setupWorldGen();
+			});
 		}
 	}
 
@@ -160,6 +158,7 @@ public class CommonEvents {
 					&& event.getCategory() != Category.OCEAN) {
 
 				event.getGeneration().func_242516_a(ModStructureFeatures.TEMPEL);
+				event.getGeneration().func_242516_a(ModStructureFeatures.NUT_BUSH_PLANTATION);
 
 				// Generate the Desert Tempel Structure in every Biome, where it doesn't rain
 				if (event.getClimate().field_242460_b == RainType.NONE) {

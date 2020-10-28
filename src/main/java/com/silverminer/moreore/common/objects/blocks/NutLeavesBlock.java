@@ -26,6 +26,7 @@ import net.minecraft.world.server.ServerWorld;
 
 public class NutLeavesBlock extends LeavesBlock implements IGrowable {
 	public static final IntegerProperty AGE = BlockStateProperties.AGE_0_1;
+	private int timer = 0;
 
 	public NutLeavesBlock(Properties properties) {
 		super(properties);
@@ -63,11 +64,16 @@ public class NutLeavesBlock extends LeavesBlock implements IGrowable {
 		if (super.ticksRandomly(state)) {
 			super.randomTick(state, worldIn, pos, random);
 		} else {
-			int i = state.get(AGE);
-			if (i < 1 && net.minecraftforge.common.ForgeHooks.onCropsGrowPre(worldIn, pos, state,
-					worldIn.rand.nextInt(1) < 0.02)) {
-				worldIn.setBlockState(pos, state.with(AGE, Integer.valueOf(i + 1)), 2);
-				net.minecraftforge.common.ForgeHooks.onCropsGrowPost(worldIn, pos, state);
+			if (timer % 50 == 0) {
+				int i = state.get(AGE);
+				if (i < 1 && net.minecraftforge.common.ForgeHooks.onCropsGrowPre(worldIn, pos, state,
+						true) && worldIn.rand.nextInt(1) < 0.02) {
+					worldIn.setBlockState(pos, state.with(AGE, Integer.valueOf(i + 1)), 2);
+					timer = 0;
+					net.minecraftforge.common.ForgeHooks.onCropsGrowPost(worldIn, pos, state);
+				}
+			} else {
+				timer++;
 			}
 		}
 	}

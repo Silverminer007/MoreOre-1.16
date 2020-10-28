@@ -1,13 +1,14 @@
 {
 	"homepage": "https://github.com/Silverminer007/MoreOre-1.16",
 	"promos": {
-		"1.16.3-latest": "1.16.3-1.1.0-Beta15"
+		"1.16.3-latest": "1.16.3-1.1.0-Beta16"
 	},
 	"1.16.3": {
 		"1.16.3-1.1.0-Beta11": "Implemented VersionCheck",
 		"1.16.3-1.1.0-Beta12": "Updated Portal Saved Data; moved jona's things in external mod; updated Banana; removed nut_bush_block; added Nut\"Tree/Bush\" with Leaves, Nuts, Log and a Sapling; Squirrels are now bred with nuts; the rainbow axe has now a texture",
 		"1.16.3-1.1.0-Beta13": "Fixed Crashing Bug, Changed NutBush Generation",
 		"1.16.3-1.1.0-Beta14": "Changed NutBush Generation; Added CircleFoliagePlacer and used it in NutBush",
-		"1.16.3-1.1.0-Beta15": "The Chance of NutBushLeaves is now much lower than before(now 2%, before 20%); Squirrels are now smaller, when they're childs; Nutbushs are now generated in Forests and the Silver Tale; Small Nut Bushs exists now; Squirrels are now searching for Tree and move to them; The Rainbow Pickaxe now has a texture"
+		"1.16.3-1.1.0-Beta15": "The Chance of NutBushLeaves to grow is now much lower than before(now 2%, before 20%); Squirrels are now smaller, when they're childs; Nutbushs are now generated in Forests and the Silver Tale; Small Nut Bushs exists now; Squirrels are now searching for Tree and move to them; The Rainbow Pickaxe now has a texture",
+		"1.16.3-1.1.0-Beta16": "Changed from DeferredWorkQueue to ParallelDispatchEvent; NutBushLeaves have only every 50 ticks a chance to grow; NutBushPlantation and SmallNutBushPlantation are now generated in every Biome"
 	}
 }

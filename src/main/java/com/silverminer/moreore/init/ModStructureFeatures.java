@@ -2,6 +2,7 @@ package com.silverminer.moreore.init;
 
 import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.common.world.gen.structures.DesertTempelStructure;
+import com.silverminer.moreore.common.world.gen.structures.NutBushPlantationStructure;
 import com.silverminer.moreore.common.world.gen.structures.TempelStructure;
 
 import net.minecraft.util.ResourceLocation;
@@ -20,6 +21,10 @@ public class ModStructureFeatures {
 	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> DESERT_TEMPEL = register(
 			DesertTempelStructure.SHORT_NAME,
 			StructureFeatureInit.DESERT_TEMPEL.get().func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
+
+	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> NUT_BUSH_PLANTATION = register(
+			NutBushPlantationStructure.SHORT_NAME,
+			StructureFeatureInit.NUT_BUSH_PLANTATION.get().func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
 
 	private static <FC extends IFeatureConfig, F extends Structure<FC>> StructureFeature<FC, F> register(String name,
 			StructureFeature<FC, F> structureFeature) {
