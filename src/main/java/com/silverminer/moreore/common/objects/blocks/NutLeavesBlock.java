@@ -65,7 +65,7 @@ public class NutLeavesBlock extends LeavesBlock implements IGrowable {
 		} else {
 			int i = state.get(AGE);
 			if (i < 1 && net.minecraftforge.common.ForgeHooks.onCropsGrowPre(worldIn, pos, state,
-					worldIn.rand.nextInt(5) == 0)) {
+					worldIn.rand.nextInt(1) < 0.02)) {
 				worldIn.setBlockState(pos, state.with(AGE, Integer.valueOf(i + 1)), 2);
 				net.minecraftforge.common.ForgeHooks.onCropsGrowPost(worldIn, pos, state);
 			}

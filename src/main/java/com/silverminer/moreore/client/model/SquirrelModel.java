@@ -62,9 +62,9 @@ public class SquirrelModel<T extends Entity> extends AgeableModel<T> {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red,
+	public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red,
 			float green, float blue, float alpha) {
-		this.squirrel.render(matrixStack, buffer, packedLight, packedOverlay);
+		super.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

@@ -32,6 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -64,7 +65,8 @@ public class SquirrelEntity extends AnimalEntity {
 		this.goalSelector.addGoal(4, new AvoidEntityGoal<CatEntity>(this, CatEntity.class, 10, 0.5D, 1.0D));
 		this.goalSelector.addGoal(4, new AvoidEntityGoal<OcelotEntity>(this, OcelotEntity.class, 10, 0.5D, 1.0D));
 		this.goalSelector.addGoal(4, new AvoidEntityGoal<FoxEntity>(this, FoxEntity.class, 10, 0.5D, 1.0D));
-		this.goalSelector.addGoal(5, new EatNutGoal(0.9D, 25, 256));
+		this.goalSelector.addGoal(5, new EatNutGoal(0.5D, 25, 256));
+		this.goalSelector.addGoal(5, new EatNutGoal(0.5D, 50, 256));
 	}
 
 	/**
@@ -134,7 +136,7 @@ public class SquirrelEntity extends AnimalEntity {
 		}
 
 		public boolean shouldMove() {
-			return this.timeoutCounter % 10 == 0;
+			return this.timeoutCounter % 100 == 0;
 		}
 
 		/**
@@ -142,8 +144,11 @@ public class SquirrelEntity extends AnimalEntity {
 		 */
 		protected boolean shouldMoveTo(IWorldReader worldIn, BlockPos pos) {
 			BlockState blockstate = worldIn.getBlockState(pos);
-			return blockstate.getBlock() == BiologicBlocks.NUT_BUSH_LOG.get()
-					|| blockstate.getBlock() == BiologicBlocks.NUT_BUSH_LEAVES.get();
+			boolean flag = blockstate.getBlock() == BiologicBlocks.NUT_BUSH_LEAVES.get();
+			if(flag) {
+				flag = blockstate.get(NutLeavesBlock.AGE) == 1;
+			}
+			return flag;
 		}
 
 		/**
@@ -186,6 +191,65 @@ public class SquirrelEntity extends AnimalEntity {
 							blockstate.with(NutLeavesBlock.AGE, 0), 2);
 				}
 			}
+		}
+
+		/**
+		 * Returns whether execution should begin. You can also read and cache any state
+		 * necessary for execution in this method as well.
+		 */
+		public boolean shouldExecute() {
+			return !SquirrelEntity.this.isSleeping() && super.shouldExecute();
+		}
+
+		/**
+		 * Execute a one shot task or start executing a continuous task
+		 */
+		public void startExecuting() {
+			this.timer = 0;
+			super.startExecuting();
+		}
+	}
+
+	public class ClimbOnTreeGoal extends MoveToBlockGoal {
+		protected int timer;
+		protected BlockPos lastTree;
+
+		public ClimbOnTreeGoal(double speed, int searchlenght, int maxY) {
+			super(SquirrelEntity.this, speed, searchlenght, maxY);
+		}
+
+		public double getTargetDistanceSq() {
+			return 0.0D;
+		}
+
+		public boolean shouldMove() {
+			return this.timeoutCounter % 100 == 0;
+		}
+
+		/**
+		 * Return true to set given position as destination
+		 */
+		protected boolean shouldMoveTo(IWorldReader worldIn, BlockPos pos) {
+			BlockState blockstate = worldIn.getBlockState(pos);
+			return (blockstate.getBlock().isIn(BlockTags.LOGS)
+					|| blockstate.getBlock().isIn(BlockTags.LEAVES)) && !pos.withinDistance(this.lastTree, 10);
+		}
+
+		/**
+		 * Keep ticking a continuous task that has already been started
+		 */
+		public void tick() {
+			if (this.getIsAboveDestination()) {
+				if (this.timer >= 40) {
+					this.lastTree = SquirrelEntity.this.func_233580_cy_();
+				} else {
+					++this.timer;
+				}
+			} else if (!this.getIsAboveDestination() && SquirrelEntity.this.rand.nextFloat() < 0.05F) {
+				SquirrelEntity.this.playSound(SoundEvents.ENTITY_FOX_SNIFF, 1.0F, 1.0F);
+			}
+
+			super.tick();
 		}
 
 		/**

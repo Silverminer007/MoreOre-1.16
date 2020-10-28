@@ -15,6 +15,15 @@ import net.minecraft.world.gen.feature.TwoLayerFeature;
 import net.minecraft.world.gen.trunkplacer.StraightTrunkPlacer;
 
 public class NutBush extends BigTree {
+
+	public static final ConfiguredFeature<BaseTreeFeatureConfig, ?> SMALL_NUT_BUSH_CONFIG = TreeUtils.register(
+			"small_nut_bush",
+			Feature.field_236291_c_.withConfiguration((new BaseTreeFeatureConfig.Builder(
+					new SimpleBlockStateProvider(BiologicBlocks.NUT_BUSH_LOG.get().getDefaultState()),
+					new SimpleBlockStateProvider(BiologicBlocks.NUT_BUSH_LEAVES.get().getDefaultState()),
+					new CircleFoliagePlacer(FeatureSpread.func_242252_a(2), FeatureSpread.func_242252_a(0), 2),
+					new StraightTrunkPlacer(2, 0, 0), new TwoLayerFeature(1, 0, 1))).func_236700_a_().build()));
+
 	public static final ConfiguredFeature<BaseTreeFeatureConfig, ?> NUT_BUSH_CONFIG = TreeUtils.register("nut_bush",
 			Feature.field_236291_c_.withConfiguration((new BaseTreeFeatureConfig.Builder(
 					new SimpleBlockStateProvider(BiologicBlocks.NUT_BUSH_LOG.get().getDefaultState()),
@@ -32,7 +41,7 @@ public class NutBush extends BigTree {
 
 	@Override
 	public ConfiguredFeature<BaseTreeFeatureConfig, ?> getTreeFeature(Random randomIn, boolean p_225546_2_) {
-		return NUT_BUSH_CONFIG;
+		return randomIn.nextInt() < 0.7 ? NUT_BUSH_CONFIG : SMALL_NUT_BUSH_CONFIG;
 	}
 
 	@Override

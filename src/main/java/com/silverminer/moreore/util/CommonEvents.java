@@ -15,6 +15,7 @@ import com.silverminer.moreore.common.objects.entitys.VillageGuardian;
 import com.silverminer.moreore.common.portal.PortalWorldSaveData;
 import com.silverminer.moreore.common.world.biomeprovider.SilverBiomeProvider;
 import com.silverminer.moreore.common.world.gen.features.OreFeatures;
+import com.silverminer.moreore.common.world.gen.tree.NutBush;
 import com.silverminer.moreore.init.ModEntityTypesInit;
 import com.silverminer.moreore.init.ModStructureFeatures;
 import com.silverminer.moreore.init.blocks.BiologicBlocks;
@@ -140,6 +141,12 @@ public class CommonEvents {
 		public static void onBiomeLoad(BiomeLoadingEvent event) {
 			if (event.getName().toString().contains(MoreOre.MODID)) {
 				LOGGER.debug(MARKER, "The BiomeLoadEvent is Fired for Biome: {}", event.getName());
+			} else if(event.getName().toString().equals("minecraft:forest")){
+				event.getGeneration().func_242510_a(4, () -> NutBush.NUT_BUSH_CONFIG);
+				event.getGeneration().func_242510_a(4, () -> NutBush.SMALL_NUT_BUSH_CONFIG);
+			} else if(event.getName().toString().equals("moreore:silver_tale")){
+				event.getGeneration().func_242510_a(4, () -> NutBush.NUT_BUSH_CONFIG);
+				event.getGeneration().func_242510_a(4, () -> NutBush.HUGE_NUT_BUSH_CONFIG);
 			} else {
 				// Generates the ore in all biomes except its own, where the ores are already
 				// defined in the JSON file
