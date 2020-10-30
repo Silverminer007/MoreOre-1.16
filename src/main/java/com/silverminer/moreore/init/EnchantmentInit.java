@@ -17,6 +17,6 @@ public class EnchantmentInit {
 
 	public static final RegistryObject<Enchantment> GET_HOME = ENCHANTMENTS.register("get_home",
 			() -> new GetHomeEnchantment(Enchantment.Rarity.RARE,
-					EnchantmentType.create("", item -> item.equals(ToolItems.EMERALD_SWORD.get())),
+					EnchantmentType.create("transportation", item -> item.equals(ToolItems.EMERALD_SWORD.get())),
 					EquipmentSlotType.MAINHAND));
 }

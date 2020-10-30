@@ -1,12 +1,15 @@
 package com.silverminer.moreore.common.objects.entitys;
 
-import com.silverminer.moreore.common.objects.blocks.NutLeavesBlock;
+import java.util.Random;
+
+import com.silverminer.moreore.common.objects.blocks.NutBushLeavesBlock;
 import com.silverminer.moreore.init.ModEntityTypesInit;
 import com.silverminer.moreore.init.blocks.BiologicBlocks;
 import com.silverminer.moreore.init.items.TreeItems;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
@@ -66,7 +69,8 @@ public class SquirrelEntity extends AnimalEntity {
 		this.goalSelector.addGoal(4, new AvoidEntityGoal<OcelotEntity>(this, OcelotEntity.class, 10, 0.5D, 1.0D));
 		this.goalSelector.addGoal(4, new AvoidEntityGoal<FoxEntity>(this, FoxEntity.class, 10, 0.5D, 1.0D));
 		this.goalSelector.addGoal(5, new EatNutGoal(0.5D, 25, 256));
-		this.goalSelector.addGoal(5, new EatNutGoal(0.5D, 50, 256));
+		this.goalSelector.addGoal(5, new ClimbOnTreeGoal(0.5D, 50, 256));
+		this.goalSelector.addGoal(5, new PlaceNutGoal(0.5D, 50, 256));
 	}
 
 	/**
@@ -132,11 +136,11 @@ public class SquirrelEntity extends AnimalEntity {
 		}
 
 		public double getTargetDistanceSq() {
-			return 0.0D;
+			return 1.0D;
 		}
 
 		public boolean shouldMove() {
-			return this.timeoutCounter % 100 == 0;
+			return this.timeoutCounter % 10 == 0;
 		}
 
 		/**
@@ -145,8 +149,8 @@ public class SquirrelEntity extends AnimalEntity {
 		protected boolean shouldMoveTo(IWorldReader worldIn, BlockPos pos) {
 			BlockState blockstate = worldIn.getBlockState(pos);
 			boolean flag = blockstate.getBlock() == BiologicBlocks.NUT_BUSH_LEAVES.get();
-			if(flag) {
-				flag = blockstate.get(NutLeavesBlock.AGE) == 1;
+			if (flag) {
+				flag = blockstate.get(NutBushLeavesBlock.AGE) == 1;
 			}
 			return flag;
 		}
@@ -155,17 +159,19 @@ public class SquirrelEntity extends AnimalEntity {
 		 * Keep ticking a continuous task that has already been started
 		 */
 		public void tick() {
+			if (SquirrelEntity.this.getEntityWorld().getBlockState(destinationBlock) != BiologicBlocks.NUT_BUSH_LEAVES
+					.get().getDefaultState().with(NutBushLeavesBlock.AGE, 1)) {
+				this.searchForDestination();
+			}
+			super.tick();
 			if (this.getIsAboveDestination()) {
 				if (this.timer >= 40) {
 					this.eatNuts();
+					this.timer = 0;
 				} else {
 					++this.timer;
 				}
-			} else if (!this.getIsAboveDestination() && SquirrelEntity.this.rand.nextFloat() < 0.05F) {
-				SquirrelEntity.this.playSound(SoundEvents.ENTITY_FOX_SNIFF, 1.0F, 1.0F);
 			}
-
-			super.tick();
 		}
 
 		protected void eatNuts() {
@@ -188,7 +194,9 @@ public class SquirrelEntity extends AnimalEntity {
 
 					SquirrelEntity.this.playSound(SoundEvents.ITEM_SWEET_BERRIES_PICK_FROM_BUSH, 1.0F, 1.0F);
 					SquirrelEntity.this.world.setBlockState(this.destinationBlock,
-							blockstate.with(NutLeavesBlock.AGE, 0), 2);
+							blockstate.with(NutBushLeavesBlock.AGE, 0), 2);
+					LOGGER.info("The Squirrel now has the following in its inventory: {}", SquirrelEntity.this
+							.getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem().getRegistryName());
 				}
 			}
 		}
@@ -231,8 +239,8 @@ public class SquirrelEntity extends AnimalEntity {
 		 */
 		protected boolean shouldMoveTo(IWorldReader worldIn, BlockPos pos) {
 			BlockState blockstate = worldIn.getBlockState(pos);
-			return (blockstate.getBlock().isIn(BlockTags.LOGS)
-					|| blockstate.getBlock().isIn(BlockTags.LEAVES)) && !pos.withinDistance(this.lastTree, 10);
+			return (blockstate.getBlock().isIn(BlockTags.LOGS) || blockstate.getBlock().isIn(BlockTags.LEAVES))
+					&& this.lastTree != null ? !pos.withinDistance(this.lastTree, 10) : true;
 		}
 
 		/**
@@ -245,10 +253,7 @@ public class SquirrelEntity extends AnimalEntity {
 				} else {
 					++this.timer;
 				}
-			} else if (!this.getIsAboveDestination() && SquirrelEntity.this.rand.nextFloat() < 0.05F) {
-				SquirrelEntity.this.playSound(SoundEvents.ENTITY_FOX_SNIFF, 1.0F, 1.0F);
 			}
-
 			super.tick();
 		}
 
@@ -266,6 +271,58 @@ public class SquirrelEntity extends AnimalEntity {
 		public void startExecuting() {
 			this.timer = 0;
 			super.startExecuting();
+		}
+	}
+
+	public class PlaceNutGoal extends MoveToBlockGoal {
+		protected int timer;
+
+		public PlaceNutGoal(double speed, int searchlenght, int maxY) {
+			super(SquirrelEntity.this, speed, searchlenght, maxY);
+		}
+
+		public double getTargetDistanceSq() {
+			return 1.0D;
+		}
+
+		public boolean shouldMove() {
+			return this.timeoutCounter % 10 == 0 && SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND)
+					.getItem() == TreeItems.NUTS.get();
+		}
+
+		/**
+		 * Return true to set given position as destination
+		 */
+		protected boolean shouldMoveTo(IWorldReader worldIn, BlockPos pos) {
+			return new Random().nextFloat() > this.timer++ / 100
+					&& worldIn.getBlockState(pos).getBlock().isIn(BlockTags.BAMBOO_PLANTABLE_ON)
+					&& worldIn.getBlockState(pos.up()).getBlock() == Blocks.AIR;
+		}
+
+		/**
+		 * Keep ticking a continuous task that has already been started
+		 */
+		public void tick() {
+			super.tick();
+			if (this.getIsAboveDestination()) {
+				if (this.timer >= 10) {
+					this.placeNuts();
+					this.timer = 0;
+				} else {
+					++this.timer;
+				}
+			}
+		}
+
+		protected void placeNuts() {
+			if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(SquirrelEntity.this.world,
+					SquirrelEntity.this)) {
+				SquirrelEntity.this.world.setBlockState(this.destinationBlock.up(),
+						BiologicBlocks.NUT_BUSH_SAPLING.get().getDefaultState());
+				SquirrelEntity.this.setItemStackToSlot(EquipmentSlotType.MAINHAND,
+						new ItemStack(SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem(),
+								SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND).getCount() - 1));
+			}
 		}
 	}
 }

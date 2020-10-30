@@ -26,11 +26,11 @@ public class InitItems {
 
 	public static final RegistryObject<Item> VILLAGE_GUARDIAN_SPAWNEGG = ITEMS.register("village_guardian_spawnegg",
 			() -> new ModSpawnEggItem(() -> ModEntityTypesInit.VILLAGE_GUARDIAN.get(), 0xbb7907, 0xcdcdcd,
-					new Item.Properties().group(ModItemGroups.MINERALIC)));
+					new Item.Properties().group(ModItemGroups.BIOLOGIC)));
 
 	public static final RegistryObject<Item> SQUIRREL_SPAWNEGG = ITEMS.register("squirrel_spawnegg",
 			() -> new ModSpawnEggItem(() -> ModEntityTypesInit.SQUIRREL.get(), 0xbbbccc, 0xcccbbb,
-					new Item.Properties().group(ModItemGroups.MINERALIC)));
+					new Item.Properties().group(ModItemGroups.BIOLOGIC)));
 
 	public static <T extends Item> RegistryObject<Item> registerCompostItems(String key, Supplier<T> item,
 			float chance) {

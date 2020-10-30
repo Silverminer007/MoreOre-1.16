@@ -2,6 +2,7 @@ package com.silverminer.moreore.common.objects.blocks;
 
 import java.util.Random;
 
+import com.silverminer.moreore.common.objects.entitys.SquirrelEntity;
 import com.silverminer.moreore.init.items.TreeItems;
 
 import net.minecraft.block.Block;
@@ -24,11 +25,11 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
-public class NutLeavesBlock extends LeavesBlock implements IGrowable {
+public class NutBushLeavesBlock extends LeavesBlock implements IGrowable {
 	public static final IntegerProperty AGE = BlockStateProperties.AGE_0_1;
 	private int timer = 0;
 
-	public NutLeavesBlock(Properties properties) {
+	public NutBushLeavesBlock(Properties properties) {
 		super(properties);
 		this.setDefaultState(this.getDefaultState().with(AGE, 0));
 	}
@@ -97,5 +98,11 @@ public class NutLeavesBlock extends LeavesBlock implements IGrowable {
 		} else {
 			return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
 		}
+	}
+
+	@Override
+	public boolean isLadder(BlockState state, net.minecraft.world.IWorldReader world, BlockPos pos,
+			net.minecraft.entity.LivingEntity entity) {
+		return entity instanceof SquirrelEntity && pos.withinDistance(entity.func_233580_cy_(), 0.5);
 	}
 }

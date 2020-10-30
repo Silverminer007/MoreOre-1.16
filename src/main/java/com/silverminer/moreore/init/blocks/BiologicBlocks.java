@@ -6,7 +6,7 @@ import com.silverminer.moreore.common.objects.blocks.LetuceBlock;
 import com.silverminer.moreore.common.objects.blocks.ModDoorBlock;
 import com.silverminer.moreore.common.objects.blocks.ModLogBlock;
 import com.silverminer.moreore.common.objects.blocks.ModWoodButtonBlock;
-import com.silverminer.moreore.common.objects.blocks.NutLeavesBlock;
+import com.silverminer.moreore.common.objects.blocks.NutBushLeavesBlock;
 import com.silverminer.moreore.common.objects.blocks.Sapling;
 import com.silverminer.moreore.common.world.gen.tree.GoldTree;
 import com.silverminer.moreore.common.world.gen.tree.IceTree;
@@ -117,5 +117,5 @@ public class BiologicBlocks {
 			() -> new ModLogBlock(Block.Properties.from(Blocks.OAK_LOG).notSolid()));
 
 	public static final RegistryObject<Block> NUT_BUSH_LEAVES = InitBlocks.registerCutout("nut_bush_leaves",
-			() -> new NutLeavesBlock(Block.Properties.from(Blocks.OAK_LEAVES)));
+			() -> new NutBushLeavesBlock(Block.Properties.from(Blocks.OAK_LEAVES)));
 }
