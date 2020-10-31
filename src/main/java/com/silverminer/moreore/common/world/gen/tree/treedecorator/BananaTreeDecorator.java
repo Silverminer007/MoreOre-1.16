@@ -51,7 +51,7 @@ public class BananaTreeDecorator extends TreeDecorator {
 					if (random.nextFloat() <= 0.25F) {
 						Direction direction1 = direction.getOpposite();
 						BlockPos blockpos = pos.add(direction1.getXOffset(), 0, direction1.getZOffset());
-						if (Feature.func_236297_b_(seedReader, blockpos)) {
+						if (Feature.isAirAt(seedReader, blockpos)) {
 							BlockState blockstate = BiologicBlocks.BANANA.get().getDefaultState()
 									.with(BananaBlock.AGE, random.nextInt(3) - 1)
 									.with(BananaBlock.HORIZONTAL_FACING, Direction.Plane.HORIZONTAL.random(random));

@@ -12,14 +12,11 @@ import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.block.SpongeBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -32,11 +29,8 @@ public class LavaSpongeBlock extends SpongeBlock {
 
 	@Override
 	public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
-		if (worldIn.func_230315_m_().func_236040_e_()) {
-			worldIn.setBlockState(pos, InitBlocks.LAVA_SPONGE.get().getDefaultState(), 3);
-			worldIn.playEvent(2009, pos, 0);
-			worldIn.playSound((PlayerEntity) null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F,
-					(1.0F + worldIn.getRandom().nextFloat() * 0.2F) * 0.7F);
+		if (!oldState.isIn(state.getBlock())) {
+			this.tryAbsorb(worldIn, pos);
 		}
 	}
 

@@ -103,6 +103,6 @@ public class NutBushLeavesBlock extends LeavesBlock implements IGrowable {
 	@Override
 	public boolean isLadder(BlockState state, net.minecraft.world.IWorldReader world, BlockPos pos,
 			net.minecraft.entity.LivingEntity entity) {
-		return entity instanceof SquirrelEntity && pos.withinDistance(entity.func_233580_cy_(), 0.5);
+		return entity instanceof SquirrelEntity && pos.withinDistance(entity.getPosition(), 0.5);
 	}
 }

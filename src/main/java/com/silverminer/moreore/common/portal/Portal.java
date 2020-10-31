@@ -228,9 +228,9 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 		if (nbt.contains("dimension", 8)) // Type 8 means string.
 		{
 			ResourceLocation dimensionRegistryKey = ResourceLocation.tryCreate(nbt.getString("dimension"));
-			dimension = RegistryKey.func_240903_a_(Registry.field_239699_ae_, dimensionRegistryKey);
+			dimension = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, dimensionRegistryKey);
 		} else {
-			dimension = World.field_234918_g_;
+			dimension = World.OVERWORLD;
 		}
 
 		axis = Axis.byName(nbt.getString("axis"));

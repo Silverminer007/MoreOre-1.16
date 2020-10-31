@@ -12,7 +12,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
@@ -29,20 +28,13 @@ public abstract class AbstractStructure<C extends IFeatureConfig> extends Struct
 		super(codec);
 		this.size = sizeIn;
 		this.name = nameIn;
-		Structure.field_236365_a_.put(this.getStructureName(), this);
+		Structure.NAME_STRUCTURE_BIMAP.put(this.getStructureName(), this);
 	}
 
 	@Override
 	public String getStructureName() {
 		return this.name;
 	}
-
-	@Override
-	public GenerationStage.Decoration func_236396_f_() {
-		return this.getDecorationStage();
-	}
-
-	public abstract GenerationStage.Decoration getDecorationStage();
 
 	protected boolean isSurfaceFlat(@Nonnull ChunkGenerator generator, int chunkX, int chunkZ) {
 		// Size of the area to check.
@@ -51,10 +43,10 @@ public abstract class AbstractStructure<C extends IFeatureConfig> extends Struct
 		int xStart = (chunkX << 4);
 		int zStart = (chunkZ << 4);
 
-		int i1 = generator.func_222531_c(xStart, zStart, Heightmap.Type.WORLD_SURFACE_WG);
-		int j1 = generator.func_222531_c(xStart, zStart + offset, Heightmap.Type.WORLD_SURFACE_WG);
-		int k1 = generator.func_222531_c(xStart + offset, zStart, Heightmap.Type.WORLD_SURFACE_WG);
-		int l1 = generator.func_222531_c(xStart + offset, zStart + offset, Heightmap.Type.WORLD_SURFACE_WG);
+		int i1 = generator.getNoiseHeightMinusOne(xStart, zStart, Heightmap.Type.WORLD_SURFACE_WG);
+		int j1 = generator.getNoiseHeightMinusOne(xStart, zStart + offset, Heightmap.Type.WORLD_SURFACE_WG);
+		int k1 = generator.getNoiseHeightMinusOne(xStart + offset, zStart, Heightmap.Type.WORLD_SURFACE_WG);
+		int l1 = generator.getNoiseHeightMinusOne(xStart + offset, zStart + offset, Heightmap.Type.WORLD_SURFACE_WG);
 		int minHeight = Math.min(Math.min(i1, j1), Math.min(k1, l1));
 		int maxHeight = Math.max(Math.max(i1, j1), Math.max(k1, l1));
 
@@ -79,9 +71,9 @@ public abstract class AbstractStructure<C extends IFeatureConfig> extends Struct
 		if (isSurfaceFlat(generator, chunkX, chunkZ)) {
 
 			// Check the entire size of the structure to see if it's all a viable biome:
-			for (Biome biome1 : provider.getBiomes(chunkX * 16 + 9, generator.func_230356_f_(), chunkZ * 16 + 9,
+			for (Biome biome1 : provider.getBiomes(chunkX * 16 + 9, generator.getGroundHeight(), chunkZ * 16 + 9,
 					getSize() * 16)) {
-				if (!biome1.func_242440_e().func_242493_a(this)) {
+				if (!biome1.getGenerationSettings().hasStructure(this)) {
 					return false;
 				}
 			}
@@ -97,7 +89,7 @@ public abstract class AbstractStructure<C extends IFeatureConfig> extends Struct
 	}
 
 	@Override
-	public ChunkPos func_236392_a_(StructureSeparationSettings settings, long seed, SharedSeedRandom sharedSeedRand,
+	public ChunkPos getChunkPosForStructure(StructureSeparationSettings settings, long seed, SharedSeedRandom sharedSeedRand,
 			int x, int z) {
 		int spacing = this.getDistance();
 		int separation = this.getSeparation();

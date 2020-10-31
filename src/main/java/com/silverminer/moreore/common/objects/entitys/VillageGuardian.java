@@ -98,9 +98,10 @@ public class VillageGuardian extends AnimalEntity {
 	}
 
 	public static AttributeModifierMap setCustomAttributes() {
-		return AnimalEntity.func_233666_p_().func_233815_a_(Attributes.field_233818_a_, 20.0D)
-				.func_233815_a_(Attributes.field_233821_d_, 0.3D).func_233815_a_(Attributes.field_233820_c_, 1.0D)
-				.func_233815_a_(Attributes.field_233823_f_, 7.0D).func_233813_a_();
+		return AnimalEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D)
+				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D)
+				.createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1.0D)
+				.createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D).create();
 	}
 
 	/**
@@ -123,6 +124,7 @@ public class VillageGuardian extends AnimalEntity {
 	 * For example, zombies and skeletons use this to react to sunlight and start to
 	 * burn.
 	 */
+	@SuppressWarnings("deprecation")
 	public void livingTick() {
 		super.livingTick();
 		if (this.attackTimer > 0) {
@@ -184,7 +186,7 @@ public class VillageGuardian extends AnimalEntity {
 	}
 
 	private float getAttackDamage() {
-		return (float) this.getAttribute(Attributes.field_233823_f_).getValue();
+		return (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
 	}
 
 	public boolean attackEntityAsMob(Entity entityIn) {
@@ -264,7 +266,7 @@ public class VillageGuardian extends AnimalEntity {
 	public boolean attackEntityFrom(DamageSource source, float amount) {
 		boolean flag = super.attackEntityFrom(source, amount);
 		if (flag) {
-			this.playSound(SoundEvents.field_226142_fM_, 1.0F, 1.0F);
+			this.playSound(SoundEvents.ENTITY_IRON_GOLEM_DAMAGE, 1.0F, 1.0F);
 		}
 		return flag;
 	}
@@ -300,7 +302,7 @@ public class VillageGuardian extends AnimalEntity {
 			if (this.getHealth() == f) {
 			} else {
 				float f1 = 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F;
-				this.playSound(SoundEvents.field_226143_fP_, 1.0F, f1);
+				this.playSound(SoundEvents.ENTITY_IRON_GOLEM_REPAIR, 1.0F, f1);
 				if (!player.abilities.isCreativeMode) {
 					itemstack.shrink(1);
 				}

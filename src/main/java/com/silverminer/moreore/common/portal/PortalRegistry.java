@@ -136,7 +136,7 @@ public final class PortalRegistry {
 		Axis portalAxis = isHorizontal ? Axis.Y : Utils.getOrthogonalTo(horizontalCornerFacing);
 
 		// Create portal data structure
-		Portal portal = new Portal(world.func_234923_W_(), portalAxis, corner1, corner2, corner3, corner4);
+		Portal portal = new Portal(world.getDimensionKey(), portalAxis, corner1, corner2, corner3, corner4);
 
 		Iterable<BlockPos> portalPositions = portal.getPortalPositions();
 

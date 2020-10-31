@@ -101,7 +101,7 @@ public class CommonEvents {
 
 			// Add the SilverBiomeProvider to be use able in .json files for better Biome
 			// forming
-			Registry.register(Registry.field_239689_aA_, new ResourceLocation(MoreOre.MODID, "silver"),
+			Registry.register(Registry.BIOME_PROVIDER_CODEC, new ResourceLocation(MoreOre.MODID, "silver"),
 					SilverBiomeProvider.CODEC);
 		}
 
@@ -130,7 +130,7 @@ public class CommonEvents {
 			World world = (World) iworld;
 			// WorldSavedData can no longer be stored per map but only per dimension. So
 			// store the registry in the overworld.
-			if (!world.isRemote() && world.func_234923_W_() == World.field_234918_g_ && world instanceof ServerWorld) {
+			if (!world.isRemote() && world.getDimensionKey() == World.OVERWORLD && world instanceof ServerWorld) {
 				MoreOre.portalSaveData = PortalWorldSaveData.get((ServerWorld) world);
 			}
 		}
@@ -140,16 +140,16 @@ public class CommonEvents {
 			if (event.getName().toString().contains(MoreOre.MODID)) {
 				LOGGER.debug(MARKER, "The BiomeLoadEvent is Fired for Biome: {}", event.getName());
 			} else if(event.getName().toString().equals("minecraft:forest")){
-				event.getGeneration().func_242510_a(4, () -> NutBush.NUT_BUSH_CONFIG);
-				event.getGeneration().func_242510_a(4, () -> NutBush.SMALL_NUT_BUSH_CONFIG);
+				event.getGeneration().withFeature(4, () -> NutBush.NUT_BUSH_CONFIG);
+				event.getGeneration().withFeature(4, () -> NutBush.SMALL_NUT_BUSH_CONFIG);
 			} else if(event.getName().toString().equals("moreore:silver_tale")){
-				event.getGeneration().func_242510_a(4, () -> NutBush.NUT_BUSH_CONFIG);
-				event.getGeneration().func_242510_a(4, () -> NutBush.HUGE_NUT_BUSH_CONFIG);
+				event.getGeneration().withFeature(4, () -> NutBush.NUT_BUSH_CONFIG);
+				event.getGeneration().withFeature(4, () -> NutBush.HUGE_NUT_BUSH_CONFIG);
 			} else {
 				// Generates the ore in all biomes except its own, where the ores are already
 				// defined in the JSON file
-				event.getGeneration().func_242510_a(7, () -> OreFeatures.ALEXANDRIT);
-				event.getGeneration().func_242510_a(7, () -> OreFeatures.RAINBOW);
+				event.getGeneration().withFeature(7, () -> OreFeatures.ALEXANDRIT);
+				event.getGeneration().withFeature(7, () -> OreFeatures.RAINBOW);
 			}
 			if (event.getCategory() == Category.RIVER) {
 				return;
@@ -157,12 +157,12 @@ public class CommonEvents {
 			if (event.getCategory() != Category.NETHER && event.getCategory() != Category.THEEND
 					&& event.getCategory() != Category.OCEAN) {
 
-				event.getGeneration().func_242516_a(ModStructureFeatures.TEMPEL);
-				event.getGeneration().func_242516_a(ModStructureFeatures.NUT_BUSH_PLANTATION);
+				event.getGeneration().withStructure(ModStructureFeatures.TEMPEL);
+				event.getGeneration().withStructure(ModStructureFeatures.NUT_BUSH_PLANTATION);
 
 				// Generate the Desert Tempel Structure in every Biome, where it doesn't rain
-				if (event.getClimate().field_242460_b == RainType.NONE) {
-					event.getGeneration().func_242516_a(ModStructureFeatures.DESERT_TEMPEL);
+				if (event.getClimate().precipitation == RainType.NONE) {
+					event.getGeneration().withStructure(ModStructureFeatures.DESERT_TEMPEL);
 				}
 			}
 		}

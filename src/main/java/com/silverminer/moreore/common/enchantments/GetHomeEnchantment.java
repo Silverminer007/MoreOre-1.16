@@ -37,7 +37,7 @@ public class GetHomeEnchantment extends Enchantment {
 		if (user instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) user;
 			if (!player.getEntityWorld().isRemote()) {
-				Utils.teleportTo(player, player.getEntityWorld().func_234923_W_(),
+				Utils.teleportTo(player, player.getEntityWorld().getDimensionKey(),
 						((ServerPlayerEntity) player).func_241140_K_(), Direction.NORTH);
 			}
 		}

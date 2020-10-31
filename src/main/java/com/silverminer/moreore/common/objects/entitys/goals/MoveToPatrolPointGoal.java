@@ -55,6 +55,7 @@ public class MoveToPatrolPointGoal extends MoveToBlockGoal {
 	/**
 	 * Return true to set given position as destination
 	 */
+	@SuppressWarnings("deprecation")
 	protected boolean shouldMoveTo(IWorldReader worldIn, BlockPos pos) {
 		IChunk ichunk = worldIn.getChunk(pos.getX() >> 4, pos.getZ() >> 4, ChunkStatus.FULL, false);
 		if (ichunk == null) {

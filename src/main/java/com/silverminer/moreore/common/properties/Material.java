@@ -23,11 +23,6 @@ public enum Material implements IStringSerializable {
 		this.name = string;
 	}
 
-/*	@Override//Moved to func_176610_l()
-	public String getName() {
-		return this.name;
-	}*/
-
 	public static Material getNext(BlockState state) {
 		ArrayList<Material> amaterials = new ArrayList<Material>();
 		Material[] materials = Material.values();
@@ -43,7 +38,7 @@ public enum Material implements IStringSerializable {
 	}
 
 	@Override
-	public String func_176610_l() {
+	public String getString() {
 		return this.name;
 	}
 }

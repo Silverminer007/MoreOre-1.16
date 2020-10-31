@@ -24,7 +24,7 @@ public class StructureUtils {
 									structure.getSeparation(), structure.getSeedModifier()))
 							.build();
 
-			DimensionSettings.field_242740_q.func_236108_a_().field_236193_d_.put(structure,
+			DimensionSettings.field_242740_q.getStructures().field_236193_d_.put(structure,
 					new StructureSeparationSettings(structure.getDistance(), structure.getSeparation(),
 							structure.getSeedModifier()));
 		});

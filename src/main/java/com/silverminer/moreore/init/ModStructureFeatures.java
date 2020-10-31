@@ -16,19 +16,19 @@ public class ModStructureFeatures {
 
 	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> TEMPEL = register(
 			TempelStructure.SHORT_NAME,
-			StructureFeatureInit.TEMPEL.get().func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
+			StructureFeatureInit.TEMPEL.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
 
 	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> DESERT_TEMPEL = register(
 			DesertTempelStructure.SHORT_NAME,
-			StructureFeatureInit.DESERT_TEMPEL.get().func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
+			StructureFeatureInit.DESERT_TEMPEL.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
 
 	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> NUT_BUSH_PLANTATION = register(
 			NutBushPlantationStructure.SHORT_NAME,
-			StructureFeatureInit.NUT_BUSH_PLANTATION.get().func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
+			StructureFeatureInit.NUT_BUSH_PLANTATION.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
 
 	private static <FC extends IFeatureConfig, F extends Structure<FC>> StructureFeature<FC, F> register(String name,
 			StructureFeature<FC, F> structureFeature) {
-		return WorldGenRegistries.func_243664_a(WorldGenRegistries.field_243654_f,
+		return WorldGenRegistries.register(WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE,
 				new ResourceLocation(MoreOre.MODID, name), structureFeature);
 	}
 }

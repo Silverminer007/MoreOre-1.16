@@ -20,16 +20,16 @@ import net.minecraft.world.gen.trunkplacer.MegaJungleTrunkPlacer;
 public class IceTree extends BigTree {
 
 	public static final ConfiguredFeature<BaseTreeFeatureConfig, ?> ICE_TREE_CONFIG = TreeUtils.register("ice_tree",
-			Feature.field_236291_c_.withConfiguration(
+			Feature.TREE.withConfiguration(
 					(new BaseTreeFeatureConfig.Builder(new SimpleBlockStateProvider(Blocks.ICE.getDefaultState()),
 							new SimpleBlockStateProvider(BiologicBlocks.ICE_LEAVES.get().getDefaultState()),
 							new BlobFoliagePlacer(FeatureSpread.func_242253_a(2, 1), FeatureSpread.func_242253_a(0, 2),
 									3),
-							new ForkyTrunkPlacer(5, 2, 2), new TwoLayerFeature(1, 0, 2))).func_236700_a_().build()));
+							new ForkyTrunkPlacer(5, 2, 2), new TwoLayerFeature(1, 0, 2))).setIgnoreVines().build()));
 
 	public static final ConfiguredFeature<BaseTreeFeatureConfig, ?> HUGE_ICE_TREE_CONFIG = TreeUtils
 			.register("huge_ice_tree",
-					Feature.field_236291_c_.withConfiguration((new BaseTreeFeatureConfig.Builder(
+					Feature.TREE.withConfiguration((new BaseTreeFeatureConfig.Builder(
 							new SimpleBlockStateProvider(Blocks.ICE.getDefaultState()),
 							new SimpleBlockStateProvider(BiologicBlocks.ICE_LEAVES.get().getDefaultState()),
 							new JungleFoliagePlacer(FeatureSpread.func_242253_a(2, 1),

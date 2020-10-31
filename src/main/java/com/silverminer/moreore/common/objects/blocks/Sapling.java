@@ -52,7 +52,7 @@ public class Sapling extends BushBlock implements IGrowable{
 		} else {
 			if (!ForgeEventFactory.saplingGrowTree(serverWorld, rand, pos))
 				return;
-			this.tree.get().func_230339_a_(serverWorld, serverWorld.getChunkProvider().getChunkGenerator(), pos, state,
+			this.tree.get().attemptGrowTree(serverWorld, serverWorld.getChunkProvider().getChunkGenerator(), pos, state,
 					rand);
 		}
 	}

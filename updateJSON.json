@@ -1,7 +1,7 @@
 {
 	"homepage": "https://github.com/Silverminer007/MoreOre-1.16",
 	"promos": {
-		"1.16.3-latest": "1.16.3-1.1.0-Beta17"
+		"1.16.3-latest": "1.16.3-1.1.0-Beta18"
 	},
 	"1.16.3": {
 		"1.16.3-1.1.0-Beta11": "Implemented VersionCheck",
@@ -10,6 +10,7 @@
 		"1.16.3-1.1.0-Beta14": "Changed NutBush Generation; Added CircleFoliagePlacer and used it in NutBush",
 		"1.16.3-1.1.0-Beta15": "The Chance of NutBushLeaves to grow is now much lower than before(now 2%, before 20%); Squirrels are now smaller, when they're childs; Nutbushs are now generated in Forests and the Silver Tale; Small Nut Bushs exists now; Squirrels are now searching for Tree and move to them; The Rainbow Pickaxe now has a texture",
 		"1.16.3-1.1.0-Beta16": "Changed from DeferredWorkQueue to ParallelDispatchEvent; NutBushLeaves have only every 50 ticks a chance to grow; NutBushPlantation and SmallNutBushPlantation are now generated in every Biome",
-		"1.16.3-1.1.0-Beta17": "Changed Itemsgroup of the Spawneggs to Biologic; Changed Eat Nuts Goal of Squirrel; Added PlaceNutGoal; Acitivated ClimbOnTreeGoal; Changed Silver Block texture; Changed Silver Ingot texture"
+		"1.16.3-1.1.0-Beta17": "Changed Itemsgroup of the Spawneggs to Biologic; Changed Eat Nuts Goal of Squirrel; Added PlaceNutGoal; Acitivated ClimbOnTreeGoal; Changed Silver Block texture; Changed Silver Ingot texture",
+		"1.16.3-1.1.0-Beta18": "Updated Forge to 34.1.35"
 	}
 }

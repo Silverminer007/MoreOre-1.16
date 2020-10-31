@@ -26,7 +26,7 @@ public class BurnedOutLavaSpongeBlock extends WetSpongeBlock {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
-		Direction direction = Direction.func_239631_a_(rand);
+		Direction direction = Direction.getRandomDirection(rand);
 		if (direction != Direction.UP) {
 			BlockPos blockpos = pos.offset(direction);
 			BlockState blockstate = worldIn.getBlockState(blockpos);

@@ -137,7 +137,7 @@ public final class Utils {
 			return;
 
 		ServerPlayerEntity player = (entity instanceof ServerPlayerEntity) ? (ServerPlayerEntity) entity : null;
-		boolean interdimensional = (entity.world.func_234923_W_() != dimension);
+		boolean interdimensional = (entity.world.getDimensionKey() != dimension);
 		entity.setMotion(Vector3d.ZERO);
 
 		if (player != null) {
@@ -176,9 +176,8 @@ public final class Utils {
 			return;
 
 		@SuppressWarnings("unused")
-		DimensionType originDimension = player.world.func_230315_m_();
-		RegistryKey<World> startRegistryKey = player.world.func_234923_W_();// func_234923_W_() - returns the key of the
-																			// player dimension
+		DimensionType originDimension = player.world.getDimensionType();
+		RegistryKey<World> startRegistryKey = player.world.getDimensionKey();
 		ServerWorld originServerWorld = server.getWorld(startRegistryKey);// Eigentlich originDimension
 //		player.dimension = destinationDimension;
 		player.func_242111_a(destinationDimension, destination, 0.5f, false, false);
@@ -237,12 +236,12 @@ public final class Utils {
 			BlockPos destination, float yaw) {
 		if (!entity.world.isRemote && entity.isAlive() && entity.isNonBoss()) {
 			MinecraftServer server = entity.getServer();
-			ServerWorld startWorld = server.getWorld(entity.world.func_234923_W_());
+			ServerWorld startWorld = server.getWorld(entity.world.getDimensionKey());
 			ServerWorld destinationWorld = server.getWorld(dimension);
 
 			entity.world.getProfiler().startSection("changeDimension");
 
-			entity.func_241206_a_(destinationWorld);
+			entity.changeDimension(destinationWorld);
 			entity.detach();
 
 			entity.world.getProfiler().startSection("reposition");

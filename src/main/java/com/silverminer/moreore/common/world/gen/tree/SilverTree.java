@@ -20,16 +20,16 @@ public class SilverTree extends BigTree {
 
 	public static final ConfiguredFeature<BaseTreeFeatureConfig, ?> SILVER_TREE_CONFIG = TreeUtils
 			.register("silver_tree",
-					Feature.field_236291_c_.withConfiguration((new BaseTreeFeatureConfig.Builder(
+					Feature.TREE.withConfiguration((new BaseTreeFeatureConfig.Builder(
 							new SimpleBlockStateProvider(BiologicBlocks.SILVER_LOG.get().getDefaultState()),
 							new SimpleBlockStateProvider(BiologicBlocks.SILVER_LEAVES.get().getDefaultState()),
 							new BlobFoliagePlacer(FeatureSpread.func_242253_a(2, 1), FeatureSpread.func_242253_a(0, 2),
 									3),
-							new ForkyTrunkPlacer(5, 2, 2), new TwoLayerFeature(1, 0, 2))).func_236700_a_().build()));
+							new ForkyTrunkPlacer(5, 2, 2), new TwoLayerFeature(1, 0, 2))).setIgnoreVines().build()));
 
 	public static final ConfiguredFeature<BaseTreeFeatureConfig, ?> HUGE_SILVER_TREE_CONFIG = TreeUtils.register(
 			"huge_silver_tree",
-			Feature.field_236291_c_.withConfiguration((new BaseTreeFeatureConfig.Builder(
+			Feature.TREE.withConfiguration((new BaseTreeFeatureConfig.Builder(
 					new SimpleBlockStateProvider(BiologicBlocks.SILVER_LOG.get().getDefaultState()),
 					new SimpleBlockStateProvider(BiologicBlocks.SILVER_LEAVES.get().getDefaultState()),
 					new JungleFoliagePlacer(FeatureSpread.func_242253_a(2, 1), FeatureSpread.func_242253_a(0, 2), 3),

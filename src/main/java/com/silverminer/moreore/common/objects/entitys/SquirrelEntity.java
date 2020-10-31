@@ -123,9 +123,10 @@ public class SquirrelEntity extends AnimalEntity {
 	}
 
 	public static AttributeModifierMap setCustomAttributes() {
-		return AnimalEntity.func_233666_p_().func_233815_a_(Attributes.field_233818_a_, 6.0D)
-				.func_233815_a_(Attributes.field_233821_d_, 0.5D).func_233815_a_(Attributes.field_233820_c_, 1.0D)
-				.func_233815_a_(Attributes.field_233823_f_, 2.0D).func_233813_a_();
+		return AnimalEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 6.0D)
+				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D)
+				.createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1.0D)
+				.createMutableAttribute(Attributes.ATTACK_DAMAGE, 2.0D).create();
 	}
 
 	public class EatNutGoal extends MoveToBlockGoal {
@@ -249,7 +250,7 @@ public class SquirrelEntity extends AnimalEntity {
 		public void tick() {
 			if (this.getIsAboveDestination()) {
 				if (this.timer >= 40) {
-					this.lastTree = SquirrelEntity.this.func_233580_cy_();
+					this.lastTree = SquirrelEntity.this.getPosition();
 				} else {
 					++this.timer;
 				}

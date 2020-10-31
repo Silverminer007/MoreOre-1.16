@@ -40,7 +40,7 @@ public class CircleFoliagePlacer extends FoliagePlacer {
 					if ((x - startx) * (x - startx) + (y - starty) * (y - starty) + (z - startz) * (z - startz) < radius
 							* radius) {
 						BlockPos position = new BlockPos(x, y, z);
-						if (TreeFeature.func_236404_a_(world, position)) {
+						if (TreeFeature.isAirOrLeavesAt(world, position)) {
 							world.setBlockState(position, treeConfig.leavesProvider.getBlockState(rand, position), 19);
 							mbb.expandTo(new MutableBoundingBox(position, position));
 							positions.add(position.toImmutable());
@@ -53,7 +53,7 @@ public class CircleFoliagePlacer extends FoliagePlacer {
 
 	@Override
 	public int func_230374_a_(Random rand, int p_230374_2_, BaseTreeFeatureConfig treeConfig) {
-		return treeConfig.field_236678_g_.func_236917_a_(rand) - 1;
+		return treeConfig.trunkPlacer.func_236917_a_(rand) - 1;
 	}
 
 	@Override

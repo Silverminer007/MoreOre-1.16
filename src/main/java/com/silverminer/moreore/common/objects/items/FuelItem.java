@@ -69,7 +69,7 @@ public class FuelItem extends Item {
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
 		playerIn.addPotionEffect(new EffectInstance(Effects.ABSORPTION, 500, 255));
 		if (!worldIn.isRemote()) {
-			Utils.teleportTo(playerIn, worldIn.func_234923_W_(),
+			Utils.teleportTo(playerIn, worldIn.getDimensionKey(),
 					((ServerPlayerEntity) playerIn).func_241140_K_(), Direction.NORTH);
 		}
 		worldIn.setRainStrength(10.0f);

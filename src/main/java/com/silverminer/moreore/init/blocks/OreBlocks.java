@@ -16,7 +16,7 @@ public class OreBlocks {
 
 	public static final RegistryObject<Block> SILVER_ORE = BLOCKS.register("silver_ore", 
 			() -> new GemstoneOreBlock(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)
-					.func_235838_a_((light) -> {
+					.setLightLevel((light) -> {
 						return 8;
 					}).sound(SoundType.METAL), 4));
 

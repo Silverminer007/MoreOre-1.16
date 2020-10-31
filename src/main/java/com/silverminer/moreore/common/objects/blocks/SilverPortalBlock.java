@@ -53,7 +53,7 @@ public class SilverPortalBlock extends BreakableBlock {
 																														// by
 																														// normal
 																														// means
-				.func_235838_a_((light) -> {
+				.setLightLevel((light) -> {
 					return 11;
 				}).sound(SoundType.GLASS));
 	}
@@ -88,9 +88,9 @@ public class SilverPortalBlock extends BreakableBlock {
 						state.getShape(worldIn, pos), IBooleanFunction.AND)) {
 			if (entity.func_242280_ah())
 				return;
-			RegistryKey<World> dim = entity.world.func_234923_W_() == RegistryKey
-					.func_240903_a_(Registry.field_239699_ae_, MoreOre.SILVER_DIM_TYPE) ? World.field_234918_g_
-							: RegistryKey.func_240903_a_(Registry.field_239699_ae_, MoreOre.SILVER_DIM_TYPE);
+			RegistryKey<World> dim = entity.world.getDimensionKey() == RegistryKey
+					.getOrCreateKey(Registry.WORLD_KEY, MoreOre.SILVER_DIM_TYPE) ? World.OVERWORLD
+							: RegistryKey.getOrCreateKey(Registry.WORLD_KEY, MoreOre.SILVER_DIM_TYPE);
 			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 			if (worldIn instanceof ServerWorld) {
 				server = worldIn.getServer();
@@ -110,7 +110,7 @@ public class SilverPortalBlock extends BreakableBlock {
 		if (!world.isRemote) {
 			// Deactivate damaged portals.
 
-			List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos, world.func_234923_W_());
+			List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos, world.getDimensionKey());
 			if (affectedPortals == null || affectedPortals.size() < 1)
 				return;
 			Portal firstPortal = affectedPortals.get(0);
