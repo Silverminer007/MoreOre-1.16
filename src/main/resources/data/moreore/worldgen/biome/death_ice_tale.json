@@ -145,19 +145,13 @@
       "minecraft:ore_lapis",
       "minecraft:disk_sand",
       "minecraft:disk_clay",
-      "minecraft:disk_gravel",
-      "moreore:ore_alexandrit",
-      "moreore:ore_rainbow",
-      "moreore:ore_rubin",
-      "moreore:ore_saphir"
+      "minecraft:disk_gravel"
     ],
     [],
     [
       "minecraft:patch_large_fern",
-      "moreore:ice_tree",
       "minecraft:flower_default",
       "minecraft:patch_grass_taiga_2",
-      "moreore:ice_tree_mega",
       "minecraft:brown_mushroom_taiga",
       "minecraft:red_mushroom_taiga",
       "minecraft:brown_mushroom_normal",

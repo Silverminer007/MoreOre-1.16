@@ -1,7 +1,7 @@
 {
     "parent": "block/cube_column",
     "textures": {
-        "end": "moreore:block/silver_logs_top",
+        "end": "moreore:block/stripped_silver_logs_top",
         "side": "moreore:block/stripped_silver_logs"
     }
 }

@@ -3,6 +3,13 @@ package com.silverminer.moreore.common.world.gen.tree.foliage_placer;
 import java.util.Random;
 import java.util.Set;
 
+import com.mojang.datafixers.Products.P3;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mojang.serialization.codecs.RecordCodecBuilder.Instance;
+import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
+import com.silverminer.moreore.init.FoliagePlacerTypeInit;
+
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.gen.IWorldGenerationReader;
@@ -13,6 +20,10 @@ import net.minecraft.world.gen.foliageplacer.FoliagePlacer;
 import net.minecraft.world.gen.foliageplacer.FoliagePlacerType;
 
 public class CircleFoliagePlacer extends FoliagePlacer {
+
+	public static final Codec<CircleFoliagePlacer> CODEC = RecordCodecBuilder.create((p_236742_0_) -> {
+		return func_236740_a_(p_236742_0_).apply(p_236742_0_, CircleFoliagePlacer::new);
+	});
 	protected final int radius;
 
 	public CircleFoliagePlacer(FeatureSpread p_i241999_1_, FeatureSpread p_i241999_2_, int radius) {
@@ -20,9 +31,11 @@ public class CircleFoliagePlacer extends FoliagePlacer {
 		this.radius = radius;
 	}
 
-	@Override
-	protected FoliagePlacerType<?> func_230371_a_() {
-		return FoliagePlacerType.BLOB;
+	protected static <P extends CircleFoliagePlacer> P3<Mu<P>, FeatureSpread, FeatureSpread, Integer> func_236740_a_(
+			Instance<P> instance) {
+		return func_242830_b(instance).and(Codec.intRange(0, 16).fieldOf("radius").forGetter((foliagePlacer) -> {
+			return foliagePlacer.radius;
+		}));
 	}
 
 	@Override
@@ -57,9 +70,13 @@ public class CircleFoliagePlacer extends FoliagePlacer {
 	}
 
 	@Override
-	protected boolean func_230373_a_(Random rand, int p_230373_2_, int p_230373_3_, int p_230373_4_, int p_230373_5_,
-			boolean p_230373_6_) {
-		return p_230373_2_ == p_230373_5_ && p_230373_4_ == p_230373_5_ && (rand.nextInt(2) == 0 || p_230373_3_ == 0);
+	protected FoliagePlacerType<?> func_230371_a_() {
+		return FoliagePlacerTypeInit.CIRCLE.get();
 	}
 
+	protected boolean func_230373_a_(Random p_230373_1_, int p_230373_2_, int p_230373_3_, int p_230373_4_,
+			int p_230373_5_, boolean p_230373_6_) {
+		return p_230373_2_ == p_230373_5_ && p_230373_4_ == p_230373_5_
+				&& (p_230373_1_.nextInt(2) == 0 || p_230373_3_ == 0);
+	}
 }

@@ -1,7 +1,8 @@
 {
 	"homepage": "https://github.com/Silverminer007/MoreOre-1.16",
 	"promos": {
-		"1.16.3-latest": "1.16.3-1.1.0-Beta18"
+		"1.16.3-latest": "1.16.3-1.1.0-Beta18",
+		"1.16.4-latest": "1.16.4-1.1.0-Beta19"
 	},
 	"1.16.3": {
 		"1.16.3-1.1.0-Beta11": "Implemented VersionCheck",
@@ -12,5 +13,8 @@
 		"1.16.3-1.1.0-Beta16": "Changed from DeferredWorkQueue to ParallelDispatchEvent; NutBushLeaves have only every 50 ticks a chance to grow; NutBushPlantation and SmallNutBushPlantation are now generated in every Biome",
 		"1.16.3-1.1.0-Beta17": "Changed Itemsgroup of the Spawneggs to Biologic; Changed Eat Nuts Goal of Squirrel; Added PlaceNutGoal; Acitivated ClimbOnTreeGoal; Changed Silver Block texture; Changed Silver Ingot texture",
 		"1.16.3-1.1.0-Beta18": "Updated Forge to 34.1.35"
+	},
+	"1.16.4": {
+		"1.16.4-1.1.0-Beta19": "Changed Silver Leaves texture; Changed Silver Log (also stripped) texture; Changed Silver Sapling texture; Removed Glowing Stone; tlp Command is now working; Rubin and rainbow ore are now genearted in every biome; Moved Features from JSON to Hardcoded; The Rainbow Hoe now has an texture; The Rainbow Armor and Shovel now have textures; Fixed bugs in World gen; Added Foliage Placer Type; Updated to Minecraft 1.16.4"
 	}
 }

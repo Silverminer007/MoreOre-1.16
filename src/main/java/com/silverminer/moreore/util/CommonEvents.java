@@ -9,12 +9,15 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.client.render.SquirrelRenderer;
 import com.silverminer.moreore.client.render.VillageGuardianRenderer;
-import com.silverminer.moreore.common.commands.ModCommands;
+import com.silverminer.moreore.common.commands.TlpCommand;
 import com.silverminer.moreore.common.objects.entitys.SquirrelEntity;
 import com.silverminer.moreore.common.objects.entitys.VillageGuardian;
 import com.silverminer.moreore.common.portal.PortalWorldSaveData;
 import com.silverminer.moreore.common.world.biomeprovider.SilverBiomeProvider;
 import com.silverminer.moreore.common.world.gen.features.OreFeatures;
+import com.silverminer.moreore.common.world.gen.features.TreeFeatures;
+import com.silverminer.moreore.common.world.gen.tree.GoldTree;
+import com.silverminer.moreore.common.world.gen.tree.IceTree;
 import com.silverminer.moreore.common.world.gen.tree.NutBush;
 import com.silverminer.moreore.init.ModEntityTypesInit;
 import com.silverminer.moreore.init.ModStructureFeatures;
@@ -55,13 +58,6 @@ public class CommonEvents {
 	@EventBusSubscriber(modid = MoreOre.MODID, bus = EventBusSubscriber.Bus.MOD)
 	public static class ModEventBus {
 		protected static final Marker MARKER = MarkerManager.getMarker("ModEventBus");
-
-		@SubscribeEvent
-		public void onCommandsRegister(RegisterCommandsEvent event) {
-			LOGGER.debug(MARKER, "Registering Commands");
-			CommandDispatcher<CommandSource> commandDispatcher = event.getDispatcher();
-			new ModCommands(commandDispatcher);
-		}
 
 		@SubscribeEvent
 		public static void setupClient(FMLClientSetupEvent event) {
@@ -135,27 +131,44 @@ public class CommonEvents {
 			}
 		}
 
+		@SubscribeEvent
+		public static void onCommandsRegister(RegisterCommandsEvent event) {
+			LOGGER.debug(MARKER, "Registering Commands");
+			CommandDispatcher<CommandSource> dispatcher = event.getDispatcher();
+			TlpCommand.register(dispatcher);
+		}
+
 		@SubscribeEvent(priority = EventPriority.HIGH)
 		public static void onBiomeLoad(BiomeLoadingEvent event) {
-			if (event.getName().toString().contains(MoreOre.MODID)) {
-				LOGGER.debug(MARKER, "The BiomeLoadEvent is Fired for Biome: {}", event.getName());
-			} else if(event.getName().toString().equals("minecraft:forest")){
-				event.getGeneration().withFeature(4, () -> NutBush.NUT_BUSH_CONFIG);
-				event.getGeneration().withFeature(4, () -> NutBush.SMALL_NUT_BUSH_CONFIG);
-			} else if(event.getName().toString().equals("moreore:silver_tale")){
-				event.getGeneration().withFeature(4, () -> NutBush.NUT_BUSH_CONFIG);
-				event.getGeneration().withFeature(4, () -> NutBush.HUGE_NUT_BUSH_CONFIG);
-			} else {
-				// Generates the ore in all biomes except its own, where the ores are already
-				// defined in the JSON file
-				event.getGeneration().withFeature(7, () -> OreFeatures.ALEXANDRIT);
-				event.getGeneration().withFeature(7, () -> OreFeatures.RAINBOW);
+			// Features
+
+			if (event.getName().equals(new ResourceLocation(MoreOre.MODID, "silver_tale"))) {
+				// Generate NutBushs and Silver trees
+				event.getGeneration().withFeature(9, () -> TreeFeatures.SILVER_TREE_NUT_BUSH_RANDOM);
+				// Generate Silver ore
+				event.getGeneration().withFeature(7, () -> OreFeatures.SILVER);
+			} else if (event.getName().equals(new ResourceLocation(MoreOre.MODID, "golden_mountains"))) {
+				// Generate Gold Tree
+				event.getGeneration().withFeature(9, () -> GoldTree.GOLD_TREE_RANDOM);
+			} else if (event.getName().equals(new ResourceLocation(MoreOre.MODID, "death_ice_tale"))) {
+				// Generate Ice Tree
+				event.getGeneration().withFeature(9, () -> IceTree.ICE_TREE_RANDOM);
+				// Generate RUBIN and SAPHIR
+				event.getGeneration().withFeature(7, () -> OreFeatures.SAPHIR);
+				event.getGeneration().withFeature(7, () -> OreFeatures.RUBIN);
+			} else if (event.getName().equals(new ResourceLocation("minecraft", "forest"))) {
+				// Generate NutBushs in Forests
+				event.getGeneration().withFeature(9, () -> NutBush.NUT_BUSH_RANDOM);
 			}
-			if (event.getCategory() == Category.RIVER) {
-				return;
-			}
+			// Generate these Ores in every biome
+			event.getGeneration().withFeature(7, () -> OreFeatures.ALEXANDRIT);
+			event.getGeneration().withFeature(7, () -> OreFeatures.RAINBOW);
+
+
+			//Structures
+
 			if (event.getCategory() != Category.NETHER && event.getCategory() != Category.THEEND
-					&& event.getCategory() != Category.OCEAN) {
+					&& event.getCategory() != Category.OCEAN && event.getCategory() != Category.RIVER) {
 
 				event.getGeneration().withStructure(ModStructureFeatures.TEMPEL);
 				event.getGeneration().withStructure(ModStructureFeatures.NUT_BUSH_PLANTATION);

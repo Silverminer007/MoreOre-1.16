@@ -32,7 +32,10 @@ public class StructureFeatureInit {
 
 	private static <T extends AbstractStructure<NoFeatureConfig>> RegistryObject<T> register(String name, T structure) {
 		if (!Structure.NAME_STRUCTURE_BIMAP.containsValue(structure)) {
-			Structure.NAME_STRUCTURE_BIMAP.putIfAbsent(MoreOre.MODID + ":" + name, structure);
+			// Use this in Minecraft 1.17. I have to use the other one, because i did it so
+			// before and old Structures wouldn't work anymore
+//			Structure.NAME_STRUCTURE_BIMAP.putIfAbsent(MoreOre.MODID + ":" + name, structure);
+			Structure.NAME_STRUCTURE_BIMAP.putIfAbsent(name, structure);
 		}
 		if (!Structure.STRUCTURE_DECORATION_STAGE_MAP.containsValue(structure.getDecorationStage())) {
 			Structure.STRUCTURE_DECORATION_STAGE_MAP.putIfAbsent(structure, structure.getDecorationStage());

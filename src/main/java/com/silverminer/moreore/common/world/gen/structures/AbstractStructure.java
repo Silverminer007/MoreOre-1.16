@@ -28,7 +28,6 @@ public abstract class AbstractStructure<C extends IFeatureConfig> extends Struct
 		super(codec);
 		this.size = sizeIn;
 		this.name = nameIn;
-		Structure.NAME_STRUCTURE_BIMAP.put(this.getStructureName(), this);
 	}
 
 	@Override

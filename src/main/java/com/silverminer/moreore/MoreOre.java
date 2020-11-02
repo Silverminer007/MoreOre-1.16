@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.silverminer.moreore.init.EnchantmentInit;
+import com.silverminer.moreore.init.FoliagePlacerTypeInit;
 import com.silverminer.moreore.init.StructureFeatureInit;
 import com.silverminer.moreore.init.ModEntityTypesInit;
 import com.silverminer.moreore.init.TreeDecotratorInit;
@@ -64,5 +65,6 @@ public class MoreOre {
 		ModEntityTypesInit.ENTITIES.register(modEventBus);
 		EnchantmentInit.ENCHANTMENTS.register(modEventBus);
 		TreeDecotratorInit.TYPES.register(modEventBus);
+		FoliagePlacerTypeInit.TYPES.register(modEventBus);
 	}
 }

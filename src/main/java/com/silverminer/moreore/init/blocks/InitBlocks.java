@@ -22,9 +22,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class InitBlocks {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MoreOre.MODID);
 
-	public static final RegistryObject<Block> GLOWING_STONE = BLOCKS.register("glowing_stone", 
-			 () -> new Block(Block.Properties.from(Blocks.GLOWSTONE)));//Diesen Block gibt es nur als Block
-
 	public static final RegistryObject<Block> GLOW_BLUE_BLOCK = BLOCKS.register("glow_blue_block", 
 			 () -> new Block(Block.Properties.from(Blocks.GLOWSTONE)));
 

@@ -1,5 +1,5 @@
 modLoader="javafml" #mandatory
-loaderVersion="[34,)" #mandatory
+loaderVersion="[35,)" #mandatory
 license="All rights reserved"
 issueTrackerURL="https://github.com/Silverminer007/MoreOre-1.16/issues" #optional
 [[mods]] #mandatory
@@ -29,7 +29,7 @@ For More info look in the changelog in UpdateJSON on my GitHub!
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[34,)" #mandatory
+    versionRange="[35,)" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
@@ -40,6 +40,6 @@ For More info look in the changelog in UpdateJSON on my GitHub!
     # A display name for the mod
     displayName="Minecraft" #mandatory
     mandatory=true
-    versionRange="[1.16.3]"
+    versionRange="[1.16.4]"
     ordering="NONE"
     side="BOTH"
