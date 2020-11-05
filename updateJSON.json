@@ -15,6 +15,7 @@
 		"1.16.3-1.1.0-Beta18": "Updated Forge to 34.1.35"
 	},
 	"1.16.4": {
-		"1.16.4-1.1.0-Beta19": "Changed Silver Leaves texture; Changed Silver Log (also stripped) texture; Changed Silver Sapling texture; Removed Glowing Stone; tlp Command is now working; Rubin and rainbow ore are now genearted in every biome; Moved Features from JSON to Hardcoded; The Rainbow Hoe now has an texture; The Rainbow Armor and Shovel now have textures; Fixed bugs in World gen; Added Foliage Placer Type; Updated to Minecraft 1.16.4"
+		"1.16.4-1.1.0-Beta19": "Changed Silver Leaves texture; Changed Silver Log (also stripped) texture; Changed Silver Sapling texture; Removed Glowing Stone; tlp Command is now working; Rubin and rainbow ore are now genearted in every biome; Moved Features from JSON to Hardcode; The Rainbow Hoe now has an texture; The Rainbow Armor and Shovel now have textures; Fixed bugs in World gen; Added Foliage Placer Type; Updated to Minecraft 1.16.4",
+		"1.16.4-1.1.0-Beta20": "Changes Silver Planks texture; Im Silver Tal werden jetzt statt Nusssträuchern Gold Bäume generiert; Changed Emerald Armor items texture; Changd Silver Trapdoor texture; Changed Squirrel Model and Texture; Overworked Parallel Dispatching; Overworked NutBush generation; Held Items of Squirrels are now shown; Updated Position finding of Silver Portal; Updated PlaceNutsGoal and EatNutsGoal of Squirrels"
 	}
 }

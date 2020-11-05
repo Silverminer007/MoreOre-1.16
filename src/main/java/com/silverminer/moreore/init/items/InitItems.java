@@ -29,7 +29,7 @@ public class InitItems {
 					new Item.Properties().group(ModItemGroups.BIOLOGIC)));
 
 	public static final RegistryObject<Item> SQUIRREL_SPAWNEGG = ITEMS.register("squirrel_spawnegg",
-			() -> new ModSpawnEggItem(() -> ModEntityTypesInit.SQUIRREL.get(), 0xbbbccc, 0xcccbbb,
+			() -> new ModSpawnEggItem(() -> ModEntityTypesInit.SQUIRREL.get(), 0x6f3000, 0x381800,
 					new Item.Properties().group(ModItemGroups.BIOLOGIC)));
 
 	public static <T extends Item> RegistryObject<Item> registerCompostItems(String key, Supplier<T> item,

@@ -207,7 +207,8 @@ public class SquirrelEntity extends AnimalEntity {
 		 * necessary for execution in this method as well.
 		 */
 		public boolean shouldExecute() {
-			return !SquirrelEntity.this.isSleeping() && super.shouldExecute();
+			return SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND) == ItemStack.EMPTY
+					&& !SquirrelEntity.this.isSleeping() && super.shouldExecute();
 		}
 
 		/**
@@ -286,9 +287,17 @@ public class SquirrelEntity extends AnimalEntity {
 			return 1.0D;
 		}
 
+		/**
+		 * Returns whether execution should begin. You can also read and cache any state
+		 * necessary for execution in this method as well.
+		 */
+		public boolean shouldExecute() {
+			return SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem() == TreeItems.NUTS
+					.get() && !SquirrelEntity.this.isSleeping() && super.shouldExecute();
+		}
+
 		public boolean shouldMove() {
-			return this.timeoutCounter % 10 == 0 && SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND)
-					.getItem() == TreeItems.NUTS.get();
+			return this.timeoutCounter % 10 == 0;
 		}
 
 		/**

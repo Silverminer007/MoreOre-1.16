@@ -49,7 +49,6 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
 
 public class CommonEvents {
 
@@ -99,10 +98,7 @@ public class CommonEvents {
 			// forming
 			Registry.register(Registry.BIOME_PROVIDER_CODEC, new ResourceLocation(MoreOre.MODID, "silver"),
 					SilverBiomeProvider.CODEC);
-		}
 
-		@SubscribeEvent
-		public static void parallelDispatch(ParallelDispatchEvent event) {
 			event.enqueueWork(OreFeatures::registerOres);
 			event.enqueueWork(() -> {
 				GlobalEntityTypeAttributes.put(ModEntityTypesInit.VILLAGE_GUARDIAN.get(),
@@ -144,7 +140,7 @@ public class CommonEvents {
 
 			if (event.getName().equals(new ResourceLocation(MoreOre.MODID, "silver_tale"))) {
 				// Generate NutBushs and Silver trees
-				event.getGeneration().withFeature(9, () -> TreeFeatures.SILVER_TREE_NUT_BUSH_RANDOM);
+				event.getGeneration().withFeature(9, () -> TreeFeatures.SILVER_GOLD_TREE_RANDOM);
 				// Generate Silver ore
 				event.getGeneration().withFeature(7, () -> OreFeatures.SILVER);
 			} else if (event.getName().equals(new ResourceLocation(MoreOre.MODID, "golden_mountains"))) {

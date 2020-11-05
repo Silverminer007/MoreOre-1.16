@@ -46,9 +46,10 @@ public class NutBush extends BigTree {
 
 	public static final ConfiguredFeature<?, ?> NUT_BUSH_RANDOM = TreeUtils.register("nut_bush_random",
 			Feature.RANDOM_SELECTOR
-					.withConfiguration(
-							new MultipleRandomFeatureConfig(ImmutableList.of(HUGE_NUT_BUSH_CONFIG.withChance(0.2F),
-									SMALL_NUT_BUSH_CONFIG.withChance(0.2F)), NUT_BUSH_CONFIG))
+					.withConfiguration(new MultipleRandomFeatureConfig(
+							ImmutableList.of(HUGE_NUT_BUSH_CONFIG.withChance(0.05F),
+									SMALL_NUT_BUSH_CONFIG.withChance(0.05F), NUT_BUSH_CONFIG.withChance(0.1F)),
+							Features.BIRCH_OTHER))
 					.withPlacement(Features.Placements.HEIGHTMAP_PLACEMENT)
 					.withPlacement(Placement.COUNT_EXTRA.configure(new AtSurfaceWithExtraConfig(10, 0.1F, 1))));
 
