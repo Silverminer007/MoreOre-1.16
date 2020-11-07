@@ -24,7 +24,7 @@ public class SpawnPositionHelper {
 			}
 		}
 
-		return pos;
+		return world.getHeight(Heightmap.Type.WORLD_SURFACE, pos);
 	}
 
 	@Nullable

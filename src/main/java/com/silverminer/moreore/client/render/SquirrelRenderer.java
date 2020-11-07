@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -25,8 +26,8 @@ public class SquirrelRenderer<T extends Entity> extends MobRenderer<SquirrelEnti
 			"textures/entity/squirrel.png");
 
 	public SquirrelRenderer(EntityRendererManager renderManagerIn) {
-		super(renderManagerIn, new SquirrelModel<SquirrelEntity>(), 0.5f);
-//		this.addLayer(new SquirrelHeldItemLayer(this));
+		super(renderManagerIn, new SquirrelModel<SquirrelEntity>(), 0.3F);
+		this.addLayer(new SquirrelHeldItemLayer(this));
 	}
 
 	@Override
@@ -45,19 +46,16 @@ public class SquirrelRenderer<T extends Entity> extends MobRenderer<SquirrelEnti
 				float ageInTicks, float netHeadYaw, float headPitch) {
 			boolean isChild = entitylivingbaseIn.isChild();
 			matrixStackIn.push();
-			if (isChild) {
-				float f = 0.5F;
-				matrixStackIn.scale(f, f, f);
-			}
-			matrixStackIn.translate(5.0D, isChild ? 3.0D : 0.5D, 0.0D);
-
-			matrixStackIn.translate((double) ((this.getEntityModel()).head.rotationPointX / 16.0F),
-					(double) ((this.getEntityModel()).head.rotationPointY / 16.0F),
-					(double) ((this.getEntityModel()).head.rotationPointZ / 16.0F));
+			ModelRenderer head = this.getEntityModel().head;
+			matrixStackIn.translate((double) (head.rotationPointX / 16.0F), (double) (head.rotationPointY / 16.0F),
+					(double) (head.rotationPointZ / 16.0F));
 			matrixStackIn.rotate(Vector3f.YP.rotationDegrees(netHeadYaw));
 			matrixStackIn.rotate(Vector3f.XP.rotationDegrees(headPitch));
-
-			matrixStackIn.rotate(Vector3f.XP.rotationDegrees(90.0F));
+			matrixStackIn.translate(0.365D, 1.725D, -1.325D);
+			float f = isChild ? 0.125F : 0.25F;
+			matrixStackIn.scale(f, f, f);
+			matrixStackIn.rotate(Vector3f.XP.rotationDegrees(-90.0F));
+			matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180.0F));
 
 			ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
 			Minecraft.getInstance().getFirstPersonRenderer().renderItemSide(entitylivingbaseIn, itemstack,

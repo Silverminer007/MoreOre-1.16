@@ -31,12 +31,14 @@ import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.command.CommandSource;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.Biome.RainType;
+import net.minecraft.world.biome.MobSpawnInfo.Spawners;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -139,19 +141,22 @@ public class CommonEvents {
 			// Features
 
 			if (event.getName().equals(new ResourceLocation(MoreOre.MODID, "silver_tale"))) {
-				// Generate NutBushs and Silver trees
+				// Generate Gold trees and Silver trees
 				event.getGeneration().withFeature(9, () -> TreeFeatures.SILVER_GOLD_TREE_RANDOM);
 				// Generate Silver ore
 				event.getGeneration().withFeature(7, () -> OreFeatures.SILVER);
+
 			} else if (event.getName().equals(new ResourceLocation(MoreOre.MODID, "golden_mountains"))) {
 				// Generate Gold Tree
 				event.getGeneration().withFeature(9, () -> GoldTree.GOLD_TREE_RANDOM);
+
 			} else if (event.getName().equals(new ResourceLocation(MoreOre.MODID, "death_ice_tale"))) {
 				// Generate Ice Tree
 				event.getGeneration().withFeature(9, () -> IceTree.ICE_TREE_RANDOM);
 				// Generate RUBIN and SAPHIR
 				event.getGeneration().withFeature(7, () -> OreFeatures.SAPHIR);
 				event.getGeneration().withFeature(7, () -> OreFeatures.RUBIN);
+
 			} else if (event.getName().equals(new ResourceLocation("minecraft", "forest"))) {
 				// Generate NutBushs in Forests
 				event.getGeneration().withFeature(9, () -> NutBush.NUT_BUSH_RANDOM);
@@ -160,8 +165,7 @@ public class CommonEvents {
 			event.getGeneration().withFeature(7, () -> OreFeatures.ALEXANDRIT);
 			event.getGeneration().withFeature(7, () -> OreFeatures.RAINBOW);
 
-
-			//Structures
+			// Structures
 
 			if (event.getCategory() != Category.NETHER && event.getCategory() != Category.THEEND
 					&& event.getCategory() != Category.OCEAN && event.getCategory() != Category.RIVER) {
@@ -173,6 +177,16 @@ public class CommonEvents {
 				if (event.getClimate().precipitation == RainType.NONE) {
 					event.getGeneration().withStructure(ModStructureFeatures.DESERT_TEMPEL);
 				}
+			}
+
+			// Enties
+
+			if (event.getName().equals(new ResourceLocation("minecraft", "flower_forest"))
+					|| event.getName().equals(new ResourceLocation("minecraft", "forest"))
+					|| event.getName().equals(new ResourceLocation(MoreOre.MODID, "silver_tale"))) {
+				// Spawn Squirrels in Silvertales and Forests
+				event.getSpawns().getSpawner(EntityClassification.CREATURE)
+						.add(new Spawners(ModEntityTypesInit.SQUIRREL.get(), 10, 4, 4));
 			}
 		}
 	}
