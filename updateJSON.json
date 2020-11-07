@@ -2,7 +2,7 @@
 	"homepage": "https://github.com/Silverminer007/MoreOre-1.16",
 	"promos": {
 		"1.16.3-latest": "1.16.3-1.1.0-Beta18",
-		"1.16.4-latest": "1.16.4-1.1.0-Beta19"
+		"1.16.4-latest": "1.16.4-1.1.0-Beta21"
 	},
 	"1.16.3": {
 		"1.16.3-1.1.0-Beta11": "Implemented VersionCheck",
