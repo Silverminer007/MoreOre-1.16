@@ -3,17 +3,17 @@ package com.silverminer.moreore.client.model;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.silverminer.moreore.common.objects.entitys.SquirrelEntity;
 
 import net.minecraft.client.renderer.entity.model.AgeableModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
 // Made with Blockbench 3.7.2
 // Exported for Minecraft version 1.15
 // Paste this class into your mod and generate all required imports
 
-public class SquirrelModel<T extends Entity> extends AgeableModel<T> {
+public class SquirrelModel<T extends SquirrelEntity> extends AgeableModel<T> {
 	private final ModelRenderer body;
 	private final ModelRenderer belly;
 	public final ModelRenderer head;
@@ -128,12 +128,28 @@ public class SquirrelModel<T extends Entity> extends AgeableModel<T> {
 	@Override
 	public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks,
 			float netHeadYaw, float headPitch) {
-		this.tail.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount + 0.3F;
-		this.tail1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F - (float) Math.PI) * 0.5F * limbSwingAmount;
-		this.tail2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount;
-		this.legsBack.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-		this.legsFront.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
-		this.head.rotateAngleX = headPitch * ((float) Math.PI / 180F) * 0.2F;
-		this.head.rotateAngleY = netHeadYaw * ((float) Math.PI / 180F);
+		if (entityIn.isNormal()) {
+			this.tail.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount + 0.3F;
+			this.tail1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F - (float) Math.PI) * 0.5F * limbSwingAmount;
+			this.tail2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount;
+			this.legsBack.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+			this.legsFront.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F
+					* limbSwingAmount;
+			this.head.rotateAngleX = headPitch * ((float) Math.PI / 180F) * 0.2F;
+			this.head.rotateAngleY = netHeadYaw * ((float) Math.PI / 180F);
+			this.body.rotateAngleX = 0.0F;
+		}
+	}
+
+	public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+		if (entityIn.isSitting()) {
+			setRotationAngle(this.body, (float) Math.PI / 5F, 3.1416F, 0.0F);
+			setRotationAngle(this.head, -0.9163F, 0.0F, 0.0F);
+			this.legsBack.rotateAngleX = -(float) Math.PI / 5F;
+			this.legsFront.rotateAngleX = (float) Math.PI / 4F;
+			this.tail.rotateAngleX = -0.3927F;
+			this.tail1.rotateAngleX = 0.1745F;
+			this.tail2.rotateAngleX = -0.1745F;
+		}
 	}
 }

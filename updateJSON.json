@@ -17,6 +17,7 @@
 	"1.16.4": {
 		"1.16.4-1.1.0-Beta19": "Changed Silver Leaves texture; Changed Silver Log (also stripped) texture; Changed Silver Sapling texture; Removed Glowing Stone; tlp Command is now working; Rubin and rainbow ore are now genearted in every biome; Moved Features from JSON to Hardcode; The Rainbow Hoe now has an texture; The Rainbow Armor and Shovel now have textures; Fixed bugs in World gen; Added Foliage Placer Type; Updated to Minecraft 1.16.4",
 		"1.16.4-1.1.0-Beta20": "Changed Silver Planks texture; In Silvertales are now Gold Trees instead of NutBush generated; Changed Emerald Armor items texture; Changd Silver Trapdoor texture; Changed Squirrel Model and Texture; Overworked Parallel Dispatching; Overworked NutBush generation; Held Items of Squirrels are now shown; Updated Position finding of Silver Portal; Updated PlaceNutsGoal and EatNutsGoal of Squirrels",
-		"1.16.4-1.1.0-Beta21": "Changed Squirrel texture; Updated Position finding of Silver Portal; Squirrel Spawns now in forests and Silvertales; Hold Items of Squirrels are now rendered"
+		"1.16.4-1.1.0-Beta21": "Changed Squirrel texture; Updated Position finding of Silver Portal; Squirrel Spawns now in forests and Silvertales; Hold Items of Squirrels are now rendered",
+		"1.16.4-1.1.0-Beta22": "Updated Squirrel Goals; Changed Names of Spawn Eggs; Fixed Bug in Held Item rendering of Squirrel; Added Squirrel to Language Packs; Updated Squirrel Rendering; Squirrels now are sitting down while they eat a nut; ClimbOnTreeGoal is removed for a moment(It will came back fixed in next release)"
 	}
 }

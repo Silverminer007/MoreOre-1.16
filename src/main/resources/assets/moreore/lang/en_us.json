@@ -110,8 +110,8 @@
 	"item.moreore.rainbow_leggins": "Rainbow Leggins",
 	"item.moreore.beamer": "Beamer",
 	"block.moreore.beamer": "Beamer",
-	"item.moreore.village_guardian_spawnegg": "Village Guardian Spawnegg",
-	"item.moreore.squirrel_spawnegg": "Squirrel Spawnegg",
+	"item.moreore.village_guardian_spawnegg": "Village Guardian Spawn Egg",
+	"item.moreore.squirrel_spawnegg": "Squirrel Spawn Egg",
 	"item.moreore.patrolpoint": "Patrolpoint",
 	"block.moreore.patrolpoint": "Patrolpoint",
 	"item.moreore.silver_wood_button": "Silver Wood Button",
@@ -130,5 +130,6 @@
 	"itemGroup.mineralic": "Mineralic",
 	"itemGroup.biologic": "Biologic",
 	"itemGroup.tools": "Tools",
-	"enchantment.moreore.get_home": "Get-Home"
+	"enchantment.moreore.get_home": "Get-Home",
+	"entity.moreore.squirrel": "Squirrel"
 }

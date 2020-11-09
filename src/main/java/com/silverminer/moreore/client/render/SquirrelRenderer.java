@@ -44,17 +44,21 @@ public class SquirrelRenderer<T extends Entity> extends MobRenderer<SquirrelEnti
 		public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn,
 				SquirrelEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks,
 				float ageInTicks, float netHeadYaw, float headPitch) {
-			boolean isChild = entitylivingbaseIn.isChild();
+			if (entitylivingbaseIn.isChild())
+				return;
 			matrixStackIn.push();
 			ModelRenderer head = this.getEntityModel().head;
 			matrixStackIn.translate((double) (head.rotationPointX / 16.0F), (double) (head.rotationPointY / 16.0F),
 					(double) (head.rotationPointZ / 16.0F));
-			matrixStackIn.rotate(Vector3f.YP.rotationDegrees(netHeadYaw));
-			matrixStackIn.rotate(Vector3f.XP.rotationDegrees(headPitch));
-			matrixStackIn.translate(0.365D, 1.725D, -1.325D);
-			float f = isChild ? 0.125F : 0.25F;
+			if (!entitylivingbaseIn.isSitting()) {
+				matrixStackIn.translate(0.365D, 1.725D, -1.325D);
+			} else {
+				matrixStackIn.translate(0.365D, 1.6D, -1.1D);
+			}
+			float f = 0.25F;
 			matrixStackIn.scale(f, f, f);
-			matrixStackIn.rotate(Vector3f.XP.rotationDegrees(-90.0F));
+			matrixStackIn.rotate(Vector3f.YP.rotationDegrees(netHeadYaw));
+			matrixStackIn.rotate(Vector3f.XP.rotationDegrees(headPitch - 90.0F));
 			matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180.0F));
 
 			ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
