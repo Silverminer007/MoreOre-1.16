@@ -46,9 +46,12 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ItemParticleData;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.pathfinding.ClimberPathNavigator;
+import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -60,19 +63,30 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 public class SquirrelEntity extends AnimalEntity {
-	private static final DataParameter<Byte> POSITION = EntityDataManager.createKey(SquirrelEntity.class,
-			DataSerializers.BYTE);
+	private static final DataParameter<Boolean> IS_CLIMBING = EntityDataManager.createKey(SquirrelEntity.class,
+			DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> IS_SITTING = EntityDataManager.createKey(SquirrelEntity.class,
+			DataSerializers.BOOLEAN);
+	/**
+	 * Wheater the Squirrel eats the Nut or places it
+	 */
+	private static final DataParameter<Boolean> EAT_NUT = EntityDataManager.createKey(SquirrelEntity.class,
+			DataSerializers.BOOLEAN);
+	private static final DataParameter<Direction> NEAREST_CLIMBABLE_BLOCK = EntityDataManager
+			.createKey(SquirrelEntity.class, DataSerializers.DIRECTION);
 	private static final Predicate<ItemEntity> TRUSTED_TARGET_SELECTOR = (item) -> {
 		return !item.cannotPickup() && item.isAlive() && item.getItem().getItem() == TreeItems.NUTS.get();
 	};
 
-	/**
-	 * Wheater the Squirrel eats the Nut or places it
-	 */
-	private boolean eatNut = false;
-
 	public SquirrelEntity(EntityType<? extends AnimalEntity> type, World worldIn) {
 		super(type, worldIn);
+	}
+
+	/**
+	 * Returns new PathNavigateGround instance
+	 */
+	protected PathNavigator createNavigator(World worldIn) {
+		return new ClimberPathNavigator(this, worldIn);
 	}
 
 	@Override
@@ -114,42 +128,95 @@ public class SquirrelEntity extends AnimalEntity {
 		this.goalSelector.addGoal(5, new EatNutGoal());
 		this.goalSelector.addGoal(6, new FindNutGoal(0.5D, 50, 256));
 		this.goalSelector.addGoal(6, new FindNutsFromGroundGoal());
-//		this.goalSelector.addGoal(7, new ClimbOnTreeGoal(0.5D, 50, 256));
+		this.goalSelector.addGoal(7, new ClimbOnTreeGoal(0.5D, 50, 256));
 		this.goalSelector.addGoal(8, new WaterAvoidingRandomWalkingGoal(this, 0.5D, 0.1F));
 	}
 
 	protected void registerData() {
 		super.registerData();
-		this.dataManager.register(POSITION, (byte) 0);
-	}
-
-	public void resetPosition() {
-		this.setAction(0);
-	}
-
-	public void setSitting() {
-		this.setAction(2);
+		this.dataManager.register(IS_CLIMBING, false);
+		this.dataManager.register(IS_SITTING, false);
+		this.dataManager.register(EAT_NUT, false);
+		this.dataManager.register(NEAREST_CLIMBABLE_BLOCK, Direction.DOWN);
 	}
 
 	/**
-	 * 0 - Normal; 2 - Sitting
-	 * 
-	 * @param action The Action
+	 * Called to update the entity's position/logic.
 	 */
-	public void setAction(int action) {
-		this.dataManager.set(POSITION, (byte) action);
+	public void tick() {
+		super.tick();
+		if (this.getItemStackFromSlot(EquipmentSlotType.MAINHAND).getCount() == 0) {
+			this.setItemStackToSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
+		}
+		if (!this.world.isRemote) {
+			if (this.collidedHorizontally || this.collidedVertically) {
+				this.setBesideClimbableBlock(true);
+				this.setNearestDirection(Direction.NORTH);
+				for (Direction d : Direction.getFacingDirections(this)) {
+					BlockPos pos = this.getPosition().add(d.getDirectionVec());
+					BlockState state = this.world.getBlockState(pos);
+					if (state.getBlock().isIn(BlockTags.LOGS) || state.getBlock().isIn(BlockTags.LEAVES)) {
+						this.setBesideClimbableBlock(true);
+						this.setNearestDirection(d);
+						return;
+					}
+				}
+			}
+			this.setBesideClimbableBlock(false);
+			this.setNearestDirection(Direction.DOWN);
+		}
 	}
 
-	public int getAction() {
-		return (int) this.dataManager.get(POSITION);
+	/**
+	 * Returns true if this entity should move as if it were on a ladder (either
+	 * because it's actually on a ladder, or for AI reasons)
+	 */
+	public boolean isOnLadder() {
+		return this.isBesideClimbableBlock();
+	}
+
+	public boolean isBesideClimbableBlock() {
+		return this.dataManager.get(IS_CLIMBING);
+	}
+
+	public void setBesideClimbableBlock(boolean climbing) {
+		this.dataManager.set(IS_CLIMBING, climbing);
+	}
+
+	public Direction getNearestDirection() {
+		return this.dataManager.get(NEAREST_CLIMBABLE_BLOCK);
+	}
+
+	public void setNearestDirection(Direction d) {
+		this.dataManager.set(NEAREST_CLIMBABLE_BLOCK, d);
+	}
+
+	public void resetPosition() {
+		this.setStitting(false);
+	}
+
+	public void setSitting() {
+		this.setStitting(true);
+	}
+
+	public void setStitting(boolean sitting) {
+		this.dataManager.set(IS_SITTING, sitting);
 	}
 
 	public boolean isNormal() {
-		return this.getAction() == 0;
+		return !this.isSitting();
 	}
 
 	public boolean isSitting() {
-		return this.getAction() == 2;
+		return this.dataManager.get(IS_SITTING);
+	}
+
+	public boolean isEatingNut() {
+		return this.dataManager.get(EAT_NUT);
+	}
+
+	public void setEatingNut(boolean eatingNut) {
+		this.dataManager.set(EAT_NUT, eatingNut);
 	}
 
 	public double getPosYEye() {
@@ -200,7 +267,6 @@ public class SquirrelEntity extends AnimalEntity {
 			if (player != null)
 				this.consumeItemFromStack(player, item);
 			this.setInLove(player);
-			LOGGER.info("Set Squirrel in Love");
 			if (player != null && hand != null)
 				player.swing(hand, true);
 			return true;
@@ -224,6 +290,26 @@ public class SquirrelEntity extends AnimalEntity {
 				.createMutableAttribute(Attributes.ATTACK_DAMAGE, 2.0D).create();
 	}
 
+	public void writeAdditional(CompoundNBT compound) {
+		compound.putBoolean("EatNut", this.isEatingNut());
+		super.writeAdditional(compound);
+	}
+
+	public void readAdditional(CompoundNBT compound) {
+		if (compound.contains("EatNut", 1)) {
+			this.setEatingNut(compound.getBoolean("EatNut"));
+		}
+		super.readAdditional(compound);
+	}
+
+	public void generateWillEatNut() {
+		// Die Tempetaur durch 2.1 teilen um bei einer temperatur von 1.0 ca. 50 %
+		// wahrscheinlichkeit vom essen zu haben, aber bei 2.0 (Wüste) nicht bei 0%
+		// plazieren zu sein
+		this.setEatingNut(
+				this.getRNG().nextFloat() <= (this.world.getBiome(this.getPosition()).getTemperature() / 2.1));
+	}
+
 	public class FindNutGoal extends MoveToBlockGoal {
 		protected int timer;
 
@@ -240,15 +326,14 @@ public class SquirrelEntity extends AnimalEntity {
 			if (flag) {
 				flag = blockstate.get(NutBushLeavesBlock.AGE) == 1;
 			}
-			return flag;
+			return flag && worldIn.getBlockState(pos.up()).getBlock() == Blocks.AIR;
 		}
 
 		/**
 		 * Keep ticking a continuous task that has already been started
 		 */
 		public void tick() {
-			if (SquirrelEntity.this.getEntityWorld().getBlockState(destinationBlock) != BiologicBlocks.NUT_BUSH_LEAVES
-					.get().getDefaultState().with(NutBushLeavesBlock.AGE, 1)) {
+			if (!this.shouldMoveTo(this.creature.world, this.destinationBlock)) {
 				this.searchForDestination();
 			}
 			super.tick();
@@ -263,15 +348,15 @@ public class SquirrelEntity extends AnimalEntity {
 
 		protected void pickNuts() {
 			if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(SquirrelEntity.this.world,
-					SquirrelEntity.this)) {
-				BlockState blockstate = SquirrelEntity.this.world.getBlockState(this.destinationBlock);
+					this.creature)) {
+				BlockState blockstate = this.creature.world.getBlockState(this.destinationBlock);
 				if (blockstate.getBlock() == BiologicBlocks.NUT_BUSH_LEAVES.get()) {
-					int j = 1 + SquirrelEntity.this.world.rand.nextInt(2);
+					int j = 1 + this.creature.world.rand.nextInt(2);
 					ItemStack itemstack = SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
 					if (itemstack.isEmpty()) {
-						SquirrelEntity.this.setItemStackToSlot(EquipmentSlotType.MAINHAND,
+						this.creature.setItemStackToSlot(EquipmentSlotType.MAINHAND,
 								new ItemStack(TreeItems.NUTS.get()));
-						SquirrelEntity.this.eatNut = SquirrelEntity.this.getRNG().nextBoolean();
+						SquirrelEntity.this.generateWillEatNut();
 						--j;
 					}
 
@@ -314,36 +399,35 @@ public class SquirrelEntity extends AnimalEntity {
 			super(SquirrelEntity.this, speed, searchlenght, maxY);
 		}
 
-		public double getTargetDistanceSq() {
-			return 0.0D;
-		}
-
-		public boolean shouldMove() {
-			return this.timeoutCounter % 100 == 0;
-		}
-
 		/**
 		 * Return true to set given position as destination
 		 */
 		protected boolean shouldMoveTo(IWorldReader worldIn, BlockPos pos) {
-			BlockState blockstate = worldIn.getBlockState(pos);
-			return (blockstate.getBlock().isIn(BlockTags.LOGS) || blockstate.getBlock().isIn(BlockTags.LEAVES))
-					&& this.lastTree != null ? !pos.withinDistance(this.lastTree, 10) : true;
+			Block block = worldIn.getBlockState(pos).getBlock();
+			boolean rightBlock = (block.isIn(BlockTags.LOGS) || block.isIn(BlockTags.LEAVES));
+			boolean lastTreeAway = (this.lastTree != null ? !pos.withinDistance(this.lastTree, 10) : true);
+			boolean air = (worldIn.getBlockState(pos.up()).getBlock() == Blocks.AIR);
+			return rightBlock && lastTreeAway && air;
 		}
 
 		/**
 		 * Keep ticking a continuous task that has already been started
 		 */
 		public void tick() {
+			if (!this.shouldMoveTo(this.creature.world, this.destinationBlock)
+					|| this.destinationBlock == BlockPos.ZERO) {
+				this.searchForDestination();
+			}
+			super.tick();
 			if (this.getIsAboveDestination()) {
-				if (this.timer >= 40) {
-					this.lastTree = SquirrelEntity.this.getPosition();
+				if (this.timer >= 200) {
+					this.lastTree = this.creature.getPosition();
 					this.searchForDestination();
+					this.timer = 0;
 				} else {
 					++this.timer;
 				}
 			}
-			super.tick();
 		}
 
 		/**
@@ -351,7 +435,9 @@ public class SquirrelEntity extends AnimalEntity {
 		 * necessary for execution in this method as well.
 		 */
 		public boolean shouldExecute() {
-			return !SquirrelEntity.this.isSitting() && !SquirrelEntity.this.isSleeping() && super.shouldExecute();
+			return !SquirrelEntity.this.isSitting()
+					&& SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND) == ItemStack.EMPTY
+					&& !SquirrelEntity.this.isSleeping() && super.shouldExecute();
 		}
 
 		/**
@@ -359,6 +445,7 @@ public class SquirrelEntity extends AnimalEntity {
 		 */
 		public void startExecuting() {
 			this.timer = 0;
+			this.destinationBlock = BlockPos.ZERO;
 			super.startExecuting();
 		}
 	}
@@ -366,14 +453,11 @@ public class SquirrelEntity extends AnimalEntity {
 	public class PlaceNutGoal extends MoveToBlockGoal {
 		protected int timer;
 		protected int searchLength2;
+		protected boolean hasDestination = false;
 
 		public PlaceNutGoal(double speed, int searchlenght, int maxY) {
 			super(SquirrelEntity.this, speed, searchlenght, maxY);
 			this.searchLength2 = searchlenght;
-		}
-
-		public double getTargetDistanceSq() {
-			return 0.4D;
 		}
 
 		/**
@@ -382,7 +466,8 @@ public class SquirrelEntity extends AnimalEntity {
 		 */
 		public boolean shouldExecute() {
 			return SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem() == TreeItems.NUTS
-					.get() && !SquirrelEntity.this.isSleeping() && super.shouldExecute() && !SquirrelEntity.this.eatNut;
+					.get() && !SquirrelEntity.this.isSleeping() && super.shouldExecute()
+					&& !SquirrelEntity.this.isEatingNut() && !SquirrelEntity.this.isSitting();
 		}
 
 		/**
@@ -410,18 +495,19 @@ public class SquirrelEntity extends AnimalEntity {
 		}
 
 		protected void placeNuts() {
-			if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(SquirrelEntity.this.world,
-					SquirrelEntity.this)
-					&& SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem() == TreeItems.NUTS
+			if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(SquirrelEntity.this.world, this.creature)
+					&& this.creature.getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem() == TreeItems.NUTS
 							.get()) {
-				SquirrelEntity.this.world.setBlockState(this.destinationBlock.up(),
+				this.creature.world.setBlockState(this.func_241846_j(),
 						BiologicBlocks.NUT_BUSH_SAPLING.get().getDefaultState());
-				SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND).shrink(1);
+				this.creature.getItemStackFromSlot(EquipmentSlotType.MAINHAND).shrink(1);
+				SquirrelEntity.this.generateWillEatNut();
 			}
 		}
 
 		public void startExecuting() {
 			this.timer = 0;
+			this.hasDestination = false;
 			super.startExecuting();
 		}
 
@@ -432,6 +518,8 @@ public class SquirrelEntity extends AnimalEntity {
 		 * EntityAIMoveToBlock#shouldMoveTo(World, BlockPos)}) can be found.
 		 */
 		protected boolean searchForDestination() {
+			if (this.hasDestination)
+				return true;
 			int i = this.searchLength2;
 			BlockPos blockpos = this.creature.getPosition();
 			BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
@@ -443,10 +531,9 @@ public class SquirrelEntity extends AnimalEntity {
 							blockpos$mutable.setAndOffset(blockpos, i1, k - 1, j1);
 							if (this.creature.isWithinHomeDistanceFromPosition(blockpos$mutable)
 									&& this.shouldMoveTo(this.creature.world, blockpos$mutable)
-									&& SquirrelEntity.this.getRNG().nextFloat() < this.timer++ / i
-											* SquirrelEntity.this.getDistanceSq(blockpos$mutable.getX(),
-													blockpos$mutable.getY(), blockpos$mutable.getZ())) {
+									&& this.creature.getRNG().nextFloat() < (this.timer++ / Math.pow(i * 2, 3))) {
 								this.destinationBlock = blockpos$mutable;
+								this.hasDestination = true;
 								return true;
 							}
 						}
@@ -493,7 +580,7 @@ public class SquirrelEntity extends AnimalEntity {
 		 */
 		public boolean shouldExecute() {
 			return SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem() == TreeItems.NUTS
-					.get() && !SquirrelEntity.this.isSleeping() && SquirrelEntity.this.eatNut;
+					.get() && !SquirrelEntity.this.isSleeping() && SquirrelEntity.this.isEatingNut();
 		}
 
 		/**
@@ -501,8 +588,10 @@ public class SquirrelEntity extends AnimalEntity {
 		 */
 		public void tick() {
 			super.tick();
-			SquirrelEntity.this.setSitting();
-			this.eatNut();
+			if (SquirrelEntity.this.isEatingNut()) {
+				SquirrelEntity.this.setSitting();
+				this.eatNut();
+			}
 		}
 
 		protected void eatNut() {
@@ -516,6 +605,7 @@ public class SquirrelEntity extends AnimalEntity {
 					squirrel.heal(0.5F);
 					squirrel.getItemStackFromSlot(EquipmentSlotType.MAINHAND).shrink(1);
 					squirrel.resetPosition();
+					SquirrelEntity.this.generateWillEatNut();
 				} else {
 					this.addItemParticles(SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND), 5,
 							squirrel);
@@ -642,7 +732,7 @@ public class SquirrelEntity extends AnimalEntity {
 			}
 			if (itemstack.isEmpty() && SquirrelEntity.this.getDistanceSq(list.get(0)) <= 1.0F) {
 				SquirrelEntity.this.setItemStackToSlot(EquipmentSlotType.MAINHAND, list.get(0).getItem());
-				SquirrelEntity.this.eatNut = SquirrelEntity.this.getRNG().nextBoolean();
+				SquirrelEntity.this.generateWillEatNut();
 				list.get(0).remove();
 			}
 		}

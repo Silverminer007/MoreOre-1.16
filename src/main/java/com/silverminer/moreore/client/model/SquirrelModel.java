@@ -1,5 +1,8 @@
 package com.silverminer.moreore.client.model;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -14,6 +17,7 @@ import net.minecraft.util.math.MathHelper;
 // Paste this class into your mod and generate all required imports
 
 public class SquirrelModel<T extends SquirrelEntity> extends AgeableModel<T> {
+	protected static final Logger LOGGER = LogManager.getLogger(SquirrelModel.class);
 	private final ModelRenderer body;
 	private final ModelRenderer belly;
 	public final ModelRenderer head;
@@ -142,14 +146,32 @@ public class SquirrelModel<T extends SquirrelEntity> extends AgeableModel<T> {
 	}
 
 	public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+		body.setRotationPoint(0.0F, 24.0F, 0.0F);
 		if (entityIn.isSitting()) {
-			setRotationAngle(this.body, (float) Math.PI / 5F, 3.1416F, 0.0F);
+			setRotationAngle(this.body, (float) Math.PI / 5F, (float) Math.PI, 0.0F);
 			setRotationAngle(this.head, -0.9163F, 0.0F, 0.0F);
 			this.legsBack.rotateAngleX = -(float) Math.PI / 5F;
 			this.legsFront.rotateAngleX = (float) Math.PI / 4F;
 			this.tail.rotateAngleX = -0.3927F;
 			this.tail1.rotateAngleX = 0.1745F;
 			this.tail2.rotateAngleX = -0.1745F;
+		} else if (entityIn.isBesideClimbableBlock()) {
+			this.tail.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount + 0.3F;
+			this.tail1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F - (float) Math.PI) * 0.5F * limbSwingAmount;
+			this.tail2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount;
+			this.legsBack.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+			this.legsFront.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F
+					* limbSwingAmount;
+			this.head.rotateAngleX = 0.0F;
+			this.head.rotateAngleY = 0.0F;
+/*			if (entityIn.getNearestDirection() == Direction.UP) {
+				body.setRotationPoint(0.0F, 10.0F, 0.0F);
+				body.rotateAngleX = (float) Math.PI;
+			} else if (entityIn.getNearestDirection() == Direction.DOWN) {
+				setRotationAngle(this.body, 0.0F, (float) Math.PI, 0.0F);
+			} else {
+				this.body.rotateAngleX = (float) Math.PI / -2.0F;
+			}*/
 		}
 	}
 }
