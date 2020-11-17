@@ -13,6 +13,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import java.util.*;
@@ -137,6 +138,9 @@ public final class PortalRegistry {
 
 		// Create portal data structure
 		Portal portal = new Portal(world.getDimensionKey(), portalAxis, corner1, corner2, corner3, corner4);
+		portal.setDestinationDimension(world.getDimensionKey() == World.OVERWORLD
+				? RegistryKey.getOrCreateKey(Registry.WORLD_KEY, MoreOre.SILVER_DIM_TYPE)
+				: World.OVERWORLD);
 
 		Iterable<BlockPos> portalPositions = portal.getPortalPositions();
 
@@ -303,9 +307,8 @@ public final class PortalRegistry {
 	 * 
 	 * @param world       The {@link World}.
 	 * @param portal      The {@link Portal} to register.
-	 * @param powerGauges The power gauges that are part or the portal.
 	 */
-	private static void register(World world, Portal portal) {
+	public static void register(World world, Portal portal) {
 		if (world == null || portal == null)
 			return;
 
@@ -324,7 +327,7 @@ public final class PortalRegistry {
 	 * @param world  The {@link World}.
 	 * @param portal The {@link Portal} to unregister.
 	 */
-	private static void unregister(World world, Portal portal) {
+	public static void unregister(World world, Portal portal) {
 		if (world == null || portal == null)
 			return;
 
@@ -446,9 +449,7 @@ public final class PortalRegistry {
 		}
 
 		// Deserialization of BlockPos to Portal map.
-
 		i = 0;
-		int x = 0;
 		String subKey;
 		BlockPos portalPos;
 
@@ -457,6 +458,7 @@ public final class PortalRegistry {
 
 			portalPos = BlockPos.fromLong(tag.getLong("pos"));
 
+			int x = 0;
 			while (tag.contains(subKey = "portal" + x++)) {
 				portal = portalIDs.get(tag.getInt(subKey));
 				portals.put(portalPos, portal);

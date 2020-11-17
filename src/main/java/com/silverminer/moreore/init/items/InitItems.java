@@ -18,9 +18,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class InitItems {
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MoreOre.MODID);
 
-	public static final RegistryObject<Item> EMERALD_SHARD = ITEMS.register("emerald_shard",
-			() -> new Item(new Item.Properties().group(ModItemGroups.TOOLS).maxStackSize(64)));
-
 	public static final RegistryObject<Item> FUEL = ITEMS.register("fuel",
 			() -> new FuelItem(new Item.Properties().group(ModItemGroups.MINERALIC)));
 

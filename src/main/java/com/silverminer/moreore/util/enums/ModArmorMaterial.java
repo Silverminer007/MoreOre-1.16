@@ -2,6 +2,7 @@ package com.silverminer.moreore.util.enums;
 
 import java.util.function.Supplier;
 import com.silverminer.moreore.init.items.OreItems;
+import com.silverminer.moreore.MoreOre;
 
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
@@ -14,24 +15,24 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.util.SoundEvents;
 
 public enum ModArmorMaterial implements IArmorMaterial {
-	EMERALD(com.silverminer.moreore.MoreOre.MODID + ":emerald", 5, new int[] { 3, 6, 7, 3 }, 420,
-			SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 6.9F, 0.0F, () -> {
+	EMERALD(MoreOre.MODID + ":emerald", 35, new int[] { 3, 6, 8, 3 }, 12, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 2.5F,
+			0.0F, () -> {
 				return Ingredient.fromItems(Items.EMERALD);
 			}),
-	SAPHIR(com.silverminer.moreore.MoreOre.MODID + ":saphir", 5, new int[] { 2, 6, 5, 3 }, 420,
-			SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 6.9F, 0.0F, () -> {
+	SAPHIR(MoreOre.MODID + ":saphir", 22, new int[] { 2, 6, 6, 3 }, 10, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 1.7F,
+			0.0F, () -> {
 				return Ingredient.fromItems(OreItems.SAPHIR.get());
 			}),
-	RUBIN(com.silverminer.moreore.MoreOre.MODID + ":rubin", 5, new int[] { 3, 5, 6, 2 }, 420,
-			SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 6.9F, 0.0F, () -> {
+	RUBIN(MoreOre.MODID + ":rubin", 22, new int[] { 2, 5, 7, 3 }, 10, SoundEvents.ITEM_ARMOR_EQUIP_GOLD, 1.7F, 0.0F,
+			() -> {
 				return Ingredient.fromItems(OreItems.RUBIN.get());
 			}),
-	RAINBOW(com.silverminer.moreore.MoreOre.MODID + ":rainbow", 5, new int[] { 4, 7, 7, 4 }, 420,
-			SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 6.9F, 0.0F, () -> {
+	RAINBOW(MoreOre.MODID + ":rainbow", 39, new int[] { 3, 6, 8, 3 }, 15, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 3.5F,
+			0.2F, () -> {
 				return Ingredient.fromItems(OreItems.RAINBOW_RUNE.get());
 			});
 
-	private static final int[] MAX_DAMAGE_ARRAY = new int[] { 16, 16, 16, 16 };
+	private static final int[] MAX_DAMAGE_ARRAY = new int[] { 13, 15, 16, 11 };
 	private final String name;
 	private final int maxDamageFactor;
 	private final int[] damageReductionAmountArray;

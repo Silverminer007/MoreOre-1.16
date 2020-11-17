@@ -1,5 +1,6 @@
 package com.silverminer.moreore.common.portal;
 
+import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.common.objects.blocks.SilverPortalBlock;
 import com.silverminer.moreore.common.objects.blocks.SilverPortalFrameBlock;
 
@@ -16,24 +17,29 @@ import net.minecraftforge.common.util.INBTSerializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Represents a portal.<br>
  * Note: Corner1 and Corner4 must be diagonal to each other, same for Corner2
  * and Corner3.
  */
 public class Portal implements INBTSerializable<CompoundNBT> {
+	protected static final Logger LOGGER = LogManager.getLogger(Portal.class);
 	private RegistryKey<World> dimension;
 	private Axis axis;
 	private Corner corner1;
 	private Corner corner2;
 	private Corner corner3;
 	private Corner corner4;
+	private RegistryKey<World> destinationDim = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, MoreOre.SILVER_DIM_TYPE);
 
 	public Portal() {
 	}
 
-	public Portal(RegistryKey<World> dimension, Axis axis, Corner corner1, Corner corner2,
-			Corner corner3, Corner corner4) {
+	public Portal(RegistryKey<World> dimension, Axis axis, Corner corner1, Corner corner2, Corner corner3,
+			Corner corner4) {
 		this.dimension = dimension;
 		this.axis = axis;
 		this.corner1 = corner1;
@@ -45,7 +51,7 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 	/**
 	 * Gets the dimension the portal is located in.
 	 * 
-	 * @return A <code>DimensionType</code> representing the dimension.
+	 * @return A <code>RegistryKey<World></code> representing the dimension.
 	 */
 	public RegistryKey<World> getDimension() {
 		return dimension;
@@ -94,6 +100,20 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 	 */
 	public Corner getCorner4() {
 		return corner4;
+	}
+
+	/**
+	 * Gets the destination Dimension of the Portal
+	 * 
+	 * @return A RegistryKey<World> or <code>null</code>.
+	 */
+	public RegistryKey<World> getDestinationDimension() {
+		return destinationDim;
+	}
+
+	public Portal setDestinationDimension(RegistryKey<World> destinationDimIn) {
+		this.destinationDim = destinationDimIn;
+		return this;
 	}
 
 	/**
@@ -208,12 +228,18 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 	@Override
 	public CompoundNBT serializeNBT() {
 		CompoundNBT tag = new CompoundNBT();
-		tag.putString("dimension", (dimension.toString() != null) ? dimension.toString() : "");
+		tag.putString("dimension",
+				(dimension != null && dimension.getLocation() != null && dimension.getLocation().toString() != null)
+						? dimension.getLocation().toString()
+						: "");
 		tag.putString("axis", axis.name());
 		tag.put("corner1", corner1.serializeNBT());
 		tag.put("corner2", corner2.serializeNBT());
 		tag.put("corner3", corner3.serializeNBT());
 		tag.put("corner4", corner4.serializeNBT());
+		tag.putString("destinationDim",
+				(destinationDim.getLocation().toString() != null) ? destinationDim.getLocation().toString()
+						: MoreOre.SILVER_DIM_TYPE.toString());
 
 		return tag;
 	}
@@ -246,6 +272,14 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 
 		corner4 = new Corner();
 		corner4.deserializeNBT(nbt.getCompound("corner4"));
+
+		// Type 8 means string
+		if (nbt.contains("destinationDim", 8)) {
+			ResourceLocation dimensionRegistryKey = ResourceLocation.tryCreate(nbt.getString("destinationDim"));
+			destinationDim = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, dimensionRegistryKey);
+		} else {
+			destinationDim = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, MoreOre.SILVER_DIM_TYPE);
+		}
 	}
 
 	@Override
@@ -258,6 +292,7 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 		result = prime * result + ((corner2 == null) ? 0 : corner2.hashCode());
 		result = prime * result + ((corner3 == null) ? 0 : corner3.hashCode());
 		result = prime * result + ((corner4 == null) ? 0 : corner4.hashCode());
+		result = prime * result + ((destinationDim == null) ? 0 : destinationDim.hashCode());
 		return result;
 	}
 
@@ -273,6 +308,9 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 		Portal other = (Portal) obj;
 
 		if (dimension != other.dimension)
+			return false;
+
+		if (destinationDim != other.destinationDim)
 			return false;
 
 		if (axis != other.axis)

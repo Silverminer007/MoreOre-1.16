@@ -117,6 +117,7 @@ public class CommonEvents {
 
 		@SubscribeEvent
 		public static void onWorldLoad(WorldEvent.Load event) {
+			LOGGER.debug(MARKER, "Firing World Load Event");
 			IWorld iworld = event.getWorld();
 
 			if (!(iworld instanceof World))

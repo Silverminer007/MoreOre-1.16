@@ -18,7 +18,6 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -70,7 +69,7 @@ public class FuelItem extends Item {
 		playerIn.addPotionEffect(new EffectInstance(Effects.ABSORPTION, 500, 255));
 		if (!worldIn.isRemote()) {
 			Utils.teleportTo(playerIn, worldIn.getDimensionKey(),
-					((ServerPlayerEntity) playerIn).func_241140_K_(), Direction.NORTH);
+					((ServerPlayerEntity) playerIn).func_241140_K_());
 		}
 		worldIn.setRainStrength(10.0f);
 

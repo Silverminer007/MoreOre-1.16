@@ -9,11 +9,11 @@ import javax.annotation.Nullable;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityAnchorArgument;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.command.arguments.ILocationArgument;
 import net.minecraft.command.arguments.LocationInput;
@@ -24,86 +24,69 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.SPlayerPositionLookPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
 
 public class TlpCommand {
+	private static final SimpleCommandExceptionType INVALID_POS_EXCEPTION = new SimpleCommandExceptionType(
+			new TranslationTextComponent("commands.teleport.invalidPosition"));
 
 	public static void register(CommandDispatcher<CommandSource> dispatcher) {
 		LiteralCommandNode<CommandSource> literalcommandnode = dispatcher
-				.register(Commands.literal("teleportieren").requires((p_198816_0_) -> {
-					return p_198816_0_.hasPermissionLevel(0);
+				.register(Commands.literal("teleportieren").requires((source) -> {
+					return source.hasPermissionLevel(0);
 				}).then(Commands.argument("targets", EntityArgument.entities())
-						.then(Commands.argument("location", Vec3Argument.vec3()).executes((p_198807_0_) -> {
-							return teleportToPos(p_198807_0_.getSource(),
-									EntityArgument.getEntities(p_198807_0_, "targets"),
-									p_198807_0_.getSource().getWorld(),
-									Vec3Argument.getLocation(p_198807_0_, "location"), (ILocationArgument) null,
-									(TlpCommand.Facing) null);
-						}).then(Commands.argument("rotation", RotationArgument.rotation()).executes((p_198811_0_) -> {
-							return teleportToPos(p_198811_0_.getSource(),
-									EntityArgument.getEntities(p_198811_0_, "targets"),
-									p_198811_0_.getSource().getWorld(),
-									Vec3Argument.getLocation(p_198811_0_, "location"),
-									RotationArgument.getRotation(p_198811_0_, "rotation"), (TlpCommand.Facing) null);
-						})).then(Commands.literal("facing").then(Commands.literal("entity").then(
-								Commands.argument("facingEntity", EntityArgument.entity()).executes((p_198806_0_) -> {
-									return teleportToPos(p_198806_0_.getSource(),
-											EntityArgument.getEntities(p_198806_0_, "targets"),
-											p_198806_0_.getSource().getWorld(),
-											Vec3Argument.getLocation(p_198806_0_, "location"), (ILocationArgument) null,
-											new TlpCommand.Facing(EntityArgument.getEntity(p_198806_0_, "facingEntity"),
-													EntityAnchorArgument.Type.FEET));
-								}).then(Commands.argument("facingAnchor", EntityAnchorArgument.entityAnchor())
-										.executes((p_198812_0_) -> {
-											return teleportToPos(p_198812_0_.getSource(),
-													EntityArgument.getEntities(p_198812_0_, "targets"),
-													p_198812_0_.getSource().getWorld(),
-													Vec3Argument.getLocation(p_198812_0_, "location"),
-													(ILocationArgument) null,
-													new TlpCommand.Facing(
-															EntityArgument.getEntity(p_198812_0_, "facingEntity"),
-															EntityAnchorArgument.getEntityAnchor(p_198812_0_,
-																	"facingAnchor")));
-										}))))
-								.then(Commands.argument("facingLocation", Vec3Argument.vec3())
-										.executes((p_198805_0_) -> {
-											return teleportToPos(p_198805_0_.getSource(),
-													EntityArgument.getEntities(p_198805_0_, "targets"),
-													p_198805_0_.getSource().getWorld(),
-													Vec3Argument.getLocation(p_198805_0_, "location"),
-													(ILocationArgument) null, new TlpCommand.Facing(
-															Vec3Argument.getVec3(p_198805_0_, "facingLocation")));
-										}))))
-						.then(Commands.argument("destination", EntityArgument.entity()).executes((p_198814_0_) -> {
-							return teleportToEntity(p_198814_0_.getSource(),
-									EntityArgument.getEntities(p_198814_0_, "targets"),
-									EntityArgument.getEntity(p_198814_0_, "destination"));
-						}))).then(Commands.argument("location", Vec3Argument.vec3()).executes((p_200560_0_) -> {
-							return teleportToPos(p_200560_0_.getSource(),
-									Collections.singleton(p_200560_0_.getSource().assertIsEntity()),
-									p_200560_0_.getSource().getWorld(),
-									Vec3Argument.getLocation(p_200560_0_, "location"), LocationInput.current(),
-									(TlpCommand.Facing) null);
-						})).then(Commands.argument("destination", EntityArgument.entity()).executes((p_200562_0_) -> {
-							return teleportToEntity(p_200562_0_.getSource(),
-									Collections.singleton(p_200562_0_.getSource().assertIsEntity()),
-									EntityArgument.getEntity(p_200562_0_, "destination"));
+						.then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
+							return teleportToPos(command.getSource(), EntityArgument.getEntities(command, "targets"),
+									command.getSource().getWorld(), Vec3Argument.getLocation(command, "location"),
+									(ILocationArgument) null);
+						}).then(Commands.argument("rotation", RotationArgument.rotation()).executes((command) -> {
+							return teleportToPos(command.getSource(), EntityArgument.getEntities(command, "targets"),
+									command.getSource().getWorld(), Vec3Argument.getLocation(command, "location"),
+									RotationArgument.getRotation(command, "rotation"));
+						}))).then(Commands.argument("destination", EntityArgument.entity()).executes((command) -> {
+							return teleportToEntity(command.getSource(), EntityArgument.getEntities(command, "targets"),
+									EntityArgument.getEntity(command, "destination"));
+						}))).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
+							return teleportToPos(command.getSource(),
+									Collections.singleton(command.getSource().assertIsEntity()),
+									command.getSource().getWorld(), Vec3Argument.getLocation(command, "location"),
+									LocationInput.current());
+						})).then(Commands.argument("destination", EntityArgument.entity()).executes((command) -> {
+							return teleportToEntity(command.getSource(),
+									Collections.singleton(command.getSource().assertIsEntity()),
+									EntityArgument.getEntity(command, "destination"));
 						})));
-		dispatcher.register(Commands.literal("tlp").requires((p_200556_0_) -> {
-			return p_200556_0_.hasPermissionLevel(0);
+		dispatcher.register(Commands.literal("tlp").requires((source) -> {
+			return source.hasPermissionLevel(0);
 		}).redirect(literalcommandnode));
 	}
 
-	private static int teleportToEntity(CommandSource source, Collection<? extends Entity> targets,
-			Entity destination) {
+	private static int teleportToEntity(CommandSource source, Collection<? extends Entity> targets, Entity destination)
+			throws CommandSyntaxException {
+		if (!(source.getEntity() instanceof ServerPlayerEntity))
+			return 0;
+		int level = ((ServerPlayerEntity) source.getEntity()).experienceLevel;
+		int neededLevels = targets.size() * 3;
+		if (level < neededLevels && !((ServerPlayerEntity) source.getEntity()).isCreative()) {
+			if (targets.size() == 1) {
+				source.sendFeedback(new TranslationTextComponent("commands.tlp.failed.entity.notEnoughLevel.single",
+						targets.iterator().next().getDisplayName(), destination.getDisplayName()), true);
+			} else {
+				source.sendFeedback(new TranslationTextComponent("commands.tlp.failed.entity.notEnoughLevel.multiple",
+						targets.size(), destination.getDisplayName()), true);
+			}
+			return 0;
+		}
 		for (Entity entity : targets) {
 			teleport(source, entity, (ServerWorld) destination.world, destination.getPosX(), destination.getPosY(),
 					destination.getPosZ(), EnumSet.noneOf(SPlayerPositionLookPacket.Flags.class),
-					destination.rotationYaw, destination.rotationPitch, (TlpCommand.Facing) null);
+					destination.rotationYaw, destination.rotationPitch);
 		}
 
 		if (targets.size() == 1) {
@@ -118,8 +101,7 @@ public class TlpCommand {
 	}
 
 	private static int teleportToPos(CommandSource source, Collection<? extends Entity> targets, ServerWorld worldIn,
-			ILocationArgument position, @Nullable ILocationArgument rotationIn, @Nullable TlpCommand.Facing facing)
-			throws CommandSyntaxException {
+			ILocationArgument position, @Nullable ILocationArgument rotationIn) throws CommandSyntaxException {
 		Vector3d vec3d = position.getPosition(source);
 		Vector2f vec2f = rotationIn == null ? null : rotationIn.getRotation(source);
 		Set<SPlayerPositionLookPacket.Flags> set = EnumSet.noneOf(SPlayerPositionLookPacket.Flags.class);
@@ -148,12 +130,27 @@ public class TlpCommand {
 			}
 		}
 
+		if (!(source.getEntity() instanceof ServerPlayerEntity))
+			return 0;
+		int level = ((ServerPlayerEntity) source.getEntity()).experienceLevel;
+		int neededLevels = targets.size() * 3;
+		if (level < neededLevels && !((ServerPlayerEntity) source.getEntity()).isCreative()) {
+			if (targets.size() == 1) {
+				source.sendFeedback(new TranslationTextComponent("commands.tlp.failed.location.notEnoughLevel.single",
+						targets.iterator().next().getDisplayName(), vec3d.x, vec3d.y, vec3d.z), true);
+			} else {
+				source.sendFeedback(new TranslationTextComponent("commands.tlp.failed.location.notEnoughLevel.multiple",
+						targets.size(), vec3d.x, vec3d.y, vec3d.z), true);
+			}
+			return 0;
+		}
+
 		for (Entity entity : targets) {
 			if (rotationIn == null) {
 				teleport(source, entity, worldIn, vec3d.x, vec3d.y, vec3d.z, set, entity.rotationYaw,
-						entity.rotationPitch, facing);
+						entity.rotationPitch);
 			} else {
-				teleport(source, entity, worldIn, vec3d.x, vec3d.y, vec3d.z, set, vec2f.y, vec2f.x, facing);
+				teleport(source, entity, worldIn, vec3d.x, vec3d.y, vec3d.z, set, vec2f.y, vec2f.x);
 			}
 		}
 
@@ -169,70 +166,64 @@ public class TlpCommand {
 	}
 
 	private static void teleport(CommandSource source, Entity entityIn, ServerWorld worldIn, double x, double y,
-			double z, Set<SPlayerPositionLookPacket.Flags> relativeList, float yaw, float pitch,
-			@Nullable TlpCommand.Facing facing) {
-		if (entityIn instanceof ServerPlayerEntity) {
-			if (source.getEntity() != null && source.getEntity() instanceof ServerPlayerEntity
-					&& entityIn == source.getEntity()) {
-				int level = ((ServerPlayerEntity) entityIn).experienceLevel;
+			double z, Set<SPlayerPositionLookPacket.Flags> relativeList, float yaw, float pitch)
+			throws CommandSyntaxException {
+		BlockPos blockpos = new BlockPos(x, y, z);
+		if (!World.isInvalidPosition(blockpos)) {
+			throw INVALID_POS_EXCEPTION.create();
+		} else {
+			if (source.getEntity() instanceof ServerPlayerEntity) {
+				ServerPlayerEntity player = ((ServerPlayerEntity) source.getEntity());
 				boolean allowteleport = false;
-				if (!((ServerPlayerEntity) entityIn).isCreative()) {
-					if (level > 3) {
-						((ServerPlayerEntity) entityIn).setExperienceLevel(level - 3);
+				if (!player.isCreative()) {
+					if (player.experienceLevel >= 3) {
+						((ServerPlayerEntity) source.getEntity()).addExperienceLevel(-3);
 						allowteleport = true;
 					} else
 						allowteleport = false;
 				} else
 					allowteleport = true;
 				if (allowteleport) {
-					ChunkPos chunkpos = new ChunkPos(new BlockPos(x, y, z));
-					worldIn.getChunkProvider().registerTicket(TicketType.POST_TELEPORT, chunkpos, 1,
-							entityIn.getEntityId());
-					entityIn.stopRiding();
-					if (((ServerPlayerEntity) entityIn).isSleeping()) {
-						((ServerPlayerEntity) entityIn).stopSleepInBed(true, true);
-					}
+					if (entityIn instanceof ServerPlayerEntity) {
+						ChunkPos chunkpos = new ChunkPos(new BlockPos(x, y, z));
+						worldIn.getChunkProvider().registerTicket(TicketType.POST_TELEPORT, chunkpos, 1,
+								entityIn.getEntityId());
+						entityIn.stopRiding();
+						if (((ServerPlayerEntity) entityIn).isSleeping()) {
+							((ServerPlayerEntity) entityIn).stopSleepInBed(true, true);
+						}
 
-					if (worldIn == entityIn.world) {
-						((ServerPlayerEntity) entityIn).connection.setPlayerLocation(x, y, z, yaw, pitch, relativeList);
+						if (worldIn == entityIn.world) {
+							((ServerPlayerEntity) entityIn).connection.setPlayerLocation(x, y, z, yaw, pitch,
+									relativeList);
+						} else {
+							((ServerPlayerEntity) entityIn).teleport(worldIn, x, y, z, yaw, pitch);
+						}
+
+						entityIn.setRotationYawHead(yaw);
 					} else {
-						((ServerPlayerEntity) entityIn).teleport(worldIn, x, y, z, yaw, pitch);
+						float f1 = MathHelper.wrapDegrees(yaw);
+						float f = MathHelper.wrapDegrees(pitch);
+						f = MathHelper.clamp(f, -90.0F, 90.0F);
+						if (worldIn == entityIn.world) {
+							entityIn.setLocationAndAngles(x, y, z, f1, f);
+							entityIn.setRotationYawHead(f1);
+						} else {
+							entityIn.detach();
+							Entity entity = entityIn;
+							entityIn = entityIn.getType().create(worldIn);
+							if (entityIn == null) {
+								return;
+							}
+
+							entityIn.copyDataFromOld(entity);
+							entityIn.setLocationAndAngles(x, y, z, f1, f);
+							entityIn.setRotationYawHead(f1);
+							worldIn.addFromAnotherDimension(entityIn);
+						}
 					}
-
-					entityIn.setRotationYawHead(yaw);
 				}
 			}
-		}
-	}
-
-	static class Facing {
-		private final Vector3d position;
-		private final Entity entity;
-		private final EntityAnchorArgument.Type anchor;
-
-		public Facing(Entity entityIn, EntityAnchorArgument.Type anchorIn) {
-			this.entity = entityIn;
-			this.anchor = anchorIn;
-			this.position = anchorIn.apply(entityIn);
-		}
-
-		public Facing(Vector3d positionIn) {
-			this.entity = null;
-			this.position = positionIn;
-			this.anchor = null;
-		}
-
-		public void updateLook(CommandSource source, Entity entityIn) {
-			if (this.entity != null) {
-				if (entityIn instanceof ServerPlayerEntity) {
-					((ServerPlayerEntity) entityIn).lookAt(source.getEntityAnchorType(), this.entity, this.anchor);
-				} else {
-					entityIn.lookAt(source.getEntityAnchorType(), this.position);
-				}
-			} else {
-				entityIn.lookAt(source.getEntityAnchorType(), this.position);
-			}
-
 		}
 	}
 }

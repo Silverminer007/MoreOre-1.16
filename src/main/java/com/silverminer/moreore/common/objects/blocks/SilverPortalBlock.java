@@ -6,22 +6,29 @@ import net.minecraft.block.BreakableBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.NameTagItem;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -49,10 +56,8 @@ public class SilverPortalBlock extends BreakableBlock {
 	public static final EnumProperty<Axis> AXIS = EnumProperty.create("axis", Axis.class, Axis.X, Axis.Y, Axis.Z);
 
 	public SilverPortalBlock() {
-		super(Block.Properties.create(Material.PORTAL).doesNotBlockMovement().noDrops().hardnessAndResistance(-1.0F) // indestructible
-																														// by
-																														// normal
-																														// means
+		// indestructible by normal means
+		super(Block.Properties.create(Material.PORTAL).doesNotBlockMovement().noDrops().hardnessAndResistance(-1.0F)
 				.setLightLevel((light) -> {
 					return 11;
 				}).sound(SoundType.GLASS));
@@ -86,20 +91,51 @@ public class SilverPortalBlock extends BreakableBlock {
 						VoxelShapes.create(entity.getBoundingBox().offset((double) (-pos.getX()),
 								(double) (-pos.getY()), (double) (-pos.getZ()))),
 						state.getShape(worldIn, pos), IBooleanFunction.AND)) {
-			if (entity.func_242280_ah())
-				return;
-			RegistryKey<World> dim = entity.world.getDimensionKey() == RegistryKey
-					.getOrCreateKey(Registry.WORLD_KEY, MoreOre.SILVER_DIM_TYPE) ? World.OVERWORLD
-							: RegistryKey.getOrCreateKey(Registry.WORLD_KEY, MoreOre.SILVER_DIM_TYPE);
+
+			RegistryKey<World> dim = null;
 			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 			if (worldIn instanceof ServerWorld) {
 				server = worldIn.getServer();
 			}
+			List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos, worldIn.getDimensionKey());
+			if (affectedPortals != null && !(affectedPortals.size() < 1)) {
+				Portal firstPortal = affectedPortals.get(0);
+				dim = firstPortal.getDestinationDimension();
+
+				try {
+					if (entity instanceof ItemEntity) {
+						ItemEntity itemE = ((ItemEntity) entity);
+						if (itemE.getItem().getItem() instanceof NameTagItem) {
+							String text = itemE.getItem().getDisplayName().getUnformattedComponentText();
+							RegistryKey<World> newDim = RegistryKey.getOrCreateKey(Registry.WORLD_KEY,
+									new ResourceLocation(text));
+							if (server.getWorld(newDim) != null && newDim != firstPortal.getDestinationDimension()) {
+								PortalRegistry.unregister(worldIn, firstPortal);
+								PortalRegistry.register(worldIn, firstPortal.setDestinationDimension(newDim));
+								itemE.getItem().shrink(1);
+								return;
+							}
+						}
+					}
+				} catch (Throwable e) {
+					e.printStackTrace();
+				}
+			}
+
+			if (dim == null) {
+				dim = entity.world.getDimensionKey() == World.OVERWORLD
+						? RegistryKey.getOrCreateKey(Registry.WORLD_KEY, MoreOre.SILVER_DIM_TYPE)
+						: World.OVERWORLD;
+			}
+			if (entity.func_242280_ah())
+				return;
 			World world = server.getWorld(dim);
+			if (world == null)
+				world = server.getWorld(World.OVERWORLD);
 			if (world == null)
 				return;
 			BlockPos destinationPos = SpawnPositionHelper.calculate(pos, world);
-			Utils.teleportTo(entity, dim, destinationPos, Direction.NORTH);
+			Utils.teleportTo(entity, dim, destinationPos);
 			entity.func_242279_ag();
 		}
 	}
@@ -111,8 +147,9 @@ public class SilverPortalBlock extends BreakableBlock {
 			// Deactivate damaged portals.
 
 			List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos, world.getDimensionKey());
-			if (affectedPortals == null || affectedPortals.size() < 1)
+			if (affectedPortals == null || affectedPortals.size() < 1) {
 				return;
+			}
 			Portal firstPortal = affectedPortals.get(0);
 
 			if (firstPortal.isDamaged(world)) {
@@ -157,5 +194,25 @@ public class SilverPortalBlock extends BreakableBlock {
 
 			world.addParticle(ParticleTypes.PORTAL, d0, d1, d2, d3, d4, d5);
 		}
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
+			Hand hand, BlockRayTraceResult hit) {
+		if (player.getHeldItem(hand).getItem() instanceof NameTagItem) {
+			List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos.toImmutable(), world.getDimensionKey());
+			if (affectedPortals != null && !(affectedPortals.size() < 1)) {
+				Portal firstPortal = affectedPortals.get(0);
+				RegistryKey<World> dim = firstPortal.getDestinationDimension();
+				String text = dim.getLocation().toString().replaceAll("minecraft:", "");
+				if (!text.isEmpty()) {
+					player.getHeldItem(hand).setDisplayName(new StringTextComponent(text));
+					return ActionResultType.SUCCESS;
+				}
+			}
+		}
+
+		return super.onBlockActivated(state, world, pos, player, hand, hit);
 	}
 }

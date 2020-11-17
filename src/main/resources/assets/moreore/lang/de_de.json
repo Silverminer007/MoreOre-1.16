@@ -6,7 +6,6 @@
 	"item.moreore.emerald_helmet": "Samragt Helm",
 	"item.moreore.emerald_hoe": "Smaragd Hacke",
 	"item.moreore.emerald_leggins": "Smaragd Hose",
-	"item.moreore.emerald_shard": "Smaragd Scherbe",
 	"item.moreore.emerald_shovel": "Smaragd Schaufel",
 	"item.moreore.emerald_sword": "Smaragd  Schwert",
 	"item.moreore.rainbow_sword": "Regenenbogen Schwert",
@@ -131,5 +130,9 @@
 	"itemGroup.mineralic": "Mineralien",
 	"itemGroup.biologic": "Biologisch",
 	"enchantment.moreore.get_home": "Nach-Hause",
-	"entity.moreore.squirrel": "Eichhörnchen"
+	"entity.moreore.squirrel": "Eichhörnchen",
+	"commands.tlp.failed.entity.notEnoughLevel.single": "Not Enough Level to Teleport %s to %s",
+	"commands.tlp.failed.entity.notEnoughLevel.multiple": "Not Enough Level to Teleport %s Entities to %s",
+	"commands.tlp.failed.location.notEnoughLevel.single": "Not Enough Level to Teleport %s to %s, %s, %s",
+	"commands.tlp.failed.location.notEnoughLevel.multiple": "Not Enough Level to Teleport %s Entities to %s, %s, %s"
 }
