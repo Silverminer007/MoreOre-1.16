@@ -92,7 +92,7 @@ public class SilverPortalBlock extends BreakableBlock {
 								(double) (-pos.getY()), (double) (-pos.getZ()))),
 						state.getShape(worldIn, pos), IBooleanFunction.AND)) {
 
-			RegistryKey<World> dim = null;
+			RegistryKey<World> destination = null;
 			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 			if (worldIn instanceof ServerWorld) {
 				server = worldIn.getServer();
@@ -100,7 +100,7 @@ public class SilverPortalBlock extends BreakableBlock {
 			List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos, worldIn.getDimensionKey());
 			if (affectedPortals != null && !(affectedPortals.size() < 1)) {
 				Portal firstPortal = affectedPortals.get(0);
-				dim = firstPortal.getDestinationDimension();
+				destination = firstPortal.getDestinationDimension();
 
 				try {
 					if (entity instanceof ItemEntity) {
@@ -109,7 +109,8 @@ public class SilverPortalBlock extends BreakableBlock {
 							String text = itemE.getItem().getDisplayName().getUnformattedComponentText();
 							RegistryKey<World> newDim = RegistryKey.getOrCreateKey(Registry.WORLD_KEY,
 									new ResourceLocation(text));
-							if (server.getWorld(newDim) != null && newDim != firstPortal.getDestinationDimension()) {
+							if (server.getWorld(newDim) != null && newDim != firstPortal.getDestinationDimension()
+									&& newDim != World.THE_END) {
 								PortalRegistry.unregister(worldIn, firstPortal);
 								PortalRegistry.register(worldIn, firstPortal.setDestinationDimension(newDim));
 								itemE.getItem().shrink(1);
@@ -122,20 +123,19 @@ public class SilverPortalBlock extends BreakableBlock {
 				}
 			}
 
-			if (dim == null) {
-				dim = entity.world.getDimensionKey() == World.OVERWORLD
-						? RegistryKey.getOrCreateKey(Registry.WORLD_KEY, MoreOre.SILVER_DIM_TYPE)
-						: World.OVERWORLD;
+			RegistryKey<World> silverDim = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, MoreOre.SILVER_DIM_TYPE);
+			if (destination == null) {
+				destination = entity.world.getDimensionKey() == World.OVERWORLD ? silverDim : World.OVERWORLD;
 			}
 			if (entity.func_242280_ah())
 				return;
-			World world = server.getWorld(dim);
-			if (world == null)
-				world = server.getWorld(World.OVERWORLD);
-			if (world == null)
+			World newWorld = server.getWorld(destination);
+			if (newWorld == null)
+				newWorld = server.getWorld(World.OVERWORLD);
+			if (newWorld == null)
 				return;
-			BlockPos destinationPos = SpawnPositionHelper.calculate(pos, world);
-			Utils.teleportTo(entity, dim, destinationPos);
+			BlockPos destinationPos = SpawnPositionHelper.calculate(pos, newWorld);
+			Utils.teleportTo(entity, destination, destinationPos);
 			entity.func_242279_ag();
 		}
 	}

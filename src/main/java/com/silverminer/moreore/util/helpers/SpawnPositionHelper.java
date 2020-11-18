@@ -2,11 +2,10 @@ package com.silverminer.moreore.util.helpers;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.Heightmap;
 
 public class SpawnPositionHelper {
@@ -23,37 +22,26 @@ public class SpawnPositionHelper {
 		return world.getHeight(Heightmap.Type.WORLD_SURFACE, pos);
 	}
 
+	protected static boolean isPositionValid(World world, BlockPos pos) {
+		return (world.getBlockState(pos).getBlock() == Blocks.AIR)
+				&& (world.getBlockState(pos.up()).getBlock() == Blocks.AIR)
+				&& (world.getBlockState(pos.down()).getBlock().isIn(BlockTags.VALID_SPAWN));
+	}
+
 	@Nullable
 	protected static BlockPos validatePos(World world, int x, int z) {
-		BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable(x, 0, z);
-		Biome biome = world.getBiome(blockpos$mutable);
-		BlockState blockstate = biome.getGenerationSettings().getSurfaceBuilderConfig().getTop();
-		if (!blockstate.getBlock().isIn(BlockTags.VALID_SPAWN)) {
-			return null;
-		} else {
-			int i = world.getHeight(Heightmap.Type.MOTION_BLOCKING, x, z);
-			if (i < 0) {
-				return null;
-			} else {
-				int j = world.getHeight(Heightmap.Type.WORLD_SURFACE, x, z);
-				if (j <= i && j > world.getHeight(Heightmap.Type.OCEAN_FLOOR, x, z)) {
-					return null;
-				} else {
-					for (int k = i + 1; k >= 0; --k) {
-						blockpos$mutable.setPos(x, k, z);
-						BlockState blockstate1 = world.getBlockState(blockpos$mutable);
-						if (!blockstate1.getFluidState().isEmpty()) {
-							break;
-						}
-
-						if (blockstate1.equals(blockstate)) {
-							return blockpos$mutable.up().toImmutable();
-						}
-					}
-
-					return null;
-				}
-			}
+		int modyfier = 1;
+		int y = 0;
+		if (!world.getDimensionType().getHasCeiling()) {
+			y = 256;
+			modyfier = -1;
 		}
+		while (!isPositionValid(world, new BlockPos(x, y, z))) {
+			if (y <= 0 || y > 256) {
+				return null;
+			}
+			y += modyfier;
+		}
+		return new BlockPos(x, y, z);
 	}
 }
