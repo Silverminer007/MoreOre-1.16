@@ -4,9 +4,9 @@ import com.silverminer.moreore.util.enums.ModItemTier;
 import com.silverminer.moreore.util.items.ModItemGroups;
 import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.common.objects.items.Golden_Trident;
-import com.silverminer.moreore.common.objects.items.ModHoeItem;
 
 import net.minecraft.item.AxeItem;
+import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ShovelItem;
@@ -86,17 +86,14 @@ public class ToolItems {
 					new Item.Properties().group(ModItemGroups.TOOLS).maxStackSize(1)));
 
 	public static final RegistryObject<Item> RAINBOW_HOE = ITEMS.register("rainbow_hoe",
-			() -> new ModHoeItem(ModItemTier.RAINBOW, -3, 0,
-					new Item.Properties().group(ModItemGroups.TOOLS).maxStackSize(1)));
+			() -> new HoeItem(ModItemTier.RAINBOW, -4, 0.0F, new Item.Properties().group(ModItemGroups.TOOLS)));
 
 	public static final RegistryObject<Item> EMERALD_HOE = ITEMS.register("emerald_hoe",
-			() -> new ModHoeItem(ModItemTier.EMERALD, -2, 0.0F, new Item.Properties().group(ModItemGroups.TOOLS)));
+			() -> new HoeItem(ModItemTier.EMERALD, -3, 0.0F, new Item.Properties().group(ModItemGroups.TOOLS)));
 
 	public static final RegistryObject<Item> RUBIN_HOE = ITEMS.register("rubin_hoe",
-			() -> new ModHoeItem(ModItemTier.RUBIN, -1, 0,
-					new Item.Properties().group(ModItemGroups.TOOLS).maxStackSize(1)));
+			() -> new HoeItem(ModItemTier.RUBIN, -1, 0.0F, new Item.Properties().group(ModItemGroups.TOOLS)));
 
 	public static final RegistryObject<Item> SAPHIR_HOE = ITEMS.register("saphir_hoe",
-			() -> new ModHoeItem(ModItemTier.SAPHIR, -1, 0,
-					new Item.Properties().group(ModItemGroups.TOOLS).maxStackSize(1)));
+			() -> new HoeItem(ModItemTier.SAPHIR, -1, 0.0F, new Item.Properties().group(ModItemGroups.TOOLS)));
 }

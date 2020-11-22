@@ -3,9 +3,7 @@ package com.silverminer.moreore.init.blocks;
 import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.common.objects.blocks.BananaBlock;
 import com.silverminer.moreore.common.objects.blocks.LetuceBlock;
-import com.silverminer.moreore.common.objects.blocks.ModDoorBlock;
 import com.silverminer.moreore.common.objects.blocks.ModLogBlock;
-import com.silverminer.moreore.common.objects.blocks.ModWoodButtonBlock;
 import com.silverminer.moreore.common.objects.blocks.NutBushLeavesBlock;
 import com.silverminer.moreore.common.objects.blocks.Sapling;
 import com.silverminer.moreore.common.world.gen.tree.GoldTree;
@@ -15,6 +13,7 @@ import com.silverminer.moreore.common.world.gen.tree.SilverTree;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.DoorBlock;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.FenceGateBlock;
 import net.minecraft.block.FlowerPotBlock;
@@ -23,6 +22,7 @@ import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.TrapDoorBlock;
 import net.minecraft.block.WallBlock;
+import net.minecraft.block.WoodButtonBlock;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -58,7 +58,7 @@ public class BiologicBlocks {
 			() -> new BananaBlock(Block.Properties.from(Blocks.COCOA)));
 
 	public static final RegistryObject<Block> SILVER_DOOR = InitBlocks.registerCutout("silver_door",
-			() -> new ModDoorBlock(Block.Properties.from(Blocks.OAK_DOOR)));
+			() -> new DoorBlock(Block.Properties.from(Blocks.OAK_DOOR)));
 
 	public static final RegistryObject<Block> SILVER_STAIRS = BLOCKS.register("silver_stairs",
 			() -> new StairsBlock(() -> BiologicBlocks.SILVER_PLANKS.get().getDefaultState(),
@@ -89,10 +89,10 @@ public class BiologicBlocks {
 			() -> new Sapling(() -> new IceTree(), Block.Properties.from(Blocks.OAK_SAPLING)));
 
 	public static final RegistryObject<Block> GLASS_DOOR = InitBlocks.registerCutout("glass_door",
-			() -> new ModDoorBlock(Block.Properties.from(Blocks.OAK_DOOR)));
+			() -> new DoorBlock(Block.Properties.from(Blocks.OAK_DOOR)));
 
 	public static final RegistryObject<Block> SILVER_WOOD_BUTTON = BLOCKS.register("silver_wood_button",
-			() -> new ModWoodButtonBlock(Block.Properties.from(Blocks.OAK_BUTTON)));
+			() -> new WoodButtonBlock(Block.Properties.from(Blocks.OAK_BUTTON)));
 
 	public static final RegistryObject<Block> POTTET_ICE_SAPLING = BLOCKS.register("pottet_ice_saplings",
 			() -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, () -> BiologicBlocks.ICE_SAPLING.get(),

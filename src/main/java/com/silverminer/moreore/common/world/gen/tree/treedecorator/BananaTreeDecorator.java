@@ -19,6 +19,7 @@ import net.minecraft.world.gen.treedecorator.TreeDecorator;
 import net.minecraft.world.gen.treedecorator.TreeDecoratorType;
 
 public class BananaTreeDecorator extends TreeDecorator {
+	public static final BananaTreeDecorator DECORATOR = new BananaTreeDecorator(0.2F);
 	public static final Codec<BananaTreeDecorator> CODEC = Codec.FLOAT.fieldOf("probability")
 			.xmap(BananaTreeDecorator::new, (decorator) -> {
 				return decorator.probability;

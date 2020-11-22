@@ -3,7 +3,6 @@ package com.silverminer.moreore.util.helpers;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
@@ -25,23 +24,24 @@ public class SpawnPositionHelper {
 	protected static boolean isPositionValid(World world, BlockPos pos) {
 		return (world.getBlockState(pos).getBlock() == Blocks.AIR)
 				&& (world.getBlockState(pos.up()).getBlock() == Blocks.AIR)
-				&& (world.getBlockState(pos.down()).getBlock().isIn(BlockTags.VALID_SPAWN));
+				&& (world.getBlockState(pos.down()).isSolid());
 	}
 
 	@Nullable
 	protected static BlockPos validatePos(World world, int x, int z) {
-		int modyfier = 1;
-		int y = 0;
-		if (!world.getDimensionType().getHasCeiling()) {
-			y = 256;
-			modyfier = -1;
-		}
-		while (!isPositionValid(world, new BlockPos(x, y, z))) {
-			if (y <= 0 || y > 256) {
-				return null;
+		boolean firstMatch = true;
+		for (int y = 256; y > 0; y--) {
+			BlockPos tempPos = new BlockPos(x, y, z);
+			if (isPositionValid(world, tempPos)) {
+				if ((!world.getDimensionType().getHasCeiling())) {
+					return tempPos;
+				} else if (!firstMatch) {
+					return tempPos;
+				} else {
+					firstMatch = false;
+				}
 			}
-			y += modyfier;
 		}
-		return new BlockPos(x, y, z);
+		return null;
 	}
 }
