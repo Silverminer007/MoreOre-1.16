@@ -24,6 +24,7 @@
 		"1.16.4-1.1.0-Beta24": "Fixed and Improved Tlp Command; Improved SilverPortal; Removed Emerald Shard; Changed Armor Material Config; Changed Tool Config of Emerald, Rubin, Saphir and Rainbow; Improved Teleporting between Dimensions; Improved Teleporting of Get-Home Enchantment and FuelItem; Changed Name from Leggins to Leggings; The actuall destination Dimension can be read by clicking on the PortalBlock",
 		"1.16.4-1.1.0-Beta25": "The Silver Portal Destination Dimension now can't be set to 'the_end'; Improved Spawn Position finding of Silver Portal; Changed Nut Bush Log texture; Changed Saphir textures; Updated Language packs",
 		"1.16.4-1.1.0-Beta26": "Changed Blue Glow Block texture; Changed Rubin texture; Changed Name of glow_blue_block from Blue Glowing Block to Blue Glow Block; Changed Rubin and Saphir Ore texture; Changed Armor Model texture; Changed Silver Door Texture",
-		"1.16.4-1.1.0": "Changed Accesstransformer; Changed Alexandrit Ore texture; Fixed Bug Rubin Hoe looks like Emerald Hoe, Fixed Banana generation; Vines generate at Mega Silver Trees; Changed SpawnPosition Finder of Silver Portals; Added Silver Button loot table; Changed Silver Ore Texture; Fixed Bug in Banana Tree Decorator"
+		"1.16.4-1.1.0": "Changed Accesstransformer; Changed Alexandrit Ore texture; Fixed Bug Rubin Hoe looks like Emerald Hoe, Fixed Banana generation; Vines generate at Mega Silver Trees; Changed SpawnPosition Finder of Silver Portals; Added Silver Button loot table; Changed Silver Ore Texture; Fixed Bug in Banana Tree Decorator",
+		"1.16.4-1.1.1": "Changed Name of rubin to Ruby; Changed Settings of Desert Tempel Structure"
 	}
 }

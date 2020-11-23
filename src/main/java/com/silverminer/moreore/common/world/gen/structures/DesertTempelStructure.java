@@ -36,12 +36,12 @@ public class DesertTempelStructure extends AbstractStructure<NoFeatureConfig> {
 
 	@Override
 	public int getDistance() {
-		return 10;
+		return 32;
 	}
 
 	@Override
 	public int getSeparation() {
-		return 2;
+		return 8;
 	}
 
 	@Override
