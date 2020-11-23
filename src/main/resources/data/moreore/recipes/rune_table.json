@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"xx",
+		"oo",
+		"oo"
+	],
+	"key": {
+		"o": {
+			"tag": "minecraft:planks"
+		},
+		"x": {
+			"tag": "moreore:rune_shards"
+		}
+	},
+	"result": {
+		"item": "moreore:rune_table"
+	}
+}

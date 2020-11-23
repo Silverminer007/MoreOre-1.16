@@ -9,6 +9,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.client.render.SquirrelRenderer;
 import com.silverminer.moreore.client.render.VillageGuardianRenderer;
+import com.silverminer.moreore.client.screen.RunetableScreen;
 import com.silverminer.moreore.common.commands.TlpCommand;
 import com.silverminer.moreore.common.objects.entitys.SquirrelEntity;
 import com.silverminer.moreore.common.objects.entitys.VillageGuardian;
@@ -19,6 +20,7 @@ import com.silverminer.moreore.common.world.gen.features.TreeFeatures;
 import com.silverminer.moreore.common.world.gen.tree.GoldTree;
 import com.silverminer.moreore.common.world.gen.tree.IceTree;
 import com.silverminer.moreore.common.world.gen.tree.NutBush;
+import com.silverminer.moreore.init.ContainerTypesInit;
 import com.silverminer.moreore.init.ModEntityTypesInit;
 import com.silverminer.moreore.init.ModStructureFeatures;
 import com.silverminer.moreore.init.blocks.BiologicBlocks;
@@ -28,6 +30,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ComposterBlock;
 import net.minecraft.block.FlowerPotBlock;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.command.CommandSource;
@@ -75,6 +78,7 @@ public class CommonEvents {
 			RenderingRegistry.registerEntityRenderingHandler(ModEntityTypesInit.VILLAGE_GUARDIAN.get(),
 					VillageGuardianRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntityTypesInit.SQUIRREL.get(), SquirrelRenderer::new);
+			ScreenManager.registerFactory(ContainerTypesInit.RUNE_TABLE.get(), RunetableScreen::new);
 		}
 
 		@SubscribeEvent
