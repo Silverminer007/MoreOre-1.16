@@ -1,7 +1,7 @@
 package com.silverminer.moreore.init;
 
 import com.silverminer.moreore.MoreOre;
-import com.silverminer.moreore.client.container.RunetableContainer;
+import com.silverminer.moreore.client.gui.container.RunetableContainer;
 
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.fml.RegistryObject;

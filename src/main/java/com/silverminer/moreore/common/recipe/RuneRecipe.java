@@ -83,7 +83,7 @@ public class RuneRecipe implements IRecipe<IInventory> {
 	}
 
 	public IRecipeType<?> getType() {
-		return IModRecipeType.RUNES;
+		return ModRecipeType.RUNES;
 	}
 
 	public static class Serializer extends net.minecraftforge.registries.ForgeRegistryEntry<IRecipeSerializer<?>>

@@ -7,13 +7,15 @@ import org.apache.logging.log4j.MarkerManager;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.silverminer.moreore.MoreOre;
+import com.silverminer.moreore.client.gui.screen.RunetableScreen;
 import com.silverminer.moreore.client.render.SquirrelRenderer;
 import com.silverminer.moreore.client.render.VillageGuardianRenderer;
-import com.silverminer.moreore.client.screen.RunetableScreen;
 import com.silverminer.moreore.common.commands.TlpCommand;
 import com.silverminer.moreore.common.objects.entitys.SquirrelEntity;
 import com.silverminer.moreore.common.objects.entitys.VillageGuardian;
 import com.silverminer.moreore.common.portal.PortalWorldSaveData;
+import com.silverminer.moreore.common.recipe.ModRecipeType;
+import com.silverminer.moreore.common.recipe.RuneRecipe;
 import com.silverminer.moreore.common.world.biomeprovider.SilverBiomeProvider;
 import com.silverminer.moreore.common.world.gen.features.OreFeatures;
 import com.silverminer.moreore.common.world.gen.features.TreeFeatures;
@@ -25,6 +27,7 @@ import com.silverminer.moreore.init.ModEntityTypesInit;
 import com.silverminer.moreore.init.ModStructureFeatures;
 import com.silverminer.moreore.init.blocks.BiologicBlocks;
 import com.silverminer.moreore.util.items.ComposterItems;
+import com.silverminer.moreore.util.network.MoreorePacketHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -36,6 +39,7 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -84,6 +88,7 @@ public class CommonEvents {
 		@SubscribeEvent
 		public static void setup(final FMLCommonSetupEvent event) {
 			LOGGER.debug(MARKER, "Firening Setup Event");
+			MoreorePacketHandler.register();
 
 			// Make every Item in this list Compostable in an composter block
 			for (ComposterItems item : MoreOre.composterItems) {
@@ -104,6 +109,12 @@ public class CommonEvents {
 			// forming
 			Registry.register(Registry.BIOME_PROVIDER_CODEC, new ResourceLocation(MoreOre.MODID, "silver"),
 					SilverBiomeProvider.CODEC);
+			ModRecipeType.RUNES = Registry.register(Registry.RECIPE_TYPE, new ResourceLocation(MoreOre.MODID, "runes"),
+					new IRecipeType<RuneRecipe>() {
+						public String toString() {
+							return new ResourceLocation(MoreOre.MODID, "runes").toString();
+						}
+					});
 
 			event.enqueueWork(OreFeatures::registerOres);
 			event.enqueueWork(() -> {
@@ -131,6 +142,7 @@ public class CommonEvents {
 			// store the registry in the overworld.
 			if (!world.isRemote() && world.getDimensionKey() == World.OVERWORLD && world instanceof ServerWorld) {
 				MoreOre.portalSaveData = PortalWorldSaveData.get((ServerWorld) world);
+				MoreOre.runeSaveData = RuneSaveData.get((ServerWorld) world);
 			}
 		}
 

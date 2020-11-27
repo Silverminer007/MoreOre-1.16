@@ -26,6 +26,7 @@ import com.silverminer.moreore.init.items.ToolItems;
 import com.silverminer.moreore.init.items.TreeItems;
 import com.silverminer.moreore.common.portal.PortalWorldSaveData;
 import com.silverminer.moreore.util.CommonEvents;
+import com.silverminer.moreore.util.RuneSaveData;
 import com.silverminer.moreore.util.items.ComposterItems;
 
 import net.minecraft.block.Block;
@@ -37,7 +38,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 /**
  * @author Silverminer007
- * @version Last Edit: Moreore-1.16.3-1.1.0-Beta5
+ * @version Last Edit: Moreore-1.16.4-1.2.0-Beta1
  * @since 25.04.2020
  * @comment This Mod adds Blocks, Items, Biomes, Dimensions, Structures, fun and
  *          much more!!! Have fun!!!
@@ -47,6 +48,7 @@ public class MoreOre {
 	public static final String MODID = "moreore";
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
 	public static PortalWorldSaveData portalSaveData;
+	public static RuneSaveData runeSaveData;
 	public static ArrayList<ComposterItems> composterItems = new ArrayList<ComposterItems>();
 	public static ArrayList<RegistryObject<Block>> cutoutBlocks = new ArrayList<RegistryObject<Block>>();
 	public static final ResourceLocation SILVER_DIM_TYPE = new ResourceLocation("dimensions", "silver_dimension");

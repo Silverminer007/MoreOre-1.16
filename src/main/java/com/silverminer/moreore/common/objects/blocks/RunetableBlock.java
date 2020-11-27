@@ -1,6 +1,6 @@
 package com.silverminer.moreore.common.objects.blocks;
 
-import com.silverminer.moreore.client.container.RunetableContainer;
+import com.silverminer.moreore.client.gui.container.RunetableContainer;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CraftingTableBlock;
