@@ -22,22 +22,10 @@ public class OreItems {
 	public static final RegistryObject<Item> ALEXANDRIT = ITEMS.register("alexandrit", 
 			() -> new Item(new Item.Properties().group(ModItemGroups.MINERALIC)));
 
-	public static final RegistryObject<Item> RAINBOW_RUNE = ITEMS.register("rainbow_rune", 
-			() -> new Item(new Item.Properties().group(ModItemGroups.MINERALIC)));
-
 	public static final RegistryObject<Item> SILVER_ORE = ITEMS.register("silver_ore", 
 			() -> new BlockItem(OreBlocks.SILVER_ORE.get(), new Item.Properties().group(ModItemGroups.MINERALIC)));
 
 	public static final RegistryObject<Item> SILVER_INGOT = ITEMS.register("silver_ingot", 
-			() -> new Item(new Item.Properties().group(ModItemGroups.MINERALIC).maxStackSize(64)));
-
-	public static final RegistryObject<Item> RAINBOW_ORE = ITEMS.register("rainbow_ore", 
-			() -> new BlockItem(OreBlocks.RAINBOW_ORE.get(), new Item.Properties().group(ModItemGroups.MINERALIC)));
-
-	public static final RegistryObject<Item> RAINBOW_BLOCK = ITEMS.register("rainbow_block", 
-			() -> new BlockItem(OreBlocks.RAINBOW_BLOCK.get(), new Item.Properties().group(ModItemGroups.MINERALIC)));
-
-	public static final RegistryObject<Item> RAINBOW = ITEMS.register("rainbow", 
 			() -> new Item(new Item.Properties().group(ModItemGroups.MINERALIC).maxStackSize(64)));
 
 	public static final RegistryObject<Item> SILVER_BLOCK = ITEMS.register("silver_block", 

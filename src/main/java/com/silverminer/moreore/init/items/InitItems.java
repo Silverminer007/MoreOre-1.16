@@ -29,6 +29,10 @@ public class InitItems {
 			() -> new ModSpawnEggItem(() -> ModEntityTypesInit.SQUIRREL.get(), 0x6f3000, 0x381800,
 					new Item.Properties().group(ModItemGroups.BIOLOGIC)));
 
+	public static final RegistryObject<Item> GIANT_ZOMBIE_KING_SPAWNEGG = ITEMS.register("giant_zombie_king_spawnegg",
+			() -> new ModSpawnEggItem(() -> ModEntityTypesInit.GIANT_ZOMBIE_KING.get(), 0x799c65, 0x00afaf,
+					new Item.Properties().group(ModItemGroups.BIOLOGIC)));
+
 	public static <T extends Item> RegistryObject<Item> registerCompostItems(String key, Supplier<T> item,
 			float chance) {
 		RegistryObject<Item> temp = ITEMS.register(key, item);

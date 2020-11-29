@@ -1,6 +1,7 @@
 package com.silverminer.moreore.init.blocks;
 
 import com.silverminer.moreore.MoreOre;
+import com.silverminer.moreore.common.objects.blocks.RuneBaseBlock;
 import com.silverminer.moreore.common.objects.blocks.RunetableBlock;
 
 import net.minecraft.block.Block;
@@ -14,4 +15,7 @@ public class RuneBlocks {
 
 	public static final RegistryObject<Block> RUNETABLE = BLOCKS.register("rune_table",
 			() -> new RunetableBlock(Block.Properties.from(Blocks.SMITHING_TABLE)));
+
+	public static final RegistryObject<Block> RUNE_BASE_BLOCK = BLOCKS.register("rune_base_block",
+			() -> new RuneBaseBlock(Block.Properties.from(Blocks.GOLD_BLOCK)));
 }

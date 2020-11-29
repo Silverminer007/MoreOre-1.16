@@ -1,14 +1,12 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "ingredients": [
-      {
-        "item": "moreore:rainbow_rune"
-      },
-      {
-        "item": "minecraft:diamond_pickaxe"
-      }
-    ],
-    "result": {
-      "item": "moreore:rainbow_pickaxe"
-    }
+  "type": "moreore:runes",
+  "base": {
+    "item": "minecraft:diamond_pickaxe"
+  },
+  "addition": {
+    "item": "moreore:rainbow_rune"
+  },
+  "result": {
+    "item": "moreore:rainbow_pickaxe"
+  }
 }

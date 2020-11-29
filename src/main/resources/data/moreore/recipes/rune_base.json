@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "item": "moreore:rune_base_block"
+      }
+    ],
+    "result": {
+      "item": "moreore:rune_base",
+      "count": 9
+    }
+}

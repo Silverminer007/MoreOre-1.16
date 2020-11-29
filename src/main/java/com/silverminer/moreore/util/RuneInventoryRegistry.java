@@ -75,6 +75,7 @@ public class RuneInventoryRegistry {
 	}
 
 	public static int getInventorySize(UUID uuid) {
+		addPlayer(uuid);
 		return RUNE_INVENTORY_SIZE.get(uuid);
 	}
 
@@ -85,6 +86,16 @@ public class RuneInventoryRegistry {
 			return true;
 		}
 		return false;
+	}
+
+	public static int expandInventorySize(UUID uuid, int amount) {
+		int oldSize = getInventorySize(uuid);
+		int size = oldSize + amount;
+		if(!isSizeValid(size)) {
+			size = size < 0 ? 0 : size > 3 ? 3 : size;
+		}
+		setInventorySize(uuid, size);
+		return size;
 	}
 
 	public static boolean isSizeValid(int size) {

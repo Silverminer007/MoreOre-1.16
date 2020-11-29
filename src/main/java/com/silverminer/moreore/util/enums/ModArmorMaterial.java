@@ -1,8 +1,10 @@
 package com.silverminer.moreore.util.enums;
 
 import java.util.function.Supplier;
-import com.silverminer.moreore.init.items.OreItems;
+
 import com.silverminer.moreore.MoreOre;
+import com.silverminer.moreore.init.items.OreItems;
+import com.silverminer.moreore.init.items.RuneItems;
 
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
@@ -10,9 +12,9 @@ import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.LazyValue;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraft.util.SoundEvents;
 
 public enum ModArmorMaterial implements IArmorMaterial {
 	EMERALD(MoreOre.MODID + ":emerald", 35, new int[] { 3, 6, 8, 3 }, 12, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 2.5F,
@@ -29,7 +31,7 @@ public enum ModArmorMaterial implements IArmorMaterial {
 			}),
 	RAINBOW(MoreOre.MODID + ":rainbow", 39, new int[] { 3, 6, 8, 3 }, 15, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 3.5F,
 			0.2F, () -> {
-				return Ingredient.fromItems(OreItems.RAINBOW_RUNE.get());
+				return Ingredient.fromItems(RuneItems.RAINBOW_RUNE.get());
 			});
 
 	private static final int[] MAX_DAMAGE_ARRAY = new int[] { 13, 15, 16, 11 };

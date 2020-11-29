@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:gold_block",
+    "minecraft:diamond_block",
+    "minecraft:emerald_block",
+    "minecraft:netherite_block",
+    "minecraft:iron_block",
+    "moreore:rubin_block",
+    "moreore:saphir_block",
+    "moreore:silver_block",
+    "moreore:alexandrit_block",
+    "moreore:rainbow_block"
+  ]
+}

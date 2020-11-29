@@ -1,16 +1,12 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-      "ooo",
-      "o o",
-      "   "
-    ],
-    "key": {
-      "o": {
-        "item": "moreore:rainbow_rune"
-      }
-    },
-    "result": {
-      "item": "moreore:rainbow_helmet"
-    }
+  "type": "moreore:runes",
+  "base": {
+    "item": "minecraft:diamond_helmet"
+  },
+  "addition": {
+    "item": "moreore:rainbow_rune"
+  },
+  "result": {
+    "item": "moreore:rainbow_helmet"
+  }
 }

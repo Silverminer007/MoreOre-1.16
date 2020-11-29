@@ -1,14 +1,12 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "ingredients": [
-      {
-        "item": "moreore:rainbow_rune"
-      },
-      {
-        "item": "minecraft:diamond_shovel"
-      }
-    ],
-    "result": {
-      "item": "moreore:rainbow_shovel"
-    }
+  "type": "moreore:runes",
+  "base": {
+    "item": "minecraft:diamond_shovel"
+  },
+  "addition": {
+    "item": "moreore:rainbow_rune"
+  },
+  "result": {
+    "item": "moreore:rainbow_shovel"
+  }
 }

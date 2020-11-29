@@ -3,6 +3,7 @@ package com.silverminer.moreore.util.enums;
 import java.util.function.Supplier;
 
 import com.silverminer.moreore.init.items.OreItems;
+import com.silverminer.moreore.init.items.RuneItems;
 
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Items;
@@ -21,7 +22,7 @@ public enum ModItemTier implements IItemTier {
 		return Ingredient.fromItems(OreItems.RUBIN.get());
 	}),
 	RAINBOW(4, 1275, 8.0F, 3.5F, 10, () -> {
-		return Ingredient.fromItems(OreItems.RAINBOW_RUNE.get());
+		return Ingredient.fromItems(RuneItems.RAINBOW_RUNE.get());
 	});
 	private final int harvestLevel;
 	private final int maxUses;

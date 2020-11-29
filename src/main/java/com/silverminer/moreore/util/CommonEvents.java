@@ -8,9 +8,11 @@ import org.apache.logging.log4j.MarkerManager;
 import com.mojang.brigadier.CommandDispatcher;
 import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.client.gui.screen.RunetableScreen;
+import com.silverminer.moreore.client.render.GiantZombieKingRenderer;
 import com.silverminer.moreore.client.render.SquirrelRenderer;
 import com.silverminer.moreore.client.render.VillageGuardianRenderer;
 import com.silverminer.moreore.common.commands.TlpCommand;
+import com.silverminer.moreore.common.objects.entitys.GiantZombieKingEntity;
 import com.silverminer.moreore.common.objects.entitys.SquirrelEntity;
 import com.silverminer.moreore.common.objects.entitys.VillageGuardian;
 import com.silverminer.moreore.common.portal.PortalWorldSaveData;
@@ -82,6 +84,8 @@ public class CommonEvents {
 			RenderingRegistry.registerEntityRenderingHandler(ModEntityTypesInit.VILLAGE_GUARDIAN.get(),
 					VillageGuardianRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(ModEntityTypesInit.SQUIRREL.get(), SquirrelRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ModEntityTypesInit.GIANT_ZOMBIE_KING.get(),
+					GiantZombieKingRenderer::new);
 			ScreenManager.registerFactory(ContainerTypesInit.RUNE_TABLE.get(), RunetableScreen::new);
 		}
 
@@ -121,6 +125,8 @@ public class CommonEvents {
 				GlobalEntityTypeAttributes.put(ModEntityTypesInit.VILLAGE_GUARDIAN.get(),
 						VillageGuardian.setCustomAttributes());
 				GlobalEntityTypeAttributes.put(ModEntityTypesInit.SQUIRREL.get(), SquirrelEntity.setCustomAttributes());
+				GlobalEntityTypeAttributes.put(ModEntityTypesInit.GIANT_ZOMBIE_KING.get(),
+						GiantZombieKingEntity.setCustomAttributes());
 				StructureUtils.setupWorldGen();
 			});
 		}

@@ -1,16 +1,12 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-      "o o",
-      "o o",
-      "   "
-    ],
-    "key": {
-      "o": {
-        "item": "moreore:rainbow_rune"
-      }
-    },
-    "result": {
-      "item": "moreore:rainbow_boots"
-    }
+  "type": "moreore:runes",
+  "base": {
+    "item": "minecraft:diamond_boots"
+  },
+  "addition": {
+    "item": "moreore:rainbow_rune"
+  },
+  "result": {
+    "item": "moreore:rainbow_boots"
+  }
 }
