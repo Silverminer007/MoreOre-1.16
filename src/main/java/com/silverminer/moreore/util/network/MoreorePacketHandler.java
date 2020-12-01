@@ -21,15 +21,15 @@ public class MoreorePacketHandler {
 	 * ähnliches ändert, damit Server und Client die gleichen Packete bzw. Versionen
 	 * haben
 	 */
-	public static final String PROTOCOL_VERSION = "1.0";
+	public static final String PROTOCOL_VERSION = "2.0";
 
 	/**
 	 * Das ist die Instanz über die Server und Client Kommunizieren.
 	 */
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder
-			.named(new ResourceLocation(MoreOre.MODID, "main_channel"))
-			.clientAcceptedVersions(PROTOCOL_VERSION::equals).serverAcceptedVersions(PROTOCOL_VERSION::equals)
-			.networkProtocolVersion(() -> PROTOCOL_VERSION).simpleChannel();
+			.named(new ResourceLocation(MoreOre.MODID, "main_channel")).clientAcceptedVersions(PROTOCOL_VERSION::equals)
+			.serverAcceptedVersions(PROTOCOL_VERSION::equals).networkProtocolVersion(() -> PROTOCOL_VERSION)
+			.simpleChannel();
 
 	/**
 	 * Hier müssen alle Packete registiert werden die irgendwann gesewndet werden
@@ -38,8 +38,11 @@ public class MoreorePacketHandler {
 	 */
 	public static void register() {
 		int id = 0;
-		CHANNEL.registerMessage(id++, InventoryChangePacket.class, InventoryChangePacket::encode, InventoryChangePacket::decode,
-				InventoryChangePacket::handle);
+		CHANNEL.registerMessage(id++, InventoryChangePacket.class, InventoryChangePacket::encode,
+				InventoryChangePacket::decode, InventoryChangePacket::handle);
+
+		CHANNEL.registerMessage(id++, PlayerInventoryChangePacket.class, PlayerInventoryChangePacket::encode,
+				PlayerInventoryChangePacket::decode, PlayerInventoryChangePacket::handle);
 	}
 
 	/**

@@ -20,7 +20,7 @@ public class RuneItems {
 			() -> new BlockItem(RuneBlocks.RUNETABLE.get(), new Item.Properties().group(ModItemGroups.RUNES)));
 
 	public static final RegistryObject<Item> RUNE_BASE = ITEMS.register("rune_base",
-			() -> new RuneItem(new Item.Properties().group(ModItemGroups.RUNES).maxStackSize(1)));
+			() -> new Item(new Item.Properties().group(ModItemGroups.RUNES)));
 
 	public static final RegistryObject<Item> RUNE_BASE_BLOCK = ITEMS.register("rune_base_block",
 			() -> new BlockItem(RuneBlocks.RUNE_BASE_BLOCK.get(), new Item.Properties().group(ModItemGroups.RUNES)));

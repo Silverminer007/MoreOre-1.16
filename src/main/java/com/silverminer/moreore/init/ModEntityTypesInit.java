@@ -31,5 +31,6 @@ public class ModEntityTypesInit {
 			"giant_zombie_king",
 			() -> EntityType.Builder
 					.<GiantZombieKingEntity>create(GiantZombieKingEntity::new, EntityClassification.MONSTER)
-					.size(4.8F, 16.0F).build(new ResourceLocation("textures/entity/zombie/zombie.png").toString()));
+					.immuneToFire().size(4.8F, 16.0F)
+					.build(new ResourceLocation("textures/entity/zombie/zombie.png").toString()));
 }

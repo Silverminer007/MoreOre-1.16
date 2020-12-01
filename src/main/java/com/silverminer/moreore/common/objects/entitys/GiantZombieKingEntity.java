@@ -7,16 +7,15 @@ import javax.annotation.Nullable;
 import com.silverminer.moreore.init.items.ArmorItems;
 import com.silverminer.moreore.init.items.RuneItems;
 import com.silverminer.moreore.init.items.ToolItems;
+import com.silverminer.moreore.util.EntityUtils;
 import com.silverminer.moreore.util.RuneInventoryRegistry;
+import com.silverminer.moreore.util.network.MoreorePacketHandler;
+import com.silverminer.moreore.util.network.PlayerInventoryChangePacket;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -26,34 +25,29 @@ import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.monster.ZombifiedPiglinEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.BossInfo;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerBossInfo;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.spawner.WorldEntitySpawner;
 
 public class GiantZombieKingEntity extends MonsterEntity {
 	/**
@@ -71,6 +65,7 @@ public class GiantZombieKingEntity extends MonsterEntity {
 
 	protected void registerGoals() {
 		this.goalSelector.addGoal(0, new GiantZombieKingEntity.DoNothingGoal());
+		this.goalSelector.addGoal(1, new SwimGoal(this));
 		this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
 		this.applyEntityAI();
@@ -113,6 +108,8 @@ public class GiantZombieKingEntity extends MonsterEntity {
 		} else if (this.getPhase() == 2) {
 			for (PlayerEntity player : bossInfo.getPlayers()) {
 				int size = RuneInventoryRegistry.expandInventorySize(player.getUniqueID(), 1);
+				MoreorePacketHandler.sendToAll(
+						new PlayerInventoryChangePacket(RuneInventoryRegistry.writePlayerToNBT(player.getUniqueID())));
 				if (!player.world.isRemote)
 					player.sendMessage(
 							new TranslationTextComponent("entity.moreore.giant_zombie_king.runeInv_expand", size),
@@ -129,7 +126,14 @@ public class GiantZombieKingEntity extends MonsterEntity {
 	 */
 	public void livingTick() {
 		super.livingTick();
-		this.spawnZombies(this.getLastDamageSource(), 0.05D, 2);
+		if (this.rand.nextInt(100) < 1) {
+			EntityUtils.spawnZombies(this.getLastDamageSource(), this, this.getPhase() == 2 ? 0.5 : 0.25D, 2, 25,
+					bossInfo.getPlayers().size(), this.getPhase() == 2 ? 1.0D : 0.05D, EntityType.SKELETON, true);
+		}
+		if (this.rand.nextInt(100) < 2) {
+			EntityUtils.spawnZombies(this.getLastDamageSource(), this, 0.025D, 5, 50, bossInfo.getPlayers().size(),
+					this.getPhase() == 2 ? 1.0D : 0.1D, EntityType.ZOMBIE, true);
+		}
 		if (this.getPhase() == 1) {
 			if (this.getHealth() == this.getMaxHealth()) {
 				this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ToolItems.RAINBOW_SWORD.get()));
@@ -175,9 +179,9 @@ public class GiantZombieKingEntity extends MonsterEntity {
 
 	public static AttributeModifierMap setCustomAttributes() {
 		return MonsterEntity.func_234295_eP_().createMutableAttribute(Attributes.MAX_HEALTH, 200.0D)
-				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.1D)
+				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 1.0D)
 				.createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.0D)
-				.createMutableAttribute(Attributes.ZOMBIE_SPAWN_REINFORCEMENTS, 0.25D).create();
+				.createMutableAttribute(Attributes.ZOMBIE_SPAWN_REINFORCEMENTS, 1.0D).create();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -240,87 +244,14 @@ public class GiantZombieKingEntity extends MonsterEntity {
 				if (!super.attackEntityFrom(source, amount)) {
 					return false;
 				} else {
-					return this.spawnZombies(source, 1.5D, 10);
-				}
-			}
-		}
-		return false;
-	}
-
-	public boolean spawnZombies(DamageSource source, double spawnChance, int maxZombies) {
-		if (source != null) {
-			if (!(this.world instanceof ServerWorld)) {
-				return false;
-			} else {
-				ServerWorld serverworld = (ServerWorld) this.world;
-				LivingEntity livingentity = this.getAttackTarget();
-				if (livingentity == null && source.getTrueSource() instanceof LivingEntity) {
-					livingentity = (LivingEntity) source.getTrueSource();
-				}
-
-				int i = MathHelper.floor(this.getPosX());
-				int j = MathHelper.floor(this.getPosY());
-				int k = MathHelper.floor(this.getPosZ());
-
-				if (livingentity != null
-						&& (double) this.rand
-								.nextFloat() < (this.getAttribute(Attributes.ZOMBIE_SPAWN_REINFORCEMENTS).getValue()
-										* spawnChance)
-						&& this.world.getGameRules().getBoolean(GameRules.DO_MOB_SPAWNING)) {
-
-					int spawnedZombies = 0;
-					for (int l = 0; l < 100; ++l) {
-						int i1 = i + MathHelper.nextInt(this.rand, 7, 40) * MathHelper.nextInt(this.rand, -1, 1);
-						int j1 = j + MathHelper.nextInt(this.rand, 7, 40) * MathHelper.nextInt(this.rand, -1, 1);
-						int k1 = k + MathHelper.nextInt(this.rand, 7, 40) * MathHelper.nextInt(this.rand, -1, 1);
-						BlockPos blockpos = new BlockPos(i1, j1, k1);
-						ZombieEntity zombieentity = EntityType.ZOMBIE.create(this.world);
-						EntityType<?> entitytype = zombieentity.getType();
-						EntitySpawnPlacementRegistry.PlacementType entityspawnplacementregistry$placementtype = EntitySpawnPlacementRegistry
-								.getPlacementType(entitytype);
-						if (WorldEntitySpawner.canCreatureTypeSpawnAtLocation(
-								entityspawnplacementregistry$placementtype, this.world, blockpos, entitytype)) {
-							zombieentity.setPosition((double) i1, (double) j1, (double) k1);
-							if (!this.world.isPlayerWithin((double) i1, (double) j1, (double) k1, 7.0D)
-									&& this.world.checkNoEntityCollision(zombieentity)
-									&& this.world.hasNoCollisions(zombieentity)
-									&& !this.world.containsAnyLiquid(zombieentity.getBoundingBox())) {
-								if (livingentity != null)
-									zombieentity.setAttackTarget(livingentity);
-								zombieentity.onInitialSpawn(serverworld,
-										this.world.getDifficultyForLocation(zombieentity.getPosition()),
-										SpawnReason.REINFORCEMENT, (ILivingEntityData) null, (CompoundNBT) null);
-								if (this.getPhase() == 2) {
-									zombieentity.setItemStackToSlot(EquipmentSlotType.MAINHAND,
-											new ItemStack(Items.IRON_SWORD));
-									zombieentity.setItemStackToSlot(EquipmentSlotType.HEAD,
-											new ItemStack(Items.GOLDEN_HELMET));
-									zombieentity.setItemStackToSlot(EquipmentSlotType.CHEST,
-											new ItemStack(Items.GOLDEN_CHESTPLATE));
-									zombieentity.setItemStackToSlot(EquipmentSlotType.LEGS,
-											new ItemStack(Items.GOLDEN_LEGGINGS));
-									zombieentity.setItemStackToSlot(EquipmentSlotType.FEET,
-											new ItemStack(Items.GOLDEN_BOOTS));
-								}
-								serverworld.func_242417_l(zombieentity);
-								this.getAttribute(Attributes.ZOMBIE_SPAWN_REINFORCEMENTS).applyPersistentModifier(
-										new AttributeModifier("Zombie reinforcement caller charge", (double) -0.05F,
-												AttributeModifier.Operation.ADDITION));
-								zombieentity.getAttribute(Attributes.ZOMBIE_SPAWN_REINFORCEMENTS)
-										.applyPersistentModifier(
-												new AttributeModifier("Zombie reinforcement callee charge",
-														(double) -0.05F, AttributeModifier.Operation.ADDITION));
-								if (this.getPhase() == 0) {
-									break;
-								} else if (spawnedZombies++ >= maxZombies) {
-									break;
-								}
-							}
-						}
+					if (this.rand.nextInt(100) < 10) {
+						EntityUtils.spawnZombies(source, this, 0.25D, 3, 30, bossInfo.getPlayers().size(),
+								this.getPhase() == 2 ? 0.8D : 0.05D, EntityType.SKELETON, true);
 					}
+					return EntityUtils.spawnZombies(source, this, 0.75D, 7, 100, bossInfo.getPlayers().size(),
+							this.getPhase() == 2 ? 1.0D : 0.2D, EntityType.ZOMBIE, true);
 				}
 			}
-			return true;
 		}
 		return false;
 	}
