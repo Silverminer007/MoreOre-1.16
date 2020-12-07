@@ -12,26 +12,25 @@ import net.minecraft.util.LazyValue;
 
 public enum ModItemTier implements IItemTier {
 
-	EMERALD(3, 1389, 7.0F, 2.5F, 14, () -> {
+	EMERALD(3, 1561, 7.0F, 2.5F, 14, () -> {
 		return Ingredient.fromItems(Items.EMERALD);
-	}),
-	SAPHIR(3, 1389, 7.0F, 2.5F, 14, () -> {
+	}), SAPHIR(3, 500, 7.0F, 2.5F, 14, () -> {
 		return Ingredient.fromItems(OreItems.SAPHIR.get());
-	}),
-	RUBIN(3, 1389, 7.0F, 2.5F, 14, () -> {
+	}), RUBIN(3, 500, 7.0F, 2.5F, 14, () -> {
 		return Ingredient.fromItems(OreItems.RUBIN.get());
-	}),
-	RAINBOW(4, 1275, 8.0F, 3.5F, 10, () -> {
+	}), RAINBOW(4, 2378, 8.0F, 3.5F, 10, () -> {
 		return Ingredient.fromItems(RuneItems.RAINBOW_RUNE.get());
 	});
+
 	private final int harvestLevel;
 	private final int maxUses;
 	private final float efficiency;
 	private final float attackDamage;
 	private final int enchantability;
 	private final LazyValue<Ingredient> repairMaterial;
+
 	private ModItemTier(int harvestLevel, int maxUses, float efficiency, float attackDamage, int enchantability,
-		Supplier<Ingredient> repairMaterial) {
+			Supplier<Ingredient> repairMaterial) {
 		this.harvestLevel = harvestLevel;
 		this.maxUses = maxUses;
 		this.efficiency = efficiency;
@@ -44,6 +43,7 @@ public enum ModItemTier implements IItemTier {
 	public int getMaxUses() {
 		return this.maxUses;
 	}
+
 	@Override
 	public float getEfficiency() {
 		return this.efficiency;

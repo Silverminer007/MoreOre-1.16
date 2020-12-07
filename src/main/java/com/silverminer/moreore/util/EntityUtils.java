@@ -47,10 +47,9 @@ public class EntityUtils {
 			int j = MathHelper.floor(entitySource.getPosY());
 			int k = MathHelper.floor(entitySource.getPosZ());
 
-			if (livingentity != null
-					&& (double) entitySource.getRNG()
-							.nextFloat() < (entitySource.getAttribute(Attributes.ZOMBIE_SPAWN_REINFORCEMENTS).getValue()
-									* spawnChance)
+			if ((double) entitySource.getRNG()
+					.nextFloat() < (entitySource.getAttribute(Attributes.ZOMBIE_SPAWN_REINFORCEMENTS).getValue()
+							* spawnChance)
 					&& entitySource.world.getGameRules().getBoolean(GameRules.DO_MOB_SPAWNING)) {
 
 				int spawnedZombies = 0;
@@ -100,24 +99,28 @@ public class EntityUtils {
 											new ItemStack(Items.IRON_SWORD));
 								}
 							}
-							if (entitySource.getRNG().nextDouble() < equipChance || helmet) {
+							if ((entitySource.getRNG().nextDouble() < equipChance || helmet)
+									&& monster.getItemStackFromSlot(EquipmentSlotType.HEAD) == ItemStack.EMPTY) {
 								monster.setItemStackToSlot(EquipmentSlotType.HEAD, new ItemStack(Items.GOLDEN_HELMET));
 							}
-							if (entitySource.getRNG().nextDouble() < equipChance) {
+							if (entitySource.getRNG().nextDouble() < equipChance
+									&& monster.getItemStackFromSlot(EquipmentSlotType.CHEST) == ItemStack.EMPTY) {
 								monster.setItemStackToSlot(EquipmentSlotType.CHEST,
 										new ItemStack(Items.GOLDEN_CHESTPLATE));
 							}
-							if (entitySource.getRNG().nextDouble() < equipChance) {
+							if (entitySource.getRNG().nextDouble() < equipChance
+									&& monster.getItemStackFromSlot(EquipmentSlotType.LEGS) == ItemStack.EMPTY) {
 								monster.setItemStackToSlot(EquipmentSlotType.LEGS,
 										new ItemStack(Items.GOLDEN_LEGGINGS));
 							}
-							if (entitySource.getRNG().nextDouble() < equipChance) {
+							if (entitySource.getRNG().nextDouble() < equipChance
+									&& monster.getItemStackFromSlot(EquipmentSlotType.FEET) == ItemStack.EMPTY) {
 								monster.setItemStackToSlot(EquipmentSlotType.FEET, new ItemStack(Items.GOLDEN_BOOTS));
 							}
 							serverworld.func_242417_l(monster);
 							try {
 								monster.getAttribute(Attributes.ZOMBIE_SPAWN_REINFORCEMENTS).applyPersistentModifier(
-										new AttributeModifier("Zombie reinforcement callee charge", (double) 0.5F,
+										new AttributeModifier("Zombie reinforcement callee charge", (double) 0.05F,
 												AttributeModifier.Operation.ADDITION));
 							} catch (NullPointerException e) {
 							}

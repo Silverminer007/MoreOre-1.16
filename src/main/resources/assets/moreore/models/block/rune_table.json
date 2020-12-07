@@ -1,6 +1,12 @@
 {
-	"parent": "block/cube_all",
-	"textures": {
-		"all": "moreore:block/rune_table"
-	}
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "moreore:block/rune_table_front",
+    "north": "moreore:block/rune_table_front",
+    "south": "moreore:block/rune_table_front",
+    "east": "moreore:block/rune_table_side",
+    "west": "moreore:block/rune_table_side",
+    "up": "moreore:block/rune_table_top",
+    "down": "moreore:block/rune_table_bottom"
+  }
 }

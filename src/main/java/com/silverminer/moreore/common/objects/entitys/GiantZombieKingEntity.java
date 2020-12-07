@@ -29,7 +29,8 @@ import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.monster.ZombifiedPiglinEntity;
+import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -66,15 +67,12 @@ public class GiantZombieKingEntity extends MonsterEntity {
 	protected void registerGoals() {
 		this.goalSelector.addGoal(0, new GiantZombieKingEntity.DoNothingGoal());
 		this.goalSelector.addGoal(1, new SwimGoal(this));
-		this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+		this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 50.0F));
 		this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
-		this.applyEntityAI();
-	}
-
-	protected void applyEntityAI() {
 		this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0D, false));
 		this.goalSelector.addGoal(7, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
-		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setCallsForHelp(ZombifiedPiglinEntity.class));
+		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this, ZombieEntity.class, SkeletonEntity.class))
+				.setCallsForHelp(ZombieEntity.class));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolemEntity.class, true));
 	}
@@ -126,31 +124,32 @@ public class GiantZombieKingEntity extends MonsterEntity {
 	 */
 	public void livingTick() {
 		super.livingTick();
-		if (this.rand.nextInt(100) < 1) {
-			EntityUtils.spawnZombies(this.getLastDamageSource(), this, this.getPhase() == 2 ? 0.5 : 0.25D, 2, 25,
+		if (this.rand.nextInt(1000) < 2) {
+			EntityUtils.spawnZombies(this.getLastDamageSource(), this, this.getPhase() == 2 ? 0.25 : 0.125D, 2, 25,
 					bossInfo.getPlayers().size(), this.getPhase() == 2 ? 1.0D : 0.05D, EntityType.SKELETON, true);
 		}
-		if (this.rand.nextInt(100) < 2) {
-			EntityUtils.spawnZombies(this.getLastDamageSource(), this, 0.025D, 5, 50, bossInfo.getPlayers().size(),
-					this.getPhase() == 2 ? 1.0D : 0.1D, EntityType.ZOMBIE, true);
+		if (this.rand.nextInt(1000) < 20) {
+			EntityUtils.spawnZombies(this.getLastDamageSource(), this, this.getPhase() == 2 ? 0.5 : 0.25D, 5, 50,
+					bossInfo.getPlayers().size(), this.getPhase() == 2 ? 1.0D : 0.1D, EntityType.ZOMBIE, true);
 		}
 		if (this.getPhase() == 1) {
 			if (this.getHealth() == this.getMaxHealth()) {
+				this.setDropChance(EquipmentSlotType.MAINHAND, 1.0F);
 				this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ToolItems.RAINBOW_SWORD.get()));
-				this.inventoryArmorDropChances[EquipmentSlotType.HEAD.getIndex()] = 1.0F;
+				this.setDropChance(EquipmentSlotType.HEAD, 1.0F);
 				this.setItemStackToSlot(EquipmentSlotType.HEAD, new ItemStack(ArmorItems.RAINBOW_HELMET.get()));
-				this.inventoryArmorDropChances[EquipmentSlotType.CHEST.getIndex()] = 1.0F;
+				this.setDropChance(EquipmentSlotType.CHEST, 1.0F);
 				this.setItemStackToSlot(EquipmentSlotType.CHEST, new ItemStack(ArmorItems.RAINBOW_CHESTPLATE.get()));
-				this.inventoryArmorDropChances[EquipmentSlotType.LEGS.getIndex()] = 1.0F;
+				this.setDropChance(EquipmentSlotType.LEGS, 1.0F);
 				this.setItemStackToSlot(EquipmentSlotType.LEGS, new ItemStack(ArmorItems.RAINBOW_LEGGINS.get()));
-				this.inventoryArmorDropChances[EquipmentSlotType.FEET.getIndex()] = 1.0F;
+				this.setDropChance(EquipmentSlotType.FEET, 1.0F);
 				this.setItemStackToSlot(EquipmentSlotType.FEET, new ItemStack(ArmorItems.RAINBOW_BOOTS.get()));
 				this.getAttribute(Attributes.ATTACK_DAMAGE).applyPersistentModifier(new AttributeModifier(
 						"Additional Attack Damage in phase 2", 2.0D, AttributeModifier.Operation.ADDITION));
 				this.setPhase(2);
 				return;
 			}
-			this.heal(this.getMaxHealth() / 500F);
+			this.heal(this.getMaxHealth() / 250F);
 		}
 	}
 
@@ -245,11 +244,12 @@ public class GiantZombieKingEntity extends MonsterEntity {
 					return false;
 				} else {
 					if (this.rand.nextInt(100) < 10) {
-						EntityUtils.spawnZombies(source, this, 0.25D, 3, 30, bossInfo.getPlayers().size(),
+						return EntityUtils.spawnZombies(source, this, 0.25D, 3, 30, bossInfo.getPlayers().size(),
 								this.getPhase() == 2 ? 0.8D : 0.05D, EntityType.SKELETON, true);
+					} else {
+						return EntityUtils.spawnZombies(source, this, 0.75D, 7, 100, bossInfo.getPlayers().size(),
+								this.getPhase() == 2 ? 1.0D : 0.2D, EntityType.ZOMBIE, true);
 					}
-					return EntityUtils.spawnZombies(source, this, 0.75D, 7, 100, bossInfo.getPlayers().size(),
-							this.getPhase() == 2 ? 1.0D : 0.2D, EntityType.ZOMBIE, true);
 				}
 			}
 		}
