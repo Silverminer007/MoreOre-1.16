@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
+import com.google.common.collect.Sets;
 import com.mojang.brigadier.CommandDispatcher;
 import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.client.gui.screen.RunetableScreen;
@@ -28,6 +29,7 @@ import com.silverminer.moreore.init.ContainerTypesInit;
 import com.silverminer.moreore.init.ModEntityTypesInit;
 import com.silverminer.moreore.init.ModStructureFeatures;
 import com.silverminer.moreore.init.blocks.BiologicBlocks;
+import com.silverminer.moreore.init.items.RuneItems;
 import com.silverminer.moreore.util.items.ComposterItems;
 import com.silverminer.moreore.util.network.MoreorePacketHandler;
 
@@ -41,6 +43,9 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -51,6 +56,7 @@ import net.minecraft.world.biome.MobSpawnInfo.Spawners;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -210,6 +216,30 @@ public class CommonEvents {
 				// Spawn Squirrels in Silvertales and Forests
 				event.getSpawns().getSpawner(EntityClassification.CREATURE)
 						.add(new Spawners(ModEntityTypesInit.SQUIRREL.get(), 10, 4, 4));
+			}
+		}
+
+		@SubscribeEvent
+		public static void getBreakSpeed(PlayerEvent.BreakSpeed event) {
+			PlayerEntity player = event.getPlayer();
+			Inventory inv = RuneInventoryRegistry.getInventory(player.getUniqueID());
+			if (inv.hasAny(Sets.newHashSet(RuneItems.RUNE_YELLOW.get()))) {
+				float addDamage = 1.0F;
+				for (int i = 0; i <= RuneInventoryRegistry.getInventorySize(player.getUniqueID()); i++) {
+					ItemStack stack = inv.getStackInSlot(i);
+					if (stack.getItem() == RuneItems.RUNE_YELLOW.get()) {
+						addDamage += 0.1F;
+						if (player.getRNG().nextInt(1000) < 5) {
+							stack.setDamage(stack.getDamage() + 1);
+							if (stack.getDamage() == stack.getMaxDamage()) {
+								stack = ItemStack.EMPTY;
+							}
+							inv.setInventorySlotContents(i, stack);
+						}
+					}
+				}
+				RuneInventoryRegistry.setInventory(player.getUniqueID(), inv);
+				event.setNewSpeed(event.getOriginalSpeed() * addDamage);
 			}
 		}
 	}

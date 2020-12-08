@@ -7,11 +7,7 @@ import net.minecraft.item.Item;
 public class RuneItem extends Item {
 
 	public RuneItem(IRuneType type, Properties properties) {
-		this(type, properties, 100);
-	}
-
-	public RuneItem(IRuneType type, Properties properties, int maxDamage) {
-		super(properties.defaultMaxDamage(maxDamage));
+		super(properties.defaultMaxDamage(type.getMaxUses()));
 	}
 
 }

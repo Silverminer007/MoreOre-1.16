@@ -1,0 +1,12 @@
+{
+  "type": "moreore:runes",
+  "base": {
+    "item": "moreore:rune_brown"
+  },
+  "addition": {
+    "item": "moreore:rune_gray"
+  },
+  "result": {
+    "item": "moreore:rune_brown"
+  }
+}

@@ -29,7 +29,6 @@ import net.minecraft.world.spawner.WorldEntitySpawner;
 
 public class EntityUtils {
 	protected static final Logger LOGGER = LogManager.getLogger(EntityUtils.class);
-	private static int spawnedZombies = 0;
 
 	public static boolean spawnZombies(@Nullable DamageSource damageSource, MobEntity entitySource, double spawnChance,
 			int maxZombies, int spawnTries, int players, double equipChance, EntityType<? extends MobEntity> entitytype,
@@ -124,14 +123,12 @@ public class EntityUtils {
 												AttributeModifier.Operation.ADDITION));
 							} catch (NullPointerException e) {
 							}
-							EntityUtils.spawnedZombies++;
 							if (spawnedZombies++ >= maxZombies) {
 								break;
 							}
 						}
 					}
 				}
-				LOGGER.info("Spanwned {} at all", EntityUtils.spawnedZombies);
 			}
 		}
 		return true;

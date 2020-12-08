@@ -1,0 +1,12 @@
+{
+  "type": "moreore:runes",
+  "base": {
+    "item": "moreore:rune_base"
+  },
+  "addition": {
+    "item": "moreore:rune_orange_shard"
+  },
+  "result": {
+    "item": "moreore:rune_orange"
+  }
+}

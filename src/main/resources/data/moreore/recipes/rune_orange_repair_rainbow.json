@@ -1,0 +1,12 @@
+{
+  "type": "moreore:runes",
+  "base": {
+    "item": "moreore:rune_orange"
+  },
+  "addition": {
+    "item": "moreore:rainbow"
+  },
+  "result": {
+    "item": "moreore:rune_orange"
+  }
+}

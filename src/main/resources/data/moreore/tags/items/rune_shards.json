@@ -1,6 +1,14 @@
 {
 	"replace": false,
 	"values": [
-		"moreore:rune_green_shard"
+		"moreore:rune_orange_shard",
+		"moreore:rune_blue_shard",
+		"moreore:rune_red_shard",
+		"moreore:rune_green_shard",
+		"moreore:rune_yellow_shard",
+		"moreore:rune_gray_shard",
+		"moreore:rune_brown_shard",
+		"moreore:rune_purple_shard",
+		"moreore:rainbow"
 	]
 }

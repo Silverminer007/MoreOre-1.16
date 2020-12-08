@@ -3,7 +3,7 @@ package com.silverminer.moreore.common.objects.blocks;
 import javax.annotation.Nullable;
 
 import com.silverminer.moreore.common.objects.entitys.GiantZombieKingEntity;
-import com.silverminer.moreore.common.tags.ModBlockTags;
+import com.silverminer.moreore.common.tags.ModTags;
 import com.silverminer.moreore.init.ModEntityTypesInit;
 import com.silverminer.moreore.init.blocks.RuneBlocks;
 
@@ -92,7 +92,7 @@ public class RuneBaseBlock extends Block {
 									.or(BlockStateMatcher.forBlock(Blocks.ZOMBIE_WALL_HEAD))))
 					.where('r', CachedBlockInfo.hasState(BlockStateMatcher.forBlock(RuneBlocks.RUNE_BASE_BLOCK.get())))
 					.where('o', (cachedInfo) -> {
-						return cachedInfo.getBlockState().isIn(ModBlockTags.GIANT_ZOMBIE_SUMMON_BLOCKS);
+						return cachedInfo.getBlockState().isIn(ModTags.GIANT_ZOMBIE_SUMMON_BLOCKS);
 					}).where('a', CachedBlockInfo.hasState(BlockMaterialMatcher.forMaterial(Material.AIR)))
 					.where('c', CachedBlockInfo.hasState(BlockStateMatcher.forBlock(Blocks.CRYING_OBSIDIAN))).build();
 		}
