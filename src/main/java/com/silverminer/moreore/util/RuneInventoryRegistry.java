@@ -8,10 +8,12 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.Maps;
 import com.silverminer.moreore.MoreOre;
+import com.silverminer.moreore.util.events.RuneInventoryChangeEvent;
 
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.common.MinecraftForge;
 
 public class RuneInventoryRegistry {
 	protected static final Logger LOGGER = LogManager.getLogger(RuneInventoryRegistry.class);
@@ -61,16 +63,19 @@ public class RuneInventoryRegistry {
 
 	public static Inventory getInventory(UUID uuid) {
 		addPlayer(uuid);
-		Inventory inv = new Inventory(3);
+/*		Inventory inv = new Inventory(3);
 		for(ItemStack stack : RUNE_INVENTORY.get(uuid).func_233543_f_()) {
 			inv.addItem(stack);
 		}
-		return inv == null ? new Inventory(3) : inv;
+		inv = inv == null ? new Inventory(3) : inv;
+		setInventory(uuid, inv);*/
+		return RUNE_INVENTORY.get(uuid);
 	}
 
 	public static Inventory setInventory(UUID uuid, Inventory inv) {
 		addPlayer(uuid);
 		markDirty();
+		MinecraftForge.EVENT_BUS.post(new RuneInventoryChangeEvent(uuid, inv, getInventory(uuid)));
 		return RUNE_INVENTORY.replace(uuid, inv);
 	}
 

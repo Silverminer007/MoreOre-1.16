@@ -49,7 +49,8 @@ public class RunetableContainer extends AbstractRepairContainer {
 		this.world = inventory.player.world;
 		this.recipes = this.world.getRecipeManager().getRecipesForType(ModRecipeType.RUNES);
 		this.activeUUID = inventory.player.getUniqueID();
-		this.runeInv = RuneInventoryRegistry.getInventory(this.activeUUID);
+		Inventory inv = RuneInventoryRegistry.getInventory(this.activeUUID);
+		this.runeInv = new Inventory(inv.getStackInSlot(0), inv.getStackInSlot(1), inv.getStackInSlot(2));
 		this.invSize = RuneInventoryRegistry.getInventorySize(this.activeUUID);
 		for (int i = 0; i < this.invSize; i++) {
 			// 176 ist die x breite wo der erste slot beginnt. Mal 22 wegen 18 Slot größe +

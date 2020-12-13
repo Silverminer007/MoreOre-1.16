@@ -160,5 +160,6 @@
 	"commands.tlp.failed.entity.notEnoughLevel.single": "Not Enough Level to Teleport %s to %s",
 	"commands.tlp.failed.entity.notEnoughLevel.multiple": "Not Enough Level to Teleport %s Entities to %s",
 	"commands.tlp.failed.location.notEnoughLevel.single": "Not Enough Level to Teleport %s to %s, %s, %s",
-	"commands.tlp.failed.location.notEnoughLevel.multiple": "Not Enough Level to Teleport %s Entities to %s, %s, %s"
+	"commands.tlp.failed.location.notEnoughLevel.multiple": "Not Enough Level to Teleport %s Entities to %s, %s, %s",
+	"runes.moreore.broken": "%s was broken"
 }

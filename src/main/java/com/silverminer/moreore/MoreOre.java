@@ -25,8 +25,8 @@ import com.silverminer.moreore.init.items.RuneItems;
 import com.silverminer.moreore.init.items.ToolItems;
 import com.silverminer.moreore.init.items.TreeItems;
 import com.silverminer.moreore.common.portal.PortalWorldSaveData;
-import com.silverminer.moreore.util.CommonEvents;
 import com.silverminer.moreore.util.RuneSaveData;
+import com.silverminer.moreore.util.events.handler.CommonEvents;
 import com.silverminer.moreore.util.items.ComposterItems;
 
 import net.minecraft.block.Block;

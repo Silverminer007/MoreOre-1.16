@@ -1,4 +1,4 @@
-package com.silverminer.moreore.util;
+package com.silverminer.moreore.util.events.handler;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +30,10 @@ import com.silverminer.moreore.init.ModEntityTypesInit;
 import com.silverminer.moreore.init.ModStructureFeatures;
 import com.silverminer.moreore.init.blocks.BiologicBlocks;
 import com.silverminer.moreore.init.items.RuneItems;
+import com.silverminer.moreore.util.RuneInventoryRegistry;
+import com.silverminer.moreore.util.RuneSaveData;
+import com.silverminer.moreore.util.StructureUtils;
+import com.silverminer.moreore.util.events.RuneInventoryChangeEvent;
 import com.silverminer.moreore.util.items.ComposterItems;
 import com.silverminer.moreore.util.network.MoreorePacketHandler;
 
@@ -45,10 +49,13 @@ import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.Biome.RainType;
@@ -56,6 +63,7 @@ import net.minecraft.world.biome.MobSpawnInfo.Spawners;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -224,22 +232,77 @@ public class CommonEvents {
 			PlayerEntity player = event.getPlayer();
 			Inventory inv = RuneInventoryRegistry.getInventory(player.getUniqueID());
 			if (inv.hasAny(Sets.newHashSet(RuneItems.RUNE_YELLOW.get()))) {
-				float addDamage = 1.0F;
-				for (int i = 0; i <= RuneInventoryRegistry.getInventorySize(player.getUniqueID()); i++) {
-					ItemStack stack = inv.getStackInSlot(i);
-					if (stack.getItem() == RuneItems.RUNE_YELLOW.get()) {
-						addDamage += 0.1F;
-						if (player.getRNG().nextInt(1000) < 5) {
-							stack.setDamage(stack.getDamage() + 1);
-							if (stack.getDamage() == stack.getMaxDamage()) {
-								stack = ItemStack.EMPTY;
+				float addDamage = 1.0F + 0.2F * damageItems(inv, player, RuneItems.RUNE_RED.get(), 1, 0.02F);
+				RuneInventoryRegistry.setInventory(player.getUniqueID(), inv);
+				event.setNewSpeed(event.getOriginalSpeed() * addDamage);
+			}
+		}
+
+		@SubscribeEvent
+		public static void applyRuneEffects(LivingAttackEvent event) {
+			if (event.getEntityLiving() instanceof PlayerEntity) {
+				PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+				Inventory inv = RuneInventoryRegistry.getInventory(player.getUniqueID());
+				if (inv.hasAny(Sets.newHashSet(RuneItems.RUNE_RED.get())) && event.getSource().isFireDamage()) {
+					damageItems(inv, player, RuneItems.RUNE_RED.get(), 1, 0.075F);
+					event.setCanceled(true);
+				} else if (inv.hasAny(Sets.newHashSet(RuneItems.RUNE_BLUE.get()))
+						&& event.getSource() == DamageSource.DROWN) {
+					damageItems(inv, player, RuneItems.RUNE_BLUE.get(), 1, 0.075F);
+					event.setCanceled(true);
+				}
+			}
+		}
+
+		private static int damageItems(Inventory inv, PlayerEntity player, Item item, int maxDamageItems, float breakChance) {
+			int j = 0;
+			int invSize = RuneInventoryRegistry.getInventorySize(player.getUniqueID());
+			for (int i = 0; i <= invSize; i++) {
+				ItemStack stack = inv.getStackInSlot(i).copy();
+				if (stack.getItem() == item) {
+					j++;
+					if (player.getRNG().nextFloat() < breakChance && !player.abilities.isCreativeMode) {
+						stack.setDamage(stack.getDamage() + 1);
+						if (stack.getDamage() == stack.getMaxDamage()) {
+							if (!player.world.isRemote) {
+								player.sendMessage(
+										new TranslationTextComponent("runes.moreore.broken", stack.getDisplayName()),
+										player.getUniqueID());
 							}
-							inv.setInventorySlotContents(i, stack);
+							stack = ItemStack.EMPTY;
+						}
+						inv.setInventorySlotContents(i, stack);
+						maxDamageItems--;
+						if (maxDamageItems <= 0) {
+							break;
 						}
 					}
 				}
-				RuneInventoryRegistry.setInventory(player.getUniqueID(), inv);
-				event.setNewSpeed(event.getOriginalSpeed() * addDamage);
+			}
+			RuneInventoryRegistry.setInventory(player.getUniqueID(), inv);
+			return j;
+		}
+
+		@SuppressWarnings("unused")
+		@SubscribeEvent
+		public static void runeInvChange(RuneInventoryChangeEvent event) {
+			if (true)
+				return;
+			int orangeRunesOld = 0;
+			int orangeRunesNew = 0;
+			for (ItemStack stack : event.getNewInv().func_233543_f_()) {
+				if (stack.getItem() == RuneItems.RUNE_RED.get()) {
+					orangeRunesNew++;
+				}
+			}
+			for (ItemStack stack : event.getNewInv().func_233543_f_()) {
+				if (stack.getItem() == RuneItems.RUNE_RED.get()) {
+					orangeRunesOld++;
+				}
+			}
+			if (orangeRunesNew > orangeRunesOld) {
+			} else if (orangeRunesOld > orangeRunesNew) {
+
 			}
 		}
 	}
