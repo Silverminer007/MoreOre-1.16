@@ -40,6 +40,7 @@ import com.silverminer.moreore.util.network.MoreorePacketHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ComposterBlock;
+import net.minecraft.block.CropsBlock;
 import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
@@ -47,19 +48,25 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameters;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.Biome.RainType;
 import net.minecraft.world.biome.MobSpawnInfo.Spawners;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -67,6 +74,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -263,6 +271,53 @@ public class CommonEvents {
 				if (inv.hasAny(Sets.newHashSet(RuneItems.RUNE_BROWN.get()))) {
 					int addFoot = damageItems(inv, player, RuneItems.RUNE_BROWN.get(), 3, 0.25F);
 					player.getFoodStats().setFoodLevel(player.getFoodStats().getFoodLevel() + addFoot);
+				}
+			}
+		}
+
+		@SubscribeEvent
+		public static void onBlockBreak(BlockEvent.BreakEvent event) {
+			if (event.getWorld() instanceof World
+					&& ((World) event.getWorld()).getGameRules().getBoolean(GameRules.DO_TILE_DROPS)) {
+				PlayerEntity player = event.getPlayer();
+				Inventory inv = RuneInventoryRegistry.getInventory(player.getUniqueID());
+				if (inv.hasAny(Sets.newHashSet(RuneItems.RUNE_GREEN.get()))
+						&& event.getState().getBlock() instanceof CropsBlock) {
+					int addDrobs = damageItems(inv, player, RuneItems.RUNE_GREEN.get(), 3, 0.25F)
+							* (event.getWorld().getRandom().nextInt(2) + 1);
+					if (event.getWorld() instanceof ServerWorld) {
+						ServerWorld serverWorld = (ServerWorld) event.getWorld();
+						event.getState()
+								.getDrops(new LootContext.Builder(serverWorld).withRandom(serverWorld.getRandom())
+										.withParameter(LootParameters.TOOL, player.getHeldItemMainhand())
+										.withParameter(LootParameters.field_237457_g_, new Vector3d(
+												event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())))
+								.forEach(stack -> {
+									stack.setCount(stack.getCount() * addDrobs);
+									serverWorld.addEntity(new ItemEntity(serverWorld, event.getPos().getX(),
+											event.getPos().getY(), event.getPos().getZ(), stack));
+								});
+					}
+					event.setExpToDrop(event.getExpToDrop() * addDrobs);
+				}
+				if (inv.hasAny(Sets.newHashSet(RuneItems.RUNE_PURPLE.get()))) {
+					int addDrobs = damageItems(inv, player, RuneItems.RUNE_PURPLE.get(), 3, 0.3F)
+							* (event.getWorld().getRandom().nextInt(2) + 1) / 2;
+					if (event.getWorld() instanceof ServerWorld) {
+						ServerWorld serverWorld = (ServerWorld) event.getWorld();
+						event.getState()
+								.getDrops(new LootContext.Builder(serverWorld).withRandom(serverWorld.getRandom())
+										.withParameter(LootParameters.TOOL, player.getHeldItemMainhand())
+										.withParameter(LootParameters.field_237457_g_, new Vector3d(
+												event.getPos().getX(), event.getPos().getY(), event.getPos().getZ())))
+								.forEach(stack -> {
+									stack.setCount(stack.getCount() * addDrobs);
+									if (!(stack.getItem() instanceof BlockItem))
+										serverWorld.addEntity(new ItemEntity(serverWorld, event.getPos().getX(),
+												event.getPos().getY(), event.getPos().getZ(), stack));
+								});
+					}
+					event.setExpToDrop(event.getExpToDrop() * addDrobs / 2);
 				}
 			}
 		}
