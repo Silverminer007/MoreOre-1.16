@@ -64,6 +64,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -240,7 +241,7 @@ public class CommonEvents {
 
 		@SubscribeEvent
 		public static void applyRuneEffects(LivingAttackEvent event) {
-			if (event.getEntityLiving() instanceof PlayerEntity) {
+			if (event.getEntityLiving() instanceof PlayerEntity && !event.getEntity().world.isRemote) {
 				PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 				Inventory inv = RuneInventoryRegistry.getInventory(player.getUniqueID());
 				if (inv.hasAny(Sets.newHashSet(RuneItems.RUNE_RED.get())) && event.getSource().isFireDamage()) {
@@ -254,10 +255,23 @@ public class CommonEvents {
 			}
 		}
 
-		private static int damageItems(Inventory inv, PlayerEntity player, Item item, int maxDamageItems, float breakChance) {
+		@SubscribeEvent
+		public static void onFoodEaten(LivingEntityUseItemEvent.Finish event) {
+			if (event.getEntityLiving() instanceof PlayerEntity && event.getItem().isFood()) {
+				PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+				Inventory inv = RuneInventoryRegistry.getInventory(player.getUniqueID());
+				if (inv.hasAny(Sets.newHashSet(RuneItems.RUNE_BROWN.get()))) {
+					int addFoot = damageItems(inv, player, RuneItems.RUNE_BROWN.get(), 3, 0.25F);
+					player.getFoodStats().setFoodLevel(player.getFoodStats().getFoodLevel() + addFoot);
+				}
+			}
+		}
+
+		private static int damageItems(Inventory inv, PlayerEntity player, Item item, int maxDamageItems,
+				float breakChance) {
 			int j = 0;
 			int invSize = RuneInventoryRegistry.getInventorySize(player.getUniqueID());
-			for (int i = 0; i <= invSize; i++) {
+			for (int i = 0; i < invSize; i++) {
 				ItemStack stack = inv.getStackInSlot(i).copy();
 				if (stack.getItem() == item) {
 					j++;
