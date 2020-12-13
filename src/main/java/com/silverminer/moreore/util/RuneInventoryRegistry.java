@@ -10,6 +10,7 @@ import com.google.common.collect.Maps;
 import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.util.events.RuneInventoryChangeEvent;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -63,19 +64,17 @@ public class RuneInventoryRegistry {
 
 	public static Inventory getInventory(UUID uuid) {
 		addPlayer(uuid);
-/*		Inventory inv = new Inventory(3);
-		for(ItemStack stack : RUNE_INVENTORY.get(uuid).func_233543_f_()) {
-			inv.addItem(stack);
-		}
-		inv = inv == null ? new Inventory(3) : inv;
-		setInventory(uuid, inv);*/
 		return RUNE_INVENTORY.get(uuid);
 	}
 
-	public static Inventory setInventory(UUID uuid, Inventory inv) {
+	public static Inventory setInventory(PlayerEntity player, Inventory inv) {
+		MinecraftForge.EVENT_BUS.post(new RuneInventoryChangeEvent(player, inv, getInventory(player.getUniqueID())));
+		return setInventory(player.getUniqueID(), inv);
+	}
+
+	private static Inventory setInventory(UUID uuid, Inventory inv) {
 		addPlayer(uuid);
 		markDirty();
-		MinecraftForge.EVENT_BUS.post(new RuneInventoryChangeEvent(uuid, inv, getInventory(uuid)));
 		return RUNE_INVENTORY.replace(uuid, inv);
 	}
 
@@ -96,7 +95,7 @@ public class RuneInventoryRegistry {
 	public static int expandInventorySize(UUID uuid, int amount) {
 		int oldSize = getInventorySize(uuid);
 		int size = oldSize + amount;
-		if(!isSizeValid(size)) {
+		if (!isSizeValid(size)) {
 			size = size < 0 ? 0 : size > 3 ? 3 : size;
 		}
 		setInventorySize(uuid, size);

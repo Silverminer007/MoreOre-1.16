@@ -32,8 +32,8 @@ public class RunetableContainer extends AbstractRepairContainer {
 	private final World world;
 	private final List<RuneRecipe> recipes;
 	private RuneRecipe recipe;
-	public final IInventory runeInv;;
 	public final UUID activeUUID;
+	public final IInventory runeInv;
 	private final int invSize;
 
 	public int materialCost;
@@ -50,7 +50,8 @@ public class RunetableContainer extends AbstractRepairContainer {
 		this.recipes = this.world.getRecipeManager().getRecipesForType(ModRecipeType.RUNES);
 		this.activeUUID = inventory.player.getUniqueID();
 		Inventory inv = RuneInventoryRegistry.getInventory(this.activeUUID);
-		this.runeInv = new Inventory(inv.getStackInSlot(0), inv.getStackInSlot(1), inv.getStackInSlot(2));
+		this.runeInv = new Inventory(inv.getStackInSlot(0).copy(), inv.getStackInSlot(1).copy(),
+				inv.getStackInSlot(2).copy());
 		this.invSize = RuneInventoryRegistry.getInventorySize(this.activeUUID);
 		for (int i = 0; i < this.invSize; i++) {
 			// 176 ist die x breite wo der erste slot beginnt. Mal 22 wegen 18 Slot größe +
@@ -70,7 +71,7 @@ public class RunetableContainer extends AbstractRepairContainer {
 	public void onContainerClosed(PlayerEntity playerIn) {
 		super.onContainerClosed(playerIn);
 		if (this.runeInv instanceof Inventory)
-			RuneInventoryRegistry.setInventory(playerIn.getUniqueID(), (Inventory) this.runeInv);
+			RuneInventoryRegistry.setInventory(playerIn, (Inventory) this.runeInv);
 	}
 
 	protected boolean func_230302_a_(BlockState state) {

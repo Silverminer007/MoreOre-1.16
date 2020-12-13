@@ -47,6 +47,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -70,6 +72,8 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -242,7 +246,7 @@ public class CommonEvents {
 			Inventory inv = RuneInventoryRegistry.getInventory(player.getUniqueID());
 			if (inv.hasAny(Sets.newHashSet(RuneItems.RUNE_YELLOW.get()))) {
 				float addDamage = 1.0F + 0.2F * damageItems(inv, player, RuneItems.RUNE_RED.get(), 1, 0.02F);
-				RuneInventoryRegistry.setInventory(player.getUniqueID(), inv);
+				RuneInventoryRegistry.setInventory(player, inv);
 				event.setNewSpeed(event.getOriginalSpeed() * addDamage);
 			}
 		}
@@ -348,30 +352,44 @@ public class CommonEvents {
 					}
 				}
 			}
-			RuneInventoryRegistry.setInventory(player.getUniqueID(), inv);
+			RuneInventoryRegistry.setInventory(player, inv);
 			return j;
 		}
 
-		@SuppressWarnings("unused")
 		@SubscribeEvent
 		public static void runeInvChange(RuneInventoryChangeEvent event) {
-			if (true)
-				return;
 			int orangeRunesOld = 0;
 			int orangeRunesNew = 0;
-			for (ItemStack stack : event.getNewInv().func_233543_f_()) {
-				if (stack.getItem() == RuneItems.RUNE_RED.get()) {
-					orangeRunesNew++;
+			int invSize = RuneInventoryRegistry.getInventorySize(event.getPlayer().getUniqueID());
+			if (event.getNewInv().hasAny(Sets.newHashSet(RuneItems.RUNE_ORANGE.get()))
+					|| event.getOldInv().hasAny(Sets.newHashSet(RuneItems.RUNE_ORANGE.get()))) {
+				for (int i = 0; i < invSize; i++) {
+					ItemStack stack = event.getNewInv().getStackInSlot(i).copy();
+					if (stack.getItem() == RuneItems.RUNE_ORANGE.get()) {
+						orangeRunesNew++;
+					}
 				}
-			}
-			for (ItemStack stack : event.getNewInv().func_233543_f_()) {
-				if (stack.getItem() == RuneItems.RUNE_RED.get()) {
-					orangeRunesOld++;
+				for (int i = 0; i < invSize; i++) {
+					ItemStack stack = event.getOldInv().getStackInSlot(i).copy();
+					if (stack.getItem() == RuneItems.RUNE_ORANGE.get()) {
+						orangeRunesOld++;
+					}
 				}
+				event.getPlayer().getAttribute(Attributes.MOVEMENT_SPEED)
+						.applyPersistentModifier(new AttributeModifier("Orange Rune Addition Speed",
+								(double) 0.1F * (orangeRunesNew - orangeRunesOld),
+								AttributeModifier.Operation.ADDITION));
 			}
-			if (orangeRunesNew > orangeRunesOld) {
-			} else if (orangeRunesOld > orangeRunesNew) {
+		}
 
+		@SubscribeEvent
+		public static void orangeRuneDamage(PlayerTickEvent event) {
+			if (event.phase == Phase.START) {
+				PlayerEntity player = event.player;
+				Inventory inv = RuneInventoryRegistry.getInventory(player.getUniqueID());
+				if (inv.hasAny(Sets.newHashSet(RuneItems.RUNE_ORANGE.get()))) {
+					damageItems(inv, player, RuneItems.RUNE_ORANGE.get(), 3, 0.01F);
+				}
 			}
 		}
 	}
