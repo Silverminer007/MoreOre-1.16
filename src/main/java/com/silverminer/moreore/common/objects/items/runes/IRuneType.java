@@ -1,6 +1,8 @@
 package com.silverminer.moreore.common.objects.items.runes;
 
-public interface IRuneType {
+import net.minecraft.util.IStringSerializable;
+
+public interface IRuneType extends IStringSerializable{
 	int getMaxUses();
-	String getDescription();
+	String getDescriptionKey();
 }

@@ -382,13 +382,17 @@ public class CommonEvents {
 			}
 		}
 
+		private static int timer = 0;
+
 		@SubscribeEvent
 		public static void orangeRuneDamage(PlayerTickEvent event) {
 			if (event.phase == Phase.START) {
-				PlayerEntity player = event.player;
-				Inventory inv = RuneInventoryRegistry.getInventory(player.getUniqueID());
-				if (inv.hasAny(Sets.newHashSet(RuneItems.RUNE_ORANGE.get()))) {
-					damageItems(inv, player, RuneItems.RUNE_ORANGE.get(), 3, 0.01F);
+				if (timer++ % 100 == 0) {
+					PlayerEntity player = event.player;
+					Inventory inv = RuneInventoryRegistry.getInventory(player.getUniqueID());
+					if (inv.hasAny(Sets.newHashSet(RuneItems.RUNE_ORANGE.get()))) {
+						damageItems(inv, player, RuneItems.RUNE_ORANGE.get(), 3, 1.0F);
+					}
 				}
 			}
 		}

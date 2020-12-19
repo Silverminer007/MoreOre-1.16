@@ -1,15 +1,23 @@
 package com.silverminer.moreore.common.objects.items.runes;
 
+import javax.annotation.Nullable;
+
+import com.silverminer.moreore.MoreOre;
+
 public enum RuneType implements IRuneType {
-	RAINBOW(100, ""), GREEN(100, ""), ORANGE(100, ""), BLUE(100, ""), RED(100, ""), YELLOW(250, ""), GRAY(5, ""),
-	BROWN(100, ""), PURPLE(100, "");
+	RAINBOW(100, "rainbow"), GREEN(100, "green"), ORANGE(100, "orange"), BLUE(100, "blue"), RED(100, "red"),
+	YELLOW(250, "yellow"), GRAY(5, "gray"), BROWN(100, "brown"), PURPLE(100, "purple");
 
 	private int maxUses;
-	private String description;
+	private final String descriptionKey;
 
-	RuneType(int maxUsesIn, String descriptionIn) {
+	RuneType(int maxUsesIn, String nameIn) {
+		this(maxUsesIn, nameIn, MoreOre.MODID);
+	}
+
+	RuneType(int maxUsesIn, String nameIn, String modid) {
 		this.maxUses = maxUsesIn;
-		this.description = descriptionIn;
+		this.descriptionKey = "runes."  + modid + "." + nameIn;
 	}
 
 	@Override
@@ -18,8 +26,26 @@ public enum RuneType implements IRuneType {
 	}
 
 	@Override
-	public String getDescription() {
-		return this.description;
+	public String getDescriptionKey() {
+		return this.descriptionKey;
 	}
 
+	@Override
+	public String getString() {
+		return this.getDescriptionKey();
+	}
+
+	@Nullable
+	public RuneType fromString(String key) {
+		return this.fromStringOrDefault(key, null);
+	}
+
+	public RuneType fromStringOrDefault(String key, RuneType typeD) {
+		for(RuneType type : RuneType.values()) {
+			if(type.getString().equals(key)) {
+				return type;
+			}
+		}
+		return typeD;
+	}
 }
