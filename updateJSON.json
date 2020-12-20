@@ -2,7 +2,7 @@
 	"homepage": "https://github.com/Silverminer007/MoreOre-1.16",
 	"promos": {
 		"1.16.3-latest": "1.16.4-1.1.0",
-		"1.16.4-latest": "1.16.4-1.2.0-Beta1",
+		"1.16.4-latest": "1.16.4-1.2.0-Beta2",
 		"1.16.4-recommended": "1.16.4-1.1.1"
 	},
 	"1.16.3": {
@@ -27,6 +27,6 @@
 		"1.16.4-1.1.0": "Changed Accesstransformer; Changed Alexandrit Ore texture; Fixed Bug Rubin Hoe looks like Emerald Hoe, Fixed Banana generation; Vines generate at Mega Silver Trees; Changed SpawnPosition Finder of Silver Portals; Added Silver Button loot table; Changed Silver Ore Texture; Fixed Bug in Banana Tree Decorator",
 		"1.16.4-1.1.1": "Changed Name of rubin to Ruby; Changed Settings of Desert Tempel Structure",
 		"1.16.4-1.2.0-Beta1": "Added Runetable Block, Screen and Container; Added new Recipe Type 'runes'; Added Rune Base; Added Green Rune and Green Rune Shard; Added PacketHandler; Added Rune Inventory; Added Rune Base Block; Added Giant Zombie King to expand Rune Inventory; Changed Rainbow crafing recipe; Changed Name of 'rainbow' to 'rainbow rune shard'; Changed ItemGroup of Rainbow to Runes; Giant Zombie King spawns more Zombies if more players are in the world; The Giant Zombie King spawns now also in Days Zombies and may also Skeletons; It may wears a diamond sword; Giant Zombie Kings doen't attack zombies and skeletons anymore; The Runes are max-useable 100 times; Intruced Runetype; Runes are now damageable; Changed maxDamage of Tools",
-		"1.16.4-1.2.0-Beta2": "Added orange, blue, red, yellow, gray, brown and purple rune; Runes are now repairable in the Runetable; Gray Runes and Rainbow shards can repair every Rune; Yellow Rune makes Blocks breaking faster; Added effects to red and blue rune; Fixed Bug in RuneInventoryRegistry; Added Brown Rune Effect; Gray Runes nolonger can be repaired with Gray Runes; Added effects to Green and Purple Rune; added Orange Rune Effekt; Added Tooltips to Runes"
+		"1.16.4-1.2.0-Beta2": "Added orange, blue, red, yellow, gray, brown and purple rune; Runes are now repairable in the Runetable; Gray Runes and Rainbow shards can repair every Rune; Yellow Rune makes Blocks breaking faster; Added effects to red and blue rune; Fixed Bug in RuneInventoryRegistry; Added Brown Rune Effect; Gray Runes nolonger can be repaired with Gray Runes; Added effects to Green and Purple Rune; added Orange Rune Effekt; Added Tooltips to Runes; Fixed Bug Tools and Sword are rendered like items"
 	}
 }
