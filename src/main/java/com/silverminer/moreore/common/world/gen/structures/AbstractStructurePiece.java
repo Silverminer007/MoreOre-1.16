@@ -19,18 +19,19 @@ import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
+import net.minecraft.world.gen.feature.template.BlockIgnoreStructureProcessor;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 
-public abstract class MoreoreStructurePiece extends TemplateStructurePiece {
-	protected static final Logger LOGGER = LogManager.getLogger(MoreoreStructurePiece.class);
+public abstract class AbstractStructurePiece extends TemplateStructurePiece {
+	protected static final Logger LOGGER = LogManager.getLogger(AbstractStructurePiece.class);
 
 	private final ResourceLocation location;
 	private final Rotation rotation;
 
-	public MoreoreStructurePiece(IStructurePieceType pieceType, TemplateManager templateManager,
+	public AbstractStructurePiece(IStructurePieceType pieceType, TemplateManager templateManager,
 			ResourceLocation location, BlockPos pos, Rotation rotation, int componentTypeIn) {
 		super(pieceType, componentTypeIn);
 		this.location = location;
@@ -39,7 +40,7 @@ public abstract class MoreoreStructurePiece extends TemplateStructurePiece {
 		this.setup(templateManager);
 	}
 
-	public MoreoreStructurePiece(IStructurePieceType pieceType, TemplateManager templateManager, CompoundNBT cNBT) {
+	public AbstractStructurePiece(IStructurePieceType pieceType, TemplateManager templateManager, CompoundNBT cNBT) {
 		super(pieceType, cNBT);
 		this.location = new ResourceLocation(cNBT.getString("Template"));
 		this.rotation = Rotation.valueOf(cNBT.getString("Rot"));
@@ -83,5 +84,7 @@ public abstract class MoreoreStructurePiece extends TemplateStructurePiece {
 			MutableBoundingBox sbb) {
 	}
 
-	public abstract StructureProcessor getProcessor();
+	public StructureProcessor getProcessor() {
+		return BlockIgnoreStructureProcessor.AIR_AND_STRUCTURE_BLOCK;
+	}
 }

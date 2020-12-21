@@ -3,7 +3,7 @@ package com.silverminer.moreore.client.gui.screen;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.client.gui.container.RunetableContainer;
-import com.silverminer.moreore.util.RuneInventoryRegistry;
+import com.silverminer.moreore.util.runes.RuneInventoryRegistry;
 
 import net.minecraft.client.gui.screen.inventory.AbstractRepairScreen;
 import net.minecraft.entity.player.PlayerInventory;

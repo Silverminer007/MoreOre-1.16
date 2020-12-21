@@ -1,9 +1,11 @@
-package com.silverminer.moreore.common.world.gen.structures;
+package com.silverminer.moreore.common.world.gen.structures.nut_bush_plantation;
 
 import java.util.List;
 import java.util.Random;
 
 import com.silverminer.moreore.MoreOre;
+import com.silverminer.moreore.common.world.gen.structures.AbstractStructurePiece;
+import com.silverminer.moreore.common.world.gen.structures.MoreoreStructurePieceType;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
@@ -26,7 +28,7 @@ public class NutBushPlantationPieces {
 				pos, rotation, 0));
 	}
 
-	public static class Piece extends MoreoreStructurePiece {
+	public static class Piece extends AbstractStructurePiece {
 		public Piece(TemplateManager templateManager, ResourceLocation location, BlockPos pos, Rotation rotation,
 				int componentTypeIn) {
 			super(MoreoreStructurePieceType.NUT_BUSH_PLANTATION, templateManager, location, pos, rotation, componentTypeIn);

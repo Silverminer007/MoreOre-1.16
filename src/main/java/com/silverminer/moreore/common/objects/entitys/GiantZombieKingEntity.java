@@ -8,9 +8,9 @@ import com.silverminer.moreore.init.items.ArmorItems;
 import com.silverminer.moreore.init.items.RuneItems;
 import com.silverminer.moreore.init.items.ToolItems;
 import com.silverminer.moreore.util.EntityUtils;
-import com.silverminer.moreore.util.RuneInventoryRegistry;
 import com.silverminer.moreore.util.network.MoreorePacketHandler;
 import com.silverminer.moreore.util.network.PlayerInventoryChangePacket;
+import com.silverminer.moreore.util.runes.RuneInventoryRegistry;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;

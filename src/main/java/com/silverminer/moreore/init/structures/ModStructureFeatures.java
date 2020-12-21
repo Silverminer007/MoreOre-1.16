@@ -1,9 +1,9 @@
-package com.silverminer.moreore.init;
+package com.silverminer.moreore.init.structures;
 
 import com.silverminer.moreore.MoreOre;
-import com.silverminer.moreore.common.world.gen.structures.DesertTempelStructure;
-import com.silverminer.moreore.common.world.gen.structures.NutBushPlantationStructure;
-import com.silverminer.moreore.common.world.gen.structures.TempelStructure;
+import com.silverminer.moreore.common.world.gen.structures.desert_tempel.DesertTempelStructure;
+import com.silverminer.moreore.common.world.gen.structures.nut_bush_plantation.NutBushPlantationStructure;
+import com.silverminer.moreore.common.world.gen.structures.tempel.TempelStructure;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.WorldGenRegistries;

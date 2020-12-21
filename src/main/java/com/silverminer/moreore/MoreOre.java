@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 import com.silverminer.moreore.init.ContainerTypesInit;
 import com.silverminer.moreore.init.EnchantmentInit;
 import com.silverminer.moreore.init.FoliagePlacerTypeInit;
-import com.silverminer.moreore.init.StructureFeatureInit;
 import com.silverminer.moreore.init.ModEntityTypesInit;
 import com.silverminer.moreore.init.RecipeSerializerInit;
 import com.silverminer.moreore.init.TreeDecotratorInit;
@@ -24,21 +23,24 @@ import com.silverminer.moreore.init.items.OreItems;
 import com.silverminer.moreore.init.items.RuneItems;
 import com.silverminer.moreore.init.items.ToolItems;
 import com.silverminer.moreore.init.items.TreeItems;
+import com.silverminer.moreore.init.structures.StructureFeatureInit;
 import com.silverminer.moreore.common.portal.PortalWorldSaveData;
-import com.silverminer.moreore.util.RuneSaveData;
 import com.silverminer.moreore.util.events.handler.CommonEvents;
 import com.silverminer.moreore.util.items.ComposterItems;
+import com.silverminer.moreore.util.runes.RuneSaveData;
+import com.silverminer.moreore.util.structures.config.Config;
 
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 /**
  * @author Silverminer007
- * @version Last Edit: Moreore-1.16.4-1.2.0-Beta1
+ * @version Last Edit: Moreore-1.16.4-1.2.0-Beta3
  * @since 25.04.2020
  * @comment This Mod adds Blocks, Items, Biomes, Dimensions, Structures, fun and
  *          much more!!! Have fun!!!
@@ -69,12 +71,14 @@ public class MoreOre {
 		InitBlocks.BLOCKS.register(modEventBus);
 		OreBlocks.BLOCKS.register(modEventBus);
 		BiologicBlocks.BLOCKS.register(modEventBus);
-		StructureFeatureInit.FEATURES.register(modEventBus);
+		StructureFeatureInit.STRUCTURES.register(modEventBus);
 		ModEntityTypesInit.ENTITIES.register(modEventBus);
 		EnchantmentInit.ENCHANTMENTS.register(modEventBus);
 		TreeDecotratorInit.TYPES.register(modEventBus);
 		FoliagePlacerTypeInit.TYPES.register(modEventBus);
 		RecipeSerializerInit.SERIALIZER.register(modEventBus);
 		ContainerTypesInit.CONTAINER.register(modEventBus);
+		//Config
+		Config.register(ModLoadingContext.get());
 	}
 }

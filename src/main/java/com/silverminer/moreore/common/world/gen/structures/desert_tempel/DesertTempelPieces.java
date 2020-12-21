@@ -1,9 +1,11 @@
-package com.silverminer.moreore.common.world.gen.structures;
+package com.silverminer.moreore.common.world.gen.structures.desert_tempel;
 
 import java.util.List;
 import java.util.Random;
 
 import com.silverminer.moreore.MoreOre;
+import com.silverminer.moreore.common.world.gen.structures.AbstractStructurePiece;
+import com.silverminer.moreore.common.world.gen.structures.MoreoreStructurePieceType;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
@@ -24,7 +26,7 @@ public class DesertTempelPieces {
 		pieces.add(new DesertTempelPieces.Piece(templateManager, location, pos, rotation, 0));
 	}
 
-	public static class Piece extends MoreoreStructurePiece {
+	public static class Piece extends AbstractStructurePiece {
 		public Piece(TemplateManager templateManager, ResourceLocation location, BlockPos pos, Rotation rotation,
 				int componentTypeIn) {
 			super(MoreoreStructurePieceType.DESERT_TEMPEL, templateManager, location, pos, rotation, componentTypeIn);

@@ -18,12 +18,12 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 
-public abstract class MoreoreStructureStart<C extends IFeatureConfig> extends StructureStart<C> {
-	protected static final Logger LOGGER = LogManager.getLogger(MoreoreStructureStart.class);
+public abstract class AbstractStructureStart<C extends IFeatureConfig> extends StructureStart<C> {
+	protected static final Logger LOGGER = LogManager.getLogger(AbstractStructureStart.class);
 
-	public MoreoreStructureStart(Structure<C> structure, int chunkX, int chunkZ, MutableBoundingBox boundingbox,
-			int refercence, long seed) {
-		super(structure, chunkX, chunkZ, boundingbox, refercence, seed);
+	public AbstractStructureStart(Structure<C> structure, int chunkX, int chunkZ, MutableBoundingBox boundingbox,
+			int p_i225874_5_, long seed) {
+		super(structure, chunkX, chunkZ, boundingbox, p_i225874_5_, seed);
 	}
 
 	@Override

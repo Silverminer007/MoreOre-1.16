@@ -1,4 +1,4 @@
-package com.silverminer.moreore.util;
+package com.silverminer.moreore.util.runes;
 
 import java.util.Map;
 import java.util.UUID;

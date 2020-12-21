@@ -1,4 +1,4 @@
-package com.silverminer.moreore.common.world.gen.structures;
+package com.silverminer.moreore.common.world.gen.structures.nut_bush_plantation;
 
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -15,6 +15,9 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import javax.annotation.Nonnull;
 
 import com.mojang.serialization.Codec;
+import com.silverminer.moreore.common.world.gen.structures.AbstractStructure;
+import com.silverminer.moreore.common.world.gen.structures.AbstractStructureStart;
+import com.silverminer.moreore.util.structures.config.Config;
 
 public class NutBushPlantationStructure extends AbstractStructure<NoFeatureConfig> {
 	public static final String SHORT_NAME = "nut_bush_plantation";
@@ -36,25 +39,25 @@ public class NutBushPlantationStructure extends AbstractStructure<NoFeatureConfi
 
 	@Override
 	public int getDistance() {
-		return 40;
+		return Config.STRUCTURES.NUT_BUSH_PLANTATION.DISTANCE.get();
 	}
 
 	@Override
 	public int getSeparation() {
-		return 8;
+		return Config.STRUCTURES.NUT_BUSH_PLANTATION.SEPARATION.get();
 	}
 
 	@Override
 	public int getSeedModifier() {
-		return 609322918;
+		return Config.STRUCTURES.NUT_BUSH_PLANTATION.SEED.get();
 	}
 
 	@Override
 	public double getSpawnChance() {
-		return 0.6;
+		return Config.STRUCTURES.NUT_BUSH_PLANTATION.SPAWN_CHANCE.get();
 	}
 
-	public static class Start extends MoreoreStructureStart<NoFeatureConfig> {
+	public static class Start extends AbstractStructureStart<NoFeatureConfig> {
 
 		public Start(Structure<NoFeatureConfig> structure, int chunkX, int chunkZ, MutableBoundingBox boundingbox,
 				int refernce, long seed) {

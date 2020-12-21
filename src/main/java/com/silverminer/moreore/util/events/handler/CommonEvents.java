@@ -22,20 +22,22 @@ import com.silverminer.moreore.common.recipe.RuneRecipe;
 import com.silverminer.moreore.common.world.biomeprovider.SilverBiomeProvider;
 import com.silverminer.moreore.common.world.gen.features.OreFeatures;
 import com.silverminer.moreore.common.world.gen.features.TreeFeatures;
+import com.silverminer.moreore.common.world.gen.structures.MoreoreStructurePieceType;
 import com.silverminer.moreore.common.world.gen.tree.GoldTree;
 import com.silverminer.moreore.common.world.gen.tree.IceTree;
 import com.silverminer.moreore.common.world.gen.tree.NutBush;
 import com.silverminer.moreore.init.ContainerTypesInit;
 import com.silverminer.moreore.init.ModEntityTypesInit;
-import com.silverminer.moreore.init.ModStructureFeatures;
 import com.silverminer.moreore.init.blocks.BiologicBlocks;
 import com.silverminer.moreore.init.items.RuneItems;
-import com.silverminer.moreore.util.RuneInventoryRegistry;
-import com.silverminer.moreore.util.RuneSaveData;
-import com.silverminer.moreore.util.StructureUtils;
+import com.silverminer.moreore.init.structures.ModStructureFeatures;
 import com.silverminer.moreore.util.events.RuneInventoryChangeEvent;
 import com.silverminer.moreore.util.items.ComposterItems;
 import com.silverminer.moreore.util.network.MoreorePacketHandler;
+import com.silverminer.moreore.util.runes.RuneInventoryRegistry;
+import com.silverminer.moreore.util.runes.RuneSaveData;
+import com.silverminer.moreore.util.structures.StructureUtils;
+import com.silverminer.moreore.util.structures.config.Config;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -65,8 +67,6 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome.Category;
-import net.minecraft.world.biome.Biome.RainType;
 import net.minecraft.world.biome.MobSpawnInfo.Spawners;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.IWorld;
@@ -148,6 +148,7 @@ public class CommonEvents {
 					});
 
 			event.enqueueWork(OreFeatures::registerOres);
+			event.enqueueWork(MoreoreStructurePieceType::regsiter);
 			event.enqueueWork(() -> {
 				GlobalEntityTypeAttributes.put(ModEntityTypesInit.VILLAGE_GUARDIAN.get(),
 						VillageGuardian.setCustomAttributes());
@@ -216,15 +217,20 @@ public class CommonEvents {
 			event.getGeneration().withFeature(7, () -> OreFeatures.RAINBOW);
 
 			// Structures
-
-			if (event.getCategory() != Category.NETHER && event.getCategory() != Category.THEEND
-					&& event.getCategory() != Category.OCEAN && event.getCategory() != Category.RIVER) {
-
-				event.getGeneration().withStructure(ModStructureFeatures.TEMPEL);
-				event.getGeneration().withStructure(ModStructureFeatures.NUT_BUSH_PLANTATION);
-
-				// Generate the Desert Tempel Structure in every Biome, where it doesn't rain
-				if (event.getClimate().precipitation == RainType.NONE) {
+			if (!Config.STRUCTURES.BLACKLISTED_BIOMES.get().contains(event.getName().toString())) {
+				if (Config.STRUCTURES.TEMPEL.GENERATE.get()
+						&& StructureUtils.checkBiome(Config.STRUCTURES.TEMPEL.BIOME_CATEGORIES.get(),
+								Config.STRUCTURES.TEMPEL.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
+					event.getGeneration().withStructure(ModStructureFeatures.TEMPEL);
+				}
+				if (Config.STRUCTURES.NUT_BUSH_PLANTATION.GENERATE.get()
+						&& StructureUtils.checkBiome(Config.STRUCTURES.NUT_BUSH_PLANTATION.BIOME_CATEGORIES.get(),
+								Config.STRUCTURES.NUT_BUSH_PLANTATION.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
+					event.getGeneration().withStructure(ModStructureFeatures.NUT_BUSH_PLANTATION);
+				}
+				if (Config.STRUCTURES.DESERT_TEMPEL.GENERATE.get()
+						&& StructureUtils.checkBiome(Config.STRUCTURES.DESERT_TEMPEL.BIOME_CATEGORIES.get(),
+								Config.STRUCTURES.DESERT_TEMPEL.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
 					event.getGeneration().withStructure(ModStructureFeatures.DESERT_TEMPEL);
 				}
 			}

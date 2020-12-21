@@ -13,7 +13,7 @@ import com.silverminer.moreore.common.tags.ModTags;
 import com.silverminer.moreore.init.ContainerTypesInit;
 import com.silverminer.moreore.init.blocks.RuneBlocks;
 import com.silverminer.moreore.init.items.RuneItems;
-import com.silverminer.moreore.util.RuneInventoryRegistry;
+import com.silverminer.moreore.util.runes.RuneInventoryRegistry;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
