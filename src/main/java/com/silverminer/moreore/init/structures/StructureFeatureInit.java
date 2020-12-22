@@ -7,6 +7,7 @@ import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.common.world.gen.structures.AbstractStructure;
 import com.silverminer.moreore.common.world.gen.structures.desert_tempel.DesertTempelStructure;
 import com.silverminer.moreore.common.world.gen.structures.nut_bush_plantation.NutBushPlantationStructure;
+import com.silverminer.moreore.common.world.gen.structures.runes.green.GreenDungeonStructure;
 import com.silverminer.moreore.common.world.gen.structures.tempel.TempelStructure;
 
 import net.minecraft.util.ResourceLocation;
@@ -30,6 +31,9 @@ public class StructureFeatureInit {
 
 	public static final RegistryObject<NutBushPlantationStructure> NUT_BUSH_PLANTATION = register(
 			NutBushPlantationStructure.SHORT_NAME, new NutBushPlantationStructure(NoFeatureConfig.field_236558_a_));
+
+	public static final RegistryObject<GreenDungeonStructure> GREEN_DUNGEON = register(GreenDungeonStructure.SHORT_NAME,
+			new GreenDungeonStructure(NoFeatureConfig.field_236558_a_));
 
 	private static <T extends AbstractStructure<NoFeatureConfig>> RegistryObject<T> register(String name, T structure) {
 		if (!Structure.NAME_STRUCTURE_BIMAP.containsValue(structure)) {

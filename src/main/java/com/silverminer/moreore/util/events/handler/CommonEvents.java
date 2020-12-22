@@ -225,13 +225,19 @@ public class CommonEvents {
 				}
 				if (Config.STRUCTURES.NUT_BUSH_PLANTATION.GENERATE.get()
 						&& StructureUtils.checkBiome(Config.STRUCTURES.NUT_BUSH_PLANTATION.BIOME_CATEGORIES.get(),
-								Config.STRUCTURES.NUT_BUSH_PLANTATION.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
+								Config.STRUCTURES.NUT_BUSH_PLANTATION.BIOME_BLACKLIST.get(), event.getName(),
+								event.getCategory())) {
 					event.getGeneration().withStructure(ModStructureFeatures.NUT_BUSH_PLANTATION);
 				}
-				if (Config.STRUCTURES.DESERT_TEMPEL.GENERATE.get()
-						&& StructureUtils.checkBiome(Config.STRUCTURES.DESERT_TEMPEL.BIOME_CATEGORIES.get(),
-								Config.STRUCTURES.DESERT_TEMPEL.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
+				if (Config.STRUCTURES.DESERT_TEMPEL.GENERATE.get() && StructureUtils.checkBiome(
+						Config.STRUCTURES.DESERT_TEMPEL.BIOME_CATEGORIES.get(),
+						Config.STRUCTURES.DESERT_TEMPEL.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
 					event.getGeneration().withStructure(ModStructureFeatures.DESERT_TEMPEL);
+				}
+				if (Config.STRUCTURES.GREEN_DUNGEON.GENERATE.get() && StructureUtils.checkBiome(
+						Config.STRUCTURES.GREEN_DUNGEON.BIOME_CATEGORIES.get(),
+						Config.STRUCTURES.GREEN_DUNGEON.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
+					event.getGeneration().withStructure(ModStructureFeatures.GREEN_DUNGEON);
 				}
 			}
 
