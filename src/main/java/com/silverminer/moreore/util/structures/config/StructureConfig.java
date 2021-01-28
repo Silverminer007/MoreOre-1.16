@@ -15,20 +15,26 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class StructureConfig {
-	public final StructureGenConfig DESERT_TEMPEL;
+	public final LootableStructureGenConfig DESERT_TEMPEL;
 	public final StructureGenConfig NUT_BUSH_PLANTATION;
 	public final LootableStructureGenConfig TEMPEL;
 	public final LootableStructureGenConfig GREEN_DUNGEON;
+	public final LootableStructureGenConfig BROWN_LANDINGSTAGE;
+	public final LootableStructureGenConfig ORANGE_SHRINE;
 	public final ForgeConfigSpec.ConfigValue<List<? extends String>> BLACKLISTED_BIOMES;
 
 	public StructureConfig(final ForgeConfigSpec.Builder SERVER_BUILDER) {
 		NUT_BUSH_PLANTATION = new StructureGenConfig(SERVER_BUILDER, "Nut Bush Plantation", "nut_bush_plantation", 0.6D,
 				40, 8, 609322918);
 		TEMPEL = new LootableStructureGenConfig(SERVER_BUILDER, "Tempel", "tempel", 0.6D, 38, 8, 1664499850, 1.0D);
-		DESERT_TEMPEL = new StructureGenConfig(SERVER_BUILDER, "Desert Tempel", "desert_tempel", 0.6D, 32, 8, 309865502,
-				Category.DESERT, Category.MESA);
+		DESERT_TEMPEL = new LootableStructureGenConfig(SERVER_BUILDER, "Desert Tempel", "desert_tempel", 0.6D, 30, 10,
+				309865502, 0.6D, Category.DESERT, Category.MESA);
 		GREEN_DUNGEON = new LootableStructureGenConfig(SERVER_BUILDER, "Green Dungeon", "green_dungeon", 1.0D, 30, 10,
 				651038472, 1.0D, Category.FOREST);
+		BROWN_LANDINGSTAGE = new LootableStructureGenConfig(SERVER_BUILDER, "Brown Landingstage", "brown_landingstage",
+				1.0D, 30, 10, 98298754, 1.0D, Category.SWAMP);
+		ORANGE_SHRINE = new LootableStructureGenConfig(SERVER_BUILDER, "Orange Shrine", "orange_shrine", 1.0D, 30, 10,
+				-987516987, 1.0D, Category.SAVANNA);
 		BLACKLISTED_BIOMES = SERVER_BUILDER
 				.comment("Structure Generation Config", "Take care what you change, this changes may cant be undone",
 						"", "Biomes in which Structures cant generate in")

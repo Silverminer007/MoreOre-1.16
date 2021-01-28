@@ -229,6 +229,7 @@ public class CommonEvents {
 								event.getCategory())) {
 					event.getGeneration().withStructure(ModStructureFeatures.NUT_BUSH_PLANTATION);
 				}
+				// Rune Structures
 				if (Config.STRUCTURES.DESERT_TEMPEL.GENERATE.get() && StructureUtils.checkBiome(
 						Config.STRUCTURES.DESERT_TEMPEL.BIOME_CATEGORIES.get(),
 						Config.STRUCTURES.DESERT_TEMPEL.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
@@ -238,6 +239,17 @@ public class CommonEvents {
 						Config.STRUCTURES.GREEN_DUNGEON.BIOME_CATEGORIES.get(),
 						Config.STRUCTURES.GREEN_DUNGEON.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
 					event.getGeneration().withStructure(ModStructureFeatures.GREEN_DUNGEON);
+				}
+				if (Config.STRUCTURES.ORANGE_SHRINE.GENERATE.get() && StructureUtils.checkBiome(
+						Config.STRUCTURES.ORANGE_SHRINE.BIOME_CATEGORIES.get(),
+						Config.STRUCTURES.ORANGE_SHRINE.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
+					event.getGeneration().withStructure(ModStructureFeatures.ORANGE_SHRINE);
+				}
+				if (Config.STRUCTURES.BROWN_LANDINGSTAGE.GENERATE.get()
+						&& StructureUtils.checkBiome(Config.STRUCTURES.BROWN_LANDINGSTAGE.BIOME_CATEGORIES.get(),
+								Config.STRUCTURES.BROWN_LANDINGSTAGE.BIOME_BLACKLIST.get(), event.getName(),
+								event.getCategory())) {
+					event.getGeneration().withStructure(ModStructureFeatures.BROWN_LANDINGSTAGE);
 				}
 			}
 
@@ -252,6 +264,9 @@ public class CommonEvents {
 			}
 		}
 
+		/**********************************************************************************************************
+		 * Apply Rune effects START
+		 *******************************************************************************************************/
 		@SubscribeEvent
 		public static void getBreakSpeed(PlayerEvent.BreakSpeed event) {
 			PlayerEntity player = event.getPlayer();
@@ -408,5 +423,8 @@ public class CommonEvents {
 				}
 			}
 		}
+		/**********************************************************************************************************
+		 * Apply Rune effects END
+		 *******************************************************************************************************/
 	}
 }

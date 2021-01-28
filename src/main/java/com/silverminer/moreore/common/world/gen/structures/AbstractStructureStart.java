@@ -32,6 +32,8 @@ public abstract class AbstractStructureStart<C extends IFeatureConfig> extends S
 			final ChunkPos position) {
 		super.func_230366_a_(seedReader, manager, generator, random, boundingBox, position);
 
+		if (!this.needsGround())
+			return;
 		for (int x = this.bounds.minX - 1; this.bounds.maxX + 1 >= x; ++x) {
 			for (int z = this.bounds.minZ - 1; this.bounds.maxZ + 1 >= z; ++z) {
 				for (int y = this.bounds.minY - 1; y > 1; --y) {
@@ -44,6 +46,10 @@ public abstract class AbstractStructureStart<C extends IFeatureConfig> extends S
 				}
 			}
 		}
+	}
+
+	public boolean needsGround() {
+		return true;
 	}
 
 	private boolean shouldBlockBeReplaced(ISeedReader seedReader, BlockPos pos) {

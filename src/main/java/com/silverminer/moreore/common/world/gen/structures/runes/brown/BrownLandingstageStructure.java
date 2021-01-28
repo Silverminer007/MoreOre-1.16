@@ -1,4 +1,4 @@
-package com.silverminer.moreore.common.world.gen.structures.desert_tempel;
+package com.silverminer.moreore.common.world.gen.structures.runes.brown;
 
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -19,17 +19,20 @@ import com.silverminer.moreore.common.world.gen.structures.AbstractStructure;
 import com.silverminer.moreore.common.world.gen.structures.AbstractStructureStart;
 import com.silverminer.moreore.util.structures.config.Config;
 
-public class DesertTempelStructure extends AbstractStructure<NoFeatureConfig> {
-	public static final String SHORT_NAME = "desert_tempel";
+public class BrownLandingstageStructure extends AbstractStructure<NoFeatureConfig> {
+	public static final String SHORT_NAME = "brown_landingstage";
 
-	public DesertTempelStructure(Codec<NoFeatureConfig> configFactoryIn) {
+	public BrownLandingstageStructure(Codec<NoFeatureConfig> configFactoryIn) {
 		super(configFactoryIn, 3, SHORT_NAME);
 	}
 
 	@Override
-	@Nonnull
-	public IStartFactory<NoFeatureConfig> getStartFactory() {
-		return Start::new;
+	public double getSpawnChance() {
+		return Config.STRUCTURES.BROWN_LANDINGSTAGE.SPAWN_CHANCE.get();
+	}
+
+	public int getSeedModifier() {
+		return Config.STRUCTURES.BROWN_LANDINGSTAGE.SEED.get();
 	}
 
 	@Override
@@ -39,22 +42,18 @@ public class DesertTempelStructure extends AbstractStructure<NoFeatureConfig> {
 
 	@Override
 	public int getDistance() {
-		return Config.STRUCTURES.DESERT_TEMPEL.DISTANCE.get();
+		return Config.STRUCTURES.BROWN_LANDINGSTAGE.DISTANCE.get();
 	}
 
 	@Override
 	public int getSeparation() {
-		return Config.STRUCTURES.DESERT_TEMPEL.SEPARATION.get();
+		return Config.STRUCTURES.BROWN_LANDINGSTAGE.SEPARATION.get();
 	}
 
 	@Override
-	public int getSeedModifier() {
-		return Config.STRUCTURES.DESERT_TEMPEL.SEED.get();
-	}
-
-	@Override
-	public double getSpawnChance() {
-		return Config.STRUCTURES.DESERT_TEMPEL.SPAWN_CHANCE.get();
+	@Nonnull
+	public IStartFactory<NoFeatureConfig> getStartFactory() {
+		return Start::new;
 	}
 
 	public static class Start extends AbstractStructureStart<NoFeatureConfig> {
@@ -71,8 +70,12 @@ public class DesertTempelStructure extends AbstractStructure<NoFeatureConfig> {
 			int j = chunkZ * 16;
 			BlockPos blockpos = new BlockPos(i, 0, j);
 			Rotation rotation = Rotation.randomRotation(this.rand);
-			DesertTempelPieces.generate(templateManager, blockpos, rotation, this.components, this.rand);
+			BrownLandingstagePieces.generate(templateManager, blockpos, rotation, this.components, this.rand);
 			this.recalculateStructureSize();
+		}
+
+		public boolean needsGround() {
+			return false;
 		}
 	}
 }

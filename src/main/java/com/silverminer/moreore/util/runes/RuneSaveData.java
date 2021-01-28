@@ -12,7 +12,7 @@ import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
 
 /**
- * Responsible for saving/loading {@link PortalRegistry} data.
+ * Responsible for saving/loading {@link RuneInventoryRegistry} data.
  */
 public class RuneSaveData extends WorldSavedData {
 
