@@ -2,7 +2,6 @@ package com.silverminer.moreore.util.structures.config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -19,6 +18,7 @@ public class StructureConfig {
 	public final StructureGenConfig NUT_BUSH_PLANTATION;
 	public final LootableStructureGenConfig TEMPEL;
 	public final LootableStructureGenConfig GREEN_DUNGEON;
+	public final LootableStructureGenConfig PURPLE_HOUSE;
 	public final LootableStructureGenConfig BROWN_LANDINGSTAGE;
 	public final LootableStructureGenConfig ORANGE_SHRINE;
 	public final ForgeConfigSpec.ConfigValue<List<? extends String>> BLACKLISTED_BIOMES;
@@ -31,6 +31,10 @@ public class StructureConfig {
 				309865502, 0.6D, Category.DESERT, Category.MESA);
 		GREEN_DUNGEON = new LootableStructureGenConfig(SERVER_BUILDER, "Green Dungeon", "green_dungeon", 1.0D, 30, 10,
 				651038472, 1.0D, Category.FOREST);
+		PURPLE_HOUSE = new LootableStructureGenConfig(SERVER_BUILDER, "Purple House", "purple_house", 1.0D, 30, 10,
+				75439049, 1.0D, (new String[] { "minecraft:flower_forest", "minecraft:dark_forest_hills",
+						"minecraft:forest", "minecraft:dark_forest" }),
+				Category.FOREST);
 		BROWN_LANDINGSTAGE = new LootableStructureGenConfig(SERVER_BUILDER, "Brown Landingstage", "brown_landingstage",
 				1.0D, 30, 10, 98298754, 1.0D, Category.SWAMP);
 		ORANGE_SHRINE = new LootableStructureGenConfig(SERVER_BUILDER, "Orange Shrine", "orange_shrine", 1.0D, 30, 10,
@@ -66,6 +70,12 @@ public class StructureConfig {
 
 		public StructureGenConfig(final ForgeConfigSpec.Builder SERVER_BUILDER, String name, String dataName,
 				double dSpawnChance, int dDistance, int dSeparation, int dSeed, Category... category) {
+			this(SERVER_BUILDER, name, dataName, dSpawnChance, dDistance, dSeparation, dSeed, new String[] {},
+					category);
+		}
+
+		public StructureGenConfig(final ForgeConfigSpec.Builder SERVER_BUILDER, String name, String dataName,
+				double dSpawnChance, int dDistance, int dSeparation, int dSeed, String[] biomes, Category... category) {
 			dataName = dataName.toLowerCase(Locale.ROOT);
 			GENERATE = SERVER_BUILDER.comment("Generate " + name + "s?").define("structures." + dataName + ".generate",
 					true);
@@ -82,7 +92,7 @@ public class StructureConfig {
 					"structures." + dataName + ".biome_categories", Arrays.asList(category),
 					StructureConfig::validateBiomeCategory);
 			BIOME_BLACKLIST = SERVER_BUILDER.comment("Biomes the " + name + " can NOT generate in").defineList(
-					"structures." + dataName + ".biome_blacklist", Collections.emptyList(),
+					"structures." + dataName + ".biome_blacklist", Arrays.asList(biomes),
 					StructureConfig::validateBiome);
 		}
 	}
@@ -91,11 +101,17 @@ public class StructureConfig {
 		public final ForgeConfigSpec.DoubleValue LOOT_CHANCE;
 
 		public LootableStructureGenConfig(Builder SERVER_BUILDER, String name, String dataName, double dSpawnChance,
-				int dDistance, int dSeparation, int dSeed, double dLootChance, Category... category) {
-			super(SERVER_BUILDER, name, dataName, dSpawnChance, dDistance, dSeparation, dSeed, category);
+				int dDistance, int dSeparation, int dSeed, double dLootChance, String[] biomes, Category... category) {
+			super(SERVER_BUILDER, name, dataName, dSpawnChance, dDistance, dSeparation, dSeed, biomes, category);
 			LOOT_CHANCE = SERVER_BUILDER.comment(name + " Generate Loot Chance [default: " + dLootChance + "]")
 					.defineInRange("structures." + dataName.toLowerCase(Locale.ROOT) + ".loot_chance", dLootChance, 0.0,
 							1.0);
+		}
+
+		public LootableStructureGenConfig(Builder SERVER_BUILDER, String name, String dataName, double dSpawnChance,
+				int dDistance, int dSeparation, int dSeed, double dLootChance, Category... category) {
+			this(SERVER_BUILDER, name, dataName, dSpawnChance, dDistance, dSeparation, dSeed, dLootChance,
+					new String[] {}, category);
 		}
 
 		public LootableStructureGenConfig(Builder SERVER_BUILDER, String name, String dataName, double dSpawnChance,

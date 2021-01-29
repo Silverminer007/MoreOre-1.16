@@ -5,6 +5,7 @@ import com.silverminer.moreore.common.world.gen.structures.nut_bush_plantation.N
 import com.silverminer.moreore.common.world.gen.structures.runes.brown.BrownLandingstageStructure;
 import com.silverminer.moreore.common.world.gen.structures.runes.green.GreenDungeonStructure;
 import com.silverminer.moreore.common.world.gen.structures.runes.orange.OrangeShrineStructure;
+import com.silverminer.moreore.common.world.gen.structures.runes.purple.PurplehouseStructure;
 import com.silverminer.moreore.common.world.gen.structures.runes.yellow.DesertTempelStructure;
 import com.silverminer.moreore.common.world.gen.structures.tempel.TempelStructure;
 
@@ -40,6 +41,10 @@ public class ModStructureFeatures {
 	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> BROWN_LANDINGSTAGE = register(
 			BrownLandingstageStructure.SHORT_NAME,
 			StructureFeatureInit.BROWN_LANDINGSTAGE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
+
+	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> PURPLE_HOUSE = register(
+			PurplehouseStructure.SHORT_NAME,
+			StructureFeatureInit.PURPLE_HOUSE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
 
 	private static <FC extends IFeatureConfig, F extends Structure<FC>> StructureFeature<FC, F> register(String name,
 			StructureFeature<FC, F> structureFeature) {

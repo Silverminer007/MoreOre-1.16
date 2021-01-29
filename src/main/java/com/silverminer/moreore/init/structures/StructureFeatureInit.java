@@ -9,6 +9,7 @@ import com.silverminer.moreore.common.world.gen.structures.nut_bush_plantation.N
 import com.silverminer.moreore.common.world.gen.structures.runes.brown.BrownLandingstageStructure;
 import com.silverminer.moreore.common.world.gen.structures.runes.green.GreenDungeonStructure;
 import com.silverminer.moreore.common.world.gen.structures.runes.orange.OrangeShrineStructure;
+import com.silverminer.moreore.common.world.gen.structures.runes.purple.PurplehouseStructure;
 import com.silverminer.moreore.common.world.gen.structures.runes.yellow.DesertTempelStructure;
 import com.silverminer.moreore.common.world.gen.structures.tempel.TempelStructure;
 
@@ -40,8 +41,11 @@ public class StructureFeatureInit {
 	public static final RegistryObject<OrangeShrineStructure> ORANGE_SHRINE = register(OrangeShrineStructure.SHORT_NAME,
 			new OrangeShrineStructure(NoFeatureConfig.field_236558_a_));
 
-	public static final RegistryObject<BrownLandingstageStructure> BROWN_LANDINGSTAGE = register(BrownLandingstageStructure.SHORT_NAME,
-			new BrownLandingstageStructure(NoFeatureConfig.field_236558_a_));
+	public static final RegistryObject<BrownLandingstageStructure> BROWN_LANDINGSTAGE = register(
+			BrownLandingstageStructure.SHORT_NAME, new BrownLandingstageStructure(NoFeatureConfig.field_236558_a_));
+
+	public static final RegistryObject<PurplehouseStructure> PURPLE_HOUSE = register(PurplehouseStructure.SHORT_NAME,
+			new PurplehouseStructure(NoFeatureConfig.field_236558_a_));
 
 	private static <T extends AbstractStructure<NoFeatureConfig>> RegistryObject<T> register(String name, T structure) {
 		if (!Structure.NAME_STRUCTURE_BIMAP.containsValue(structure)) {

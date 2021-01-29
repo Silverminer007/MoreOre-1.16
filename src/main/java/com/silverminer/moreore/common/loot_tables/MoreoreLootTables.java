@@ -9,4 +9,6 @@ public class MoreoreLootTables {
 	public static final ResourceLocation DESERT_TEMPEL = new ResourceLocation("moreore:chests/desert_tempel");
 	public static final ResourceLocation LANDINGSTAGE_1 = new ResourceLocation("moreore:chests/landingstage_1");
 	public static final ResourceLocation LANDINGSTAGE_2 = new ResourceLocation("moreore:chests/landingstage_2");
+	public static final ResourceLocation PURPLE_HOUSE_1 = new ResourceLocation("moreore:chests/purple_house_1");
+	public static final ResourceLocation PURPLE_HOUSE_2 = new ResourceLocation("moreore:chests/purple_house_2");
 }
