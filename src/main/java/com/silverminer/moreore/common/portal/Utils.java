@@ -2,6 +2,8 @@ package com.silverminer.moreore.common.portal;
 
 import java.util.function.Function;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.SPlaySoundEventPacket;
@@ -60,17 +62,21 @@ public final class Utils {
 	 * @param destination The position to port to.
 	 * @param facing      The direction the entity should face after porting.
 	 */
-	public static void teleportTo(Entity entity, RegistryKey<World> dimension, BlockPos destination) {
+	public static void teleportTo(Entity entity, RegistryKey<World> dimension, BlockPos destination, @Nullable MinecraftServer server) {
 		if (entity == null || dimension == null || destination == null || entity.isBeingRidden()
 				|| entity.isOnePlayerRiding() || !entity.isNonBoss())
 			return;
 
+		if(server == null)
+			server = entity.getServer();
+		if(server == null)
+			return;
 		ServerPlayerEntity player = (entity instanceof ServerPlayerEntity) ? (ServerPlayerEntity) entity : null;
 		boolean interdimensional = (entity.world.getDimensionKey() != dimension);
 		entity.setMotion(Vector3d.ZERO);
 
 		if (interdimensional) {
-			teleportEntityToDimension(entity.getServer(), entity, dimension, destination);
+			teleportEntityToDimension(server, entity, dimension, destination);
 		} else if (player != null) {
 			player.connection.setPlayerLocation(destination.getX() + 0.5d, destination.getY(),
 					destination.getZ() + 0.5d, 0.0F, 0.0F);

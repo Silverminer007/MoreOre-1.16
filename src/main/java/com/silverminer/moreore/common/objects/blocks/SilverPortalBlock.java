@@ -29,6 +29,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -83,6 +84,8 @@ public class SilverPortalBlock extends BreakableBlock {
 		}
 	}
 
+	private int timer = 0;
+
 	@Override
 	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entity) {
 		if (!worldIn.isRemote && entity.isAlive() && !entity.isPassenger() && !entity.isBeingRidden()
@@ -113,6 +116,9 @@ public class SilverPortalBlock extends BreakableBlock {
 									&& newDim != World.THE_END) {
 								PortalRegistry.unregister(worldIn, firstPortal);
 								PortalRegistry.register(worldIn, firstPortal.setDestinationDimension(newDim));
+								((PlayerEntity) entity).sendMessage(
+										new TranslationTextComponent("moreore.portal.set_dest_dim", newDim),
+										entity.getUniqueID());
 								itemE.getItem().shrink(1);
 								return;
 							}
@@ -132,11 +138,20 @@ public class SilverPortalBlock extends BreakableBlock {
 			World newWorld = server.getWorld(destination);
 			if (newWorld == null)
 				newWorld = server.getWorld(World.OVERWORLD);
-			if (newWorld == null)
+			if (newWorld == null) {
+				if (entity instanceof PlayerEntity && timer == 0)
+					((PlayerEntity) entity).sendMessage(new TranslationTextComponent("moreore.portal.dim_unaccessable"),
+							entity.getUniqueID());
+				timer += timer > 100 ? -timer : 1;
 				return;
+			} else
+				destination = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation("overworld"));
 			BlockPos destinationPos = SpawnPositionHelper.calculate(pos, newWorld);
-			Utils.teleportTo(entity, destination, destinationPos);
+			Utils.teleportTo(entity, destination, destinationPos, server);
 			entity.func_242279_ag();
+			if (entity instanceof PlayerEntity)
+				((PlayerEntity) entity).sendMessage(new TranslationTextComponent("moreore.portal.teleported_to_dim",
+						destination.getLocation().getNamespace()), entity.getUniqueID());
 		}
 	}
 
