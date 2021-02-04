@@ -170,5 +170,8 @@
 	"runes.moreore.yellow": "Used to dig faster",
 	"runes.moreore.gray": "Used to repair other runes",
 	"runes.moreore.brown": "Used to get more saturation at eating",
-	"runes.moreore.purple": "Used to get more drobs of blocks"
+	"runes.moreore.purple": "Used to get more drobs of blocks",
+	"moreore.portal.dim_unaccessable": "The actually choosen dimension isn't accessable. Please choose an other one",
+	"moreore.portal.set_dest_dim": "Setted the destination Dimension to %s",
+	"moreore.portal.moreore.portal.teleported_to_dim": "You have been teleported to: %s"
 }

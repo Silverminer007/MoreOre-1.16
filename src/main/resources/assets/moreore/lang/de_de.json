@@ -157,10 +157,6 @@
 	"entity.moreore.giant_zombie_king": "Riesen Zombie König",
 	"entity.moreore.giant_zombie_king.runeInv_expand": "Dein Runen Inventar ist jetzt %s Slot(s) groß",
 	"name.moreore.trooper": "Kavallerist",
-	"commands.tlp.failed.entity.notEnoughLevel.single": "Not Enough Level to Teleport %s to %s",
-	"commands.tlp.failed.entity.notEnoughLevel.multiple": "Not Enough Level to Teleport %s Entities to %s",
-	"commands.tlp.failed.location.notEnoughLevel.single": "Not Enough Level to Teleport %s to %s, %s, %s",
-	"commands.tlp.failed.location.notEnoughLevel.multiple": "Not Enough Level to Teleport %s Entities to %s, %s, %s",
 	"runes.moreore.broken": "Die %s wurde zerstört",
 	"runes.moreore.rainbow": "Wird zur Herstellung von Werkzeug und Rüstung verwendet",
 	"runes.moreore.green": "Wird verwendet, um mehr Erntegut zu erhalten",
@@ -170,5 +166,12 @@
 	"runes.moreore.yellow": "Wird verwendet, um schneller zu graben",
 	"runes.moreore.gray": "Wird zur Reparatur anderer Runen verwendet",
 	"runes.moreore.brown": "Wird verwendet, um mehr Sättigung beim Essen zu erhalten",
-	"runes.moreore.purple": "Wird verwendet, um mehr Block drobs zu erhalten"
+	"runes.moreore.purple": "Wird verwendet, um mehr Block drobs zu erhalten",
+	"commands.tlp.failed.entity.notEnoughLevel.single": "Nicht genung Level um %s nach %s zu teleportieren",
+	"commands.tlp.failed.entity.notEnoughLevel.multiple": "Nicht genung Level um %s Entities nach %s  zu teleportieren",
+	"commands.tlp.failed.location.notEnoughLevel.single": "Nicht genung Level um %s nach %s, %s, %s  zu teleportieren",
+	"commands.tlp.failed.location.notEnoughLevel.multiple": "Nicht genung Level um %s Entities nach %s, %s, %s  zu teleportieren",
+	"moreore.portal.dim_unaccessable": "Die aktuelle Dimension ist nicht verfügbar. Bitte versuche es mit einer anderen",
+	"moreore.portal.set_dest_dim": "Neue Ziel Dimension: %s",
+	"moreore.portal.moreore.portal.teleported_to_dim": "Du wurdest eine Neue Dimension teleportiert: %s"
 }
