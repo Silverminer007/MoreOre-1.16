@@ -34,7 +34,7 @@ public class GetHomeEnchantment extends Enchantment {
 	public void onEntityDamaged(LivingEntity user, Entity target, int level) {
 		if (user instanceof ServerPlayerEntity) {
 			ServerPlayerEntity player = (ServerPlayerEntity) user;
-			Utils.teleportTo(player, player.getEntityWorld().getDimensionKey(), player.func_241140_K_());
+			Utils.teleportTo(player, player.getEntityWorld().getDimensionKey(), player.func_241140_K_(), null);
 		}
 	}
 }

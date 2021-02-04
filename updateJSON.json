@@ -1,32 +1,37 @@
 {
-    "homepage": "https://github.com/Silverminer007/MoreOre-1.16",
-    "promos": {
-        "1.16.3-latest": "1.16.4-1.1.0",
-        "1.16.4-latest": "1.16.4-1.2.0-Beta2",
-        "1.16.4-recommended": "1.16.4-1.1.1"
-    },
-    "1.16.3": {
-        "1.16.3-1.1.0-Beta11": "Implemented VersionCheck",
-        "1.16.3-1.1.0-Beta12": "Updated Portal Saved Data; moved jona's things in external mod; updated Banana; removed nut_bush_block; added Nut\"Tree/Bush\" with Leaves, Nuts, Log and a Sapling; Squirrels are now bred with nuts; the rainbow axe has now a texture",
-        "1.16.3-1.1.0-Beta13": "Fixed Crashing Bug, Changed NutBush Generation",
-        "1.16.3-1.1.0-Beta14": "Changed NutBush Generation; Added CircleFoliagePlacer and used it in NutBush",
-        "1.16.3-1.1.0-Beta15": "The Chance of NutBushLeaves to grow is now much lower than before(now 2%, before 20%); Squirrels are now smaller, when they're childs; Nutbushs are now generated in Forests and the Silver Tale; Small Nut Bushs exists now; Squirrels are now searching for Tree and move to them; The Rainbow Pickaxe now has a texture",
-        "1.16.3-1.1.0-Beta16": "Changed from DeferredWorkQueue to ParallelDispatchEvent; NutBushLeaves have only every 50 ticks a chance to grow; NutBushPlantation and SmallNutBushPlantation are now generated in every Biome",
-        "1.16.3-1.1.0-Beta17": "Changed Itemsgroup of the Spawneggs to Biologic; Changed Eat Nuts Goal of Squirrel; Added PlaceNutGoal; Acitivated ClimbOnTreeGoal; Changed Silver Block texture; Changed Silver Ingot texture",
-        "1.16.3-1.1.0-Beta18": "Updated Forge to 34.1.35"
-    },
-    "1.16.4": {
-        "1.16.4-1.1.0-Beta19": "Changed Silver Leaves texture; Changed Silver Log (also stripped) texture; Changed Silver Sapling texture; Removed Glowing Stone; tlp Command is now working; Rubin and rainbow ore are now genearted in every biome; Moved Features from JSON to Hardcode; The Rainbow Hoe now has an texture; The Rainbow Armor and Shovel now have textures; Fixed bugs in World gen; Added Foliage Placer Type; Updated to Minecraft 1.16.4",
-        "1.16.4-1.1.0-Beta20": "Changed Silver Planks texture; In Silvertales are now Gold Trees instead of NutBush generated; Changed Emerald Armor items texture; Changd Silver Trapdoor texture; Changed Squirrel Model and Texture; Overworked Parallel Dispatching; Overworked NutBush generation; Held Items of Squirrels are now shown; Updated Position finding of Silver Portal; Updated PlaceNutsGoal and EatNutsGoal of Squirrels",
-        "1.16.4-1.1.0-Beta21": "Changed Squirrel texture; Updated Position finding of Silver Portal; Squirrel Spawns now in forests and Silvertales; Hold Items of Squirrels are now rendered",
-        "1.16.4-1.1.0-Beta22": "Updated Squirrel Goals; Changed Names of Spawn Eggs; Fixed Bug in Held Item rendering of Squirrel; Added Squirrel to Language Packs; Updated Squirrel Rendering; Squirrels now are sitting down while they eat a nut; ClimbOnTreeGoal is removed for a moment(It will came back fixed in next release)",
-        "1.16.4-1.1.0-Beta23": "Improved Squirrel Data Storage; Added ClimbOnTreeGoal again; Squirrel climbs now on trees; It is now more likely that the squirrel will eat a nut when it is warmer; Overworked Squirrel Goals; Added Animations of Climbing on Trees for Squirrels; Changed Name of silver_logs from Silver Tree to Silver Log",
-        "1.16.4-1.1.0-Beta24": "Fixed and Improved Tlp Command; Improved SilverPortal; Removed Emerald Shard; Changed Armor Material Config; Changed Tool Config of Emerald, Rubin, Saphir and Rainbow; Improved Teleporting between Dimensions; Improved Teleporting of Get-Home Enchantment and FuelItem; Changed Name from Leggins to Leggings; The actuall destination Dimension can be read by clicking on the PortalBlock",
-        "1.16.4-1.1.0-Beta25": "The Silver Portal Destination Dimension now can't be set to 'the_end'; Improved Spawn Position finding of Silver Portal; Changed Nut Bush Log texture; Changed Saphir textures; Updated Language packs",
-        "1.16.4-1.1.0-Beta26": "Changed Blue Glow Block texture; Changed Rubin texture; Changed Name of glow_blue_block from Blue Glowing Block to Blue Glow Block; Changed Rubin and Saphir Ore texture; Changed Armor Model texture; Changed Silver Door Texture",
-        "1.16.4-1.1.0": "Changed Accesstransformer; Changed Alexandrit Ore texture; Fixed Bug Rubin Hoe looks like Emerald Hoe, Fixed Banana generation; Vines generate at Mega Silver Trees; Changed SpawnPosition Finder of Silver Portals; Added Silver Button loot table; Changed Silver Ore Texture; Fixed Bug in Banana Tree Decorator",
-        "1.16.4-1.1.1": "Changed Name of rubin to Ruby; Changed Settings of Desert Tempel Structure",
-        "1.16.4-1.2.0-Beta1": "Added Runetable Block, Screen and Container; Added new Recipe Type 'runes'; Added Rune Base; Added Green Rune and Green Rune Shard; Added PacketHandler; Added Rune Inventory; Added Rune Base Block; Added Giant Zombie King to expand Rune Inventory; Changed Rainbow crafing recipe; Changed Name of 'rainbow' to 'rainbow rune shard'; Changed ItemGroup of Rainbow to Runes; Giant Zombie King spawns more Zombies if more players are in the world; The Giant Zombie King spawns now also in Days Zombies and may also Skeletons; It may wears a diamond sword; Giant Zombie Kings doen't attack zombies and skeletons anymore; The Runes are max-useable 100 times; Intruced Runetype; Runes are now damageable; Changed maxDamage of Tools",
-        "1.16.4-1.2.0-Beta2": "Added orange, blue, red, yellow, gray, brown and purple rune; Runes are now repairable in the Runetable; Gray Runes and Rainbow shards can repair every Rune; Yellow Rune makes Blocks breaking faster; Added effects to red and blue rune; Fixed Bug in RuneInventoryRegistry; Added Brown Rune Effect; Gray Runes nolonger can be repaired with Gray Runes; Added effects to Green and Purple Rune; added Orange Rune Effekt; Added Tooltips to Runes; Fixed Bug Tools and Sword are rendered like items"
-    }
+	"homepage": "https://github.com/Silverminer007/MoreOre-1.16",
+	"promos": {
+		"1.16.3-latest": "1.16.4-1.1.0",
+		"1.16.4-latest": "1.16.4-1.2.0-Beta2",
+		"1.16.4-recommended": "1.16.5-1.1.2",
+		"1.16.5-latest": "1.16.5-1.2.0-Beta3",
+        "1.16.5-recommended": "1.16.5-1.1.2"
+	},
+	"1.16.3": {
+		"1.16.3-1.1.0-Beta11": "Implemented VersionCheck",
+		"1.16.3-1.1.0-Beta12": "Updated Portal Saved Data; moved jona's things in external mod; updated Banana; removed nut_bush_block; added Nut\"Tree/Bush\" with Leaves, Nuts, Log and a Sapling; Squirrels are now bred with nuts; the rainbow axe has now a texture",
+		"1.16.3-1.1.0-Beta13": "Fixed Crashing Bug, Changed NutBush Generation",
+		"1.16.3-1.1.0-Beta14": "Changed NutBush Generation; Added CircleFoliagePlacer and used it in NutBush",
+		"1.16.3-1.1.0-Beta15": "The Chance of NutBushLeaves to grow is now much lower than before(now 2%, before 20%); Squirrels are now smaller, when they're childs; Nutbushs are now generated in Forests and the Silver Tale; Small Nut Bushs exists now; Squirrels are now searching for Tree and move to them; The Rainbow Pickaxe now has a texture",
+		"1.16.3-1.1.0-Beta16": "Changed from DeferredWorkQueue to ParallelDispatchEvent; NutBushLeaves have only every 50 ticks a chance to grow; NutBushPlantation and SmallNutBushPlantation are now generated in every Biome",
+		"1.16.3-1.1.0-Beta17": "Changed Itemsgroup of the Spawneggs to Biologic; Changed Eat Nuts Goal of Squirrel; Added PlaceNutGoal; Acitivated ClimbOnTreeGoal; Changed Silver Block texture; Changed Silver Ingot texture",
+		"1.16.3-1.1.0-Beta18": "Updated Forge to 34.1.35"
+	},
+	"1.16.4": {
+		"1.16.4-1.1.0-Beta19": "Changed Silver Leaves texture; Changed Silver Log (also stripped) texture; Changed Silver Sapling texture; Removed Glowing Stone; tlp Command is now working; Rubin and rainbow ore are now genearted in every biome; Moved Features from JSON to Hardcode; The Rainbow Hoe now has an texture; The Rainbow Armor and Shovel now have textures; Fixed bugs in World gen; Added Foliage Placer Type; Updated to Minecraft 1.16.4",
+		"1.16.4-1.1.0-Beta20": "Changed Silver Planks texture; In Silvertales are now Gold Trees instead of NutBush generated; Changed Emerald Armor items texture; Changd Silver Trapdoor texture; Changed Squirrel Model and Texture; Overworked Parallel Dispatching; Overworked NutBush generation; Held Items of Squirrels are now shown; Updated Position finding of Silver Portal; Updated PlaceNutsGoal and EatNutsGoal of Squirrels",
+		"1.16.4-1.1.0-Beta21": "Changed Squirrel texture; Updated Position finding of Silver Portal; Squirrel Spawns now in forests and Silvertales; Hold Items of Squirrels are now rendered",
+		"1.16.4-1.1.0-Beta22": "Updated Squirrel Goals; Changed Names of Spawn Eggs; Fixed Bug in Held Item rendering of Squirrel; Added Squirrel to Language Packs; Updated Squirrel Rendering; Squirrels now are sitting down while they eat a nut; ClimbOnTreeGoal is removed for a moment(It will came back fixed in next release)",
+		"1.16.4-1.1.0-Beta23": "Improved Squirrel Data Storage; Added ClimbOnTreeGoal again; Squirrel climbs now on trees; It is now more likely that the squirrel will eat a nut when it is warmer; Overworked Squirrel Goals; Added Animations of Climbing on Trees for Squirrels; Changed Name of silver_logs from Silver Tree to Silver Log",
+		"1.16.4-1.1.0-Beta24": "Fixed and Improved Tlp Command; Improved SilverPortal; Removed Emerald Shard; Changed Armor Material Config; Changed Tool Config of Emerald, Rubin, Saphir and Rainbow; Improved Teleporting between Dimensions; Improved Teleporting of Get-Home Enchantment and FuelItem; Changed Name from Leggins to Leggings; The actuall destination Dimension can be read by clicking on the PortalBlock",
+		"1.16.4-1.1.0-Beta25": "The Silver Portal Destination Dimension now can't be set to 'the_end'; Improved Spawn Position finding of Silver Portal; Changed Nut Bush Log texture; Changed Saphir textures; Updated Language packs",
+		"1.16.4-1.1.0-Beta26": "Changed Blue Glow Block texture; Changed Rubin texture; Changed Name of glow_blue_block from Blue Glowing Block to Blue Glow Block; Changed Rubin and Saphir Ore texture; Changed Armor Model texture; Changed Silver Door Texture",
+		"1.16.4-1.1.0": "Changed Accesstransformer; Changed Alexandrit Ore texture; Fixed Bug Rubin Hoe looks like Emerald Hoe, Fixed Banana generation; Vines generate at Mega Silver Trees; Changed SpawnPosition Finder of Silver Portals; Added Silver Button loot table; Changed Silver Ore Texture; Fixed Bug in Banana Tree Decorator",
+		"1.16.4-1.1.1": "Changed Name of rubin to Ruby; Changed Settings of Desert Tempel Structure",
+		"1.16.4-1.2.0-Beta1": "Added Runetable Block, Screen and Container; Added new Recipe Type 'runes'; Added Rune Base; Added Green Rune and Green Rune Shard; Added PacketHandler; Added Rune Inventory; Added Rune Base Block; Added Giant Zombie King to expand Rune Inventory; Changed Rainbow crafing recipe; Changed Name of 'rainbow' to 'rainbow rune shard'; Changed ItemGroup of Rainbow to Runes; Giant Zombie King spawns more Zombies if more players are in the world; The Giant Zombie King spawns now also in Days Zombies and may also Skeletons; It may wears a diamond sword; Giant Zombie Kings doen't attack zombies and skeletons anymore; The Runes are max-useable 100 times; Intruced Runetype; Runes are now damageable; Changed maxDamage of Tools",
+		"1.16.4-1.2.0-Beta2": "Added orange, blue, red, yellow, gray, brown and purple rune; Runes are now repairable in the Runetable; Gray Runes and Rainbow shards can repair every Rune; Yellow Rune makes Blocks breaking faster; Added effects to red and blue rune; Fixed Bug in RuneInventoryRegistry; Added Brown Rune Effect; Gray Runes nolonger can be repaired with Gray Runes; Added effects to Green and Purple Rune; added Orange Rune Effekt; Added Tooltips to Runes; Fixed Bug Tools and Sword are rendered like items"
+	},
+	"1.16.5": {
+		"1.16.5-1.1.2": "Fixed bug on accessing the silver portal"
+	}
 }

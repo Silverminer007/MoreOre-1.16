@@ -134,5 +134,8 @@
 	"commands.tlp.failed.entity.notEnoughLevel.single": "Not Enough Level to Teleport %s to %s",
 	"commands.tlp.failed.entity.notEnoughLevel.multiple": "Not Enough Level to Teleport %s Entities to %s",
 	"commands.tlp.failed.location.notEnoughLevel.single": "Not Enough Level to Teleport %s to %s, %s, %s",
-	"commands.tlp.failed.location.notEnoughLevel.multiple": "Not Enough Level to Teleport %s Entities to %s, %s, %s"
+	"commands.tlp.failed.location.notEnoughLevel.multiple": "Not Enough Level to Teleport %s Entities to %s, %s, %s",
+	"moreore.portal.dim_unaccessable": "The actually choosen dimension isn't accessable. Please choose an other one",
+	"moreore.portal.set_dest_dim": "Setted the destination Dimension to %s",
+	"moreore.portal.moreore.portal.teleported_to_dim": "You have been teleported to: %s"
 }

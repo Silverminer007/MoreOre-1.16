@@ -69,7 +69,7 @@ public class FuelItem extends Item {
 		playerIn.addPotionEffect(new EffectInstance(Effects.ABSORPTION, 500, 255));
 		if (!worldIn.isRemote()) {
 			Utils.teleportTo(playerIn, worldIn.getDimensionKey(),
-					((ServerPlayerEntity) playerIn).func_241140_K_());
+					((ServerPlayerEntity) playerIn).func_241140_K_(), null);
 		}
 		worldIn.setRainStrength(10.0f);
 

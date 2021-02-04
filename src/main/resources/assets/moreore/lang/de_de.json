@@ -131,8 +131,11 @@
 	"itemGroup.biologic": "Biologisch",
 	"enchantment.moreore.get_home": "Nach-Hause",
 	"entity.moreore.squirrel": "Eichhörnchen",
-	"commands.tlp.failed.entity.notEnoughLevel.single": "Not Enough Level to Teleport %s to %s",
-	"commands.tlp.failed.entity.notEnoughLevel.multiple": "Not Enough Level to Teleport %s Entities to %s",
-	"commands.tlp.failed.location.notEnoughLevel.single": "Not Enough Level to Teleport %s to %s, %s, %s",
-	"commands.tlp.failed.location.notEnoughLevel.multiple": "Not Enough Level to Teleport %s Entities to %s, %s, %s"
+	"commands.tlp.failed.entity.notEnoughLevel.single": "Nicht genung Level um %s nach %s zu teleportieren",
+	"commands.tlp.failed.entity.notEnoughLevel.multiple": "Nicht genung Level um %s Entities nach %s  zu teleportieren",
+	"commands.tlp.failed.location.notEnoughLevel.single": "Nicht genung Level um %s nach %s, %s, %s  zu teleportieren",
+	"commands.tlp.failed.location.notEnoughLevel.multiple": "Nicht genung Level um %s Entities nach %s, %s, %s  zu teleportieren",
+	"moreore.portal.dim_unaccessable": "Die aktuelle Dimension ist nicht verfügbar. Bitte versuche es mit einer anderen",
+	"moreore.portal.set_dest_dim": "Neue Ziel Dimension: %s",
+    "moreore.portal.moreore.portal.teleported_to_dim": "Du wurdest eine Neue Dimension teleportiert: %s"
 }
