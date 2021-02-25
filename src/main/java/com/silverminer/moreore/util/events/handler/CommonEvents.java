@@ -51,7 +51,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
@@ -74,6 +73,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -150,13 +150,16 @@ public class CommonEvents {
 			event.enqueueWork(OreFeatures::registerOres);
 			event.enqueueWork(MoreoreStructurePieceType::regsiter);
 			event.enqueueWork(() -> {
-				GlobalEntityTypeAttributes.put(ModEntityTypesInit.VILLAGE_GUARDIAN.get(),
-						VillageGuardian.setCustomAttributes());
-				GlobalEntityTypeAttributes.put(ModEntityTypesInit.SQUIRREL.get(), SquirrelEntity.setCustomAttributes());
-				GlobalEntityTypeAttributes.put(ModEntityTypesInit.GIANT_ZOMBIE_KING.get(),
-						GiantZombieKingEntity.setCustomAttributes());
 				StructureUtils.setupWorldGen();
 			});
+		}
+		@SubscribeEvent
+		public static void entityAttribute(final EntityAttributeCreationEvent event) {
+			event.put(ModEntityTypesInit.VILLAGE_GUARDIAN.get(), VillageGuardian.setCustomAttributes());
+			event.put(ModEntityTypesInit.SQUIRREL.get(), SquirrelEntity.setCustomAttributes());
+			event.put(ModEntityTypesInit.GIANT_ZOMBIE_KING.get(),
+					GiantZombieKingEntity.setCustomAttributes());
+
 		}
 	}
 
