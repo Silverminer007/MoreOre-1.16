@@ -115,10 +115,12 @@ public class SilverPortalBlock extends BreakableBlock {
 							if (server.getWorld(newDim) != null && newDim != firstPortal.getDestinationDimension()
 									&& newDim != World.THE_END) {
 								PortalRegistry.unregister(worldIn, firstPortal);
-								PortalRegistry.register(worldIn, firstPortal.setDestinationDimension(newDim));
-								((PlayerEntity) entity).sendMessage(
-										new TranslationTextComponent("moreore.portal.set_dest_dim", newDim),
-										entity.getUniqueID());
+								PortalRegistry.register(worldIn, (firstPortal.setDestinationDimension(newDim)));
+								worldIn.getEntitiesWithinAABB(PlayerEntity.class,
+										entity.getBoundingBox().grow(10.0D, 10.0D, 10.0D))
+										.forEach(player -> player.sendMessage(
+												new TranslationTextComponent("moreore.portal.set_dest_dim", newDim.getLocation()),
+												entity.getUniqueID()));
 								itemE.getItem().shrink(1);
 								return;
 							}
@@ -135,23 +137,20 @@ public class SilverPortalBlock extends BreakableBlock {
 			}
 			if (entity.func_242280_ah())
 				return;
+			LOGGER.info("Destinantion: {}", destination);
 			World newWorld = server.getWorld(destination);
-			if (newWorld == null)
-				newWorld = server.getWorld(World.OVERWORLD);
-			if (newWorld == null) {
+			BlockPos destinationPos = SpawnPositionHelper.calculate(pos, newWorld);
+			if (!Utils.teleportTo(entity, destination, destinationPos, server)) {
 				if (entity instanceof PlayerEntity && timer == 0)
 					((PlayerEntity) entity).sendMessage(new TranslationTextComponent("moreore.portal.dim_unaccessable"),
 							entity.getUniqueID());
 				timer += timer > 100 ? -timer : 1;
-				return;
-			} else
-				destination = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation("overworld"));
-			BlockPos destinationPos = SpawnPositionHelper.calculate(pos, newWorld);
-			Utils.teleportTo(entity, destination, destinationPos, server);
-			entity.func_242279_ag();
-			if (entity instanceof PlayerEntity)
-				((PlayerEntity) entity).sendMessage(new TranslationTextComponent("moreore.portal.teleported_to_dim",
-						destination.getLocation().getNamespace()), entity.getUniqueID());
+			} else {
+				entity.func_242279_ag();
+				if (entity instanceof PlayerEntity)
+					((PlayerEntity) entity).sendMessage(new TranslationTextComponent("moreore.portal.teleported_to_dim",
+							destination.getLocation().toString()), entity.getUniqueID());
+			}
 		}
 	}
 

@@ -32,7 +32,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -42,6 +41,7 @@ import net.minecraft.world.biome.MobSpawnInfo.Spawners;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -101,13 +101,17 @@ public class CommonEvents {
 			Registry.register(Registry.BIOME_PROVIDER_CODEC, new ResourceLocation(MoreOre.MODID, "silver"),
 					SilverBiomeProvider.CODEC);
 
-			event.enqueueWork(OreFeatures::registerOres);
 			event.enqueueWork(() -> {
-				GlobalEntityTypeAttributes.put(ModEntityTypesInit.VILLAGE_GUARDIAN.get(),
-						VillageGuardian.setCustomAttributes());
-				GlobalEntityTypeAttributes.put(ModEntityTypesInit.SQUIRREL.get(), SquirrelEntity.setCustomAttributes());
+				OreFeatures.registerOres();
 				StructureUtils.setupWorldGen();
 			});
+		}
+
+		@SubscribeEvent
+		public static void entityAttribute(final EntityAttributeCreationEvent event) {
+			event.put(ModEntityTypesInit.VILLAGE_GUARDIAN.get(), VillageGuardian.setCustomAttributes());
+			event.put(ModEntityTypesInit.SQUIRREL.get(), SquirrelEntity.setCustomAttributes());
+
 		}
 	}
 

@@ -137,5 +137,5 @@
 	"commands.tlp.failed.location.notEnoughLevel.multiple": "Nicht genung Level um %s Entities nach %s, %s, %s  zu teleportieren",
 	"moreore.portal.dim_unaccessable": "Die aktuelle Dimension ist nicht verfügbar. Bitte versuche es mit einer anderen",
 	"moreore.portal.set_dest_dim": "Neue Ziel Dimension: %s",
-    "moreore.portal.moreore.portal.teleported_to_dim": "Du wurdest eine Neue Dimension teleportiert: %s"
+    "moreore.portal.teleported_to_dim": "Du wurdest eine Neue Dimension teleportiert: %s"
 }
