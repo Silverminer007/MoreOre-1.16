@@ -95,63 +95,72 @@ public class SilverPortalBlock extends BreakableBlock {
 								(double) (-pos.getY()), (double) (-pos.getZ()))),
 						state.getShape(worldIn, pos), IBooleanFunction.AND)) {
 
-			RegistryKey<World> destination = null;
-			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-			if (worldIn instanceof ServerWorld) {
-				server = worldIn.getServer();
-			}
-			List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos, worldIn.getDimensionKey());
-			if (affectedPortals != null && !(affectedPortals.size() < 1)) {
-				Portal firstPortal = affectedPortals.get(0);
-				destination = firstPortal.getDestinationDimension();
+			try {
+				RegistryKey<World> destination = null;
+				MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+				if (worldIn instanceof ServerWorld) {
+					server = worldIn.getServer();
+				}
+				List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos, worldIn.getDimensionKey());
+				if (affectedPortals != null && !(affectedPortals.size() < 1)) {
+					Portal firstPortal = affectedPortals.get(0);
+					destination = firstPortal.getDestinationDimension();
 
-				try {
-					if (entity instanceof ItemEntity) {
-						ItemEntity itemE = ((ItemEntity) entity);
-						if (itemE.getItem().getItem() instanceof NameTagItem) {
-							String text = itemE.getItem().getDisplayName().getUnformattedComponentText();
-							RegistryKey<World> newDim = RegistryKey.getOrCreateKey(Registry.WORLD_KEY,
-									new ResourceLocation(text));
-							if (server.getWorld(newDim) != null && newDim != firstPortal.getDestinationDimension()
-									&& newDim != World.THE_END) {
-								PortalRegistry.unregister(worldIn, firstPortal);
-								PortalRegistry.register(worldIn, (firstPortal.setDestinationDimension(newDim)));
-								worldIn.getEntitiesWithinAABB(PlayerEntity.class,
-										entity.getBoundingBox().grow(10.0D, 10.0D, 10.0D))
-										.forEach(player -> player.sendMessage(
-												new TranslationTextComponent("moreore.portal.set_dest_dim", newDim.getLocation()),
-												entity.getUniqueID()));
-								itemE.getItem().shrink(1);
-								return;
+					try {
+						if (entity instanceof ItemEntity) {
+							ItemEntity itemE = ((ItemEntity) entity);
+							if (itemE.getItem().getItem() instanceof NameTagItem) {
+								String text = itemE.getItem().getDisplayName().getUnformattedComponentText();
+								RegistryKey<World> newDim = RegistryKey.getOrCreateKey(Registry.WORLD_KEY,
+										new ResourceLocation(text));
+								if (server.getWorld(newDim) != null && newDim != firstPortal.getDestinationDimension()
+										&& newDim != World.THE_END) {
+									PortalRegistry.unregister(worldIn, firstPortal);
+									PortalRegistry.register(worldIn, (firstPortal.setDestinationDimension(newDim)));
+									worldIn.getEntitiesWithinAABB(PlayerEntity.class,
+											entity.getBoundingBox().grow(10.0D, 10.0D, 10.0D))
+											.forEach(player -> player.sendMessage(
+													new TranslationTextComponent("moreore.portal.set_dest_dim",
+															newDim.getLocation()),
+													entity.getUniqueID()));
+									itemE.getItem().shrink(1);
+									return;
+								}
 							}
 						}
+					} catch (Throwable e) {
+						e.printStackTrace();
 					}
-				} catch (Throwable e) {
-					e.printStackTrace();
 				}
-			}
 
-			RegistryKey<World> silverDim = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, MoreOre.SILVER_DIM_TYPE);
-			if (destination == null) {
-				destination = entity.world.getDimensionKey() == World.OVERWORLD ? silverDim : World.OVERWORLD;
-			}
-			if (entity.func_242280_ah())
-				return;
-			LOGGER.info("Destinantion: {}", destination);
-			World newWorld = server.getWorld(destination);
-			BlockPos destinationPos = SpawnPositionHelper.calculate(pos, newWorld);
-			if (!Utils.teleportTo(entity, destination, destinationPos, server)) {
-				if (entity instanceof PlayerEntity && timer == 0)
-					((PlayerEntity) entity).sendMessage(new TranslationTextComponent("moreore.portal.dim_unaccessable"),
-							entity.getUniqueID());
-				timer += timer > 100 ? -timer : 1;
-			} else {
-				entity.func_242279_ag();
-				if (entity instanceof PlayerEntity)
-					((PlayerEntity) entity).sendMessage(new TranslationTextComponent("moreore.portal.teleported_to_dim",
-							destination.getLocation().toString()), entity.getUniqueID());
+				RegistryKey<World> silverDim = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, MoreOre.SILVER_DIM_TYPE);
+				if (destination == null) {
+					destination = entity.world.getDimensionKey() == World.OVERWORLD ? silverDim : World.OVERWORLD;
+				}
+				if (entity.func_242280_ah())
+					return;
+				World newWorld = server.getWorld(destination);
+				BlockPos destinationPos = SpawnPositionHelper.calculate(pos, newWorld);
+				if (!Utils.teleportTo(entity, destination, destinationPos, server)) {
+					this.sendToPlayer(entity);
+				} else {
+					entity.func_242279_ag();
+					if (entity instanceof PlayerEntity)
+						((PlayerEntity) entity)
+								.sendMessage(new TranslationTextComponent("moreore.portal.teleported_to_dim",
+										destination.getLocation().toString()), entity.getUniqueID());
+				}
+			} catch (Throwable e) {
+				this.sendToPlayer(entity);
 			}
 		}
+	}
+
+	private void sendToPlayer(Entity entity) {
+		if (entity instanceof PlayerEntity && timer == 0)
+			((PlayerEntity) entity).sendMessage(new TranslationTextComponent("moreore.portal.dim_unaccessable"),
+					entity.getUniqueID());
+		timer += timer > 100 ? -timer : 1;
 	}
 
 	@SuppressWarnings("deprecation")
