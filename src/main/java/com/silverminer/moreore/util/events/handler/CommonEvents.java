@@ -407,6 +407,11 @@ public class CommonEvents {
 						Config.STRUCTURES.PURPLE_HOUSE.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
 					event.getGeneration().withStructure(ModStructureFeatures.PURPLE_HOUSE);
 				}
+				if (Config.STRUCTURES.GIANT.GENERATE.get() && StructureUtils.checkBiome(
+						Config.STRUCTURES.GIANT.BIOME_CATEGORIES.get(),
+						Config.STRUCTURES.GIANT.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
+					event.getGeneration().withStructure(ModStructureFeatures.GIANT);
+				}
 			}
 
 			// Enties

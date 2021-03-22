@@ -3,6 +3,7 @@ package com.silverminer.moreore.common.world.gen.structures;
 import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.common.world.gen.structures.nut_bush_plantation.NutBushPlantationPieces;
 import com.silverminer.moreore.common.world.gen.structures.runes.brown.BrownLandingstagePieces;
+import com.silverminer.moreore.common.world.gen.structures.runes.gray.GiantPieces;
 import com.silverminer.moreore.common.world.gen.structures.runes.green.GreenDungeonPieces;
 import com.silverminer.moreore.common.world.gen.structures.runes.orange.OrangeShrinePieces;
 import com.silverminer.moreore.common.world.gen.structures.runes.purple.PurplehousePieces;
@@ -24,6 +25,7 @@ public class MoreoreStructurePieceType {
 	public static final IStructurePieceType BROWN_LANDINGSTAGE = BrownLandingstagePieces.Piece::new;
 	public static final IStructurePieceType ORANGE_SHRINE = OrangeShrinePieces.Piece::new;
 	public static final IStructurePieceType PURPLE_HOUSE = PurplehousePieces.Piece::new;
+	public static final IStructurePieceType GIANT = GiantPieces.Piece::new;
 
 	public static void regsiter() {
 		Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MoreOre.MODID, "tempel"), TEMPEL);
@@ -38,5 +40,7 @@ public class MoreoreStructurePieceType {
 		Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MoreOre.MODID, "purple_house"), PURPLE_HOUSE);
 		Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MoreOre.MODID, "orange_shrine"),
 				ORANGE_SHRINE);
+		Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MoreOre.MODID, "giant"),
+				GIANT);
 	}
 }
