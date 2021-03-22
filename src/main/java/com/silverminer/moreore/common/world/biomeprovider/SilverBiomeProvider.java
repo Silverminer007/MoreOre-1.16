@@ -30,7 +30,7 @@ public class SilverBiomeProvider extends BiomeProvider {
 
 	private final int biomeSize;
 
-	protected SilverBiomeProvider(List<Supplier<Biome>> biomes, int size) {
+	public SilverBiomeProvider(List<Supplier<Biome>> biomes, int size) {
 		super(biomes.stream());
 		this.biomes = biomes;
 		this.biomeNoise = new VoronoiGenerator();

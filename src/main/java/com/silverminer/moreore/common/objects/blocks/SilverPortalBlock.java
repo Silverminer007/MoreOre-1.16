@@ -141,7 +141,7 @@ public class SilverPortalBlock extends BreakableBlock {
 					return;
 				World newWorld = server.getWorld(destination);
 				BlockPos destinationPos = SpawnPositionHelper.calculate(pos, newWorld);
-				if (!Utils.teleportTo(entity, destination, destinationPos, server)) {
+				if (destinationPos == null || !Utils.teleportTo(entity, destination, destinationPos, server)) {
 					this.sendToPlayer(entity);
 				} else {
 					entity.func_242279_ag();

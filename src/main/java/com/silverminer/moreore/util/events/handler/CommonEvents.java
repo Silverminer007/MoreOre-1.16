@@ -1,12 +1,29 @@
 package com.silverminer.moreore.util.events.handler;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.OptionalLong;
+import java.util.concurrent.CompletableFuture;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
 import com.google.common.collect.Sets;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.client.gui.screen.RunetableScreen;
 import com.silverminer.moreore.client.render.GiantZombieKingRenderer;
@@ -32,6 +49,8 @@ import com.silverminer.moreore.init.blocks.BiologicBlocks;
 import com.silverminer.moreore.init.items.RuneItems;
 import com.silverminer.moreore.init.structures.ModStructureFeatures;
 import com.silverminer.moreore.util.events.RuneInventoryChangeEvent;
+import com.silverminer.moreore.util.helpers.silver_dim.ModDimensionType;
+import com.silverminer.moreore.util.helpers.silver_dim.ObjHolder;
 import com.silverminer.moreore.util.items.ComposterItems;
 import com.silverminer.moreore.util.network.MoreorePacketHandler;
 import com.silverminer.moreore.util.runes.RuneInventoryRegistry;
@@ -44,10 +63,14 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.ComposterBlock;
 import net.minecraft.block.CropsBlock;
 import net.minecraft.block.FlowerPotBlock;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.gui.screen.CreateWorldScreen;
+import net.minecraft.client.gui.toasts.SystemToast;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -60,16 +83,35 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
+import net.minecraft.resources.DataPackRegistries;
+import net.minecraft.resources.FolderPackFinder;
+import net.minecraft.resources.IPackNameDecorator;
+import net.minecraft.resources.ResourcePackList;
+import net.minecraft.resources.ServerPackFinder;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
+import net.minecraft.util.datafix.codec.DatapackCodec;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldSettingsImport;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.ColumnFuzzedBiomeMagnifier;
 import net.minecraft.world.biome.MobSpawnInfo.Spawners;
+import net.minecraft.world.gen.settings.DimensionGeneratorSettings;
+import net.minecraft.world.Dimension;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
@@ -153,12 +195,12 @@ public class CommonEvents {
 				StructureUtils.setupWorldGen();
 			});
 		}
+
 		@SubscribeEvent
 		public static void entityAttribute(final EntityAttributeCreationEvent event) {
 			event.put(ModEntityTypesInit.VILLAGE_GUARDIAN.get(), VillageGuardian.setCustomAttributes());
 			event.put(ModEntityTypesInit.SQUIRREL.get(), SquirrelEntity.setCustomAttributes());
-			event.put(ModEntityTypesInit.GIANT_ZOMBIE_KING.get(),
-					GiantZombieKingEntity.setCustomAttributes());
+			event.put(ModEntityTypesInit.GIANT_ZOMBIE_KING.get(), GiantZombieKingEntity.setCustomAttributes());
 
 		}
 	}
@@ -188,6 +230,112 @@ public class CommonEvents {
 			LOGGER.debug(MARKER, "Registering Commands");
 			CommandDispatcher<CommandSource> dispatcher = event.getDispatcher();
 			TlpCommand.register(dispatcher);
+		}
+
+		public static final ResourceLocation SILVER_DIM_ID = new ResourceLocation("dimensions:silver_dimension");
+		public static final RegistryKey<Dimension> SILVER_DIM = RegistryKey.getOrCreateKey(Registry.DIMENSION_KEY,
+				new ResourceLocation("overworld"));
+		protected static final DimensionType SILVER_DIM_TYPE = new ModDimensionType(OptionalLong.empty(), true, false,
+				false, true, 1.0D, false, false, true, false, true, 256, ColumnFuzzedBiomeMagnifier.INSTANCE,
+				BlockTags.INFINIBURN_OVERWORLD.getName(), SILVER_DIM_ID, 0.0F);
+
+		@SuppressWarnings("resource")
+		@SubscribeEvent
+		public static void onGuiOpen(GuiOpenEvent event) {
+			if (event.getGui() instanceof CreateWorldScreen) {
+				if (Config.STRUCTURES.USE_SILVER_DIMENSION.get()) {
+					CreateWorldScreen cWS = (CreateWorldScreen) event.getGui();
+					File modsDir = new File(Minecraft.getInstance().gameDir, "mods");
+					if (modsDir.exists()) {
+						modsDir = new File(modsDir, "silver_dimension_1.2.0.json");
+						try {
+							if (modsDir.createNewFile()) {
+								FileWriter out = new FileWriter(modsDir);
+								out.write(ObjHolder.SILVER_DIM_JSON);
+								out.close();
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+							return;
+						}
+						DynamicRegistries.Impl dynamicregistries$impl = DynamicRegistries.func_239770_b_();
+						ResourcePackList resourcepacklist = new ResourcePackList(new ServerPackFinder(),
+								new FolderPackFinder(cWS.func_238957_j_().toFile(), IPackNameDecorator.WORLD));
+
+						DataPackRegistries datapackregistries;
+						try {
+							Class<?> c = cWS.getClass();
+							Field f = c.getDeclaredField("field_238933_b_");
+							f.setAccessible(true);
+							MinecraftServer.func_240772_a_(resourcepacklist,
+									(DatapackCodec) f.get(cWS)/* cWS.field_238933_b_ */, false);
+							CompletableFuture<DataPackRegistries> completablefuture = DataPackRegistries.func_240961_a_(
+									resourcepacklist.func_232623_f_(), Commands.EnvironmentType.INTEGRATED, 2,
+									Util.getServerExecutor(), Minecraft.getInstance());
+							Minecraft.getInstance().driveUntil(completablefuture::isDone);
+							datapackregistries = completablefuture.get();
+						} catch (Throwable interruptedexception) {
+							LOGGER.error("Error loading data packs when importing world settings",
+									(Throwable) interruptedexception);
+							ITextComponent itextcomponent = new TranslationTextComponent(
+									"selectWorld.import_worldgen_settings.failure");
+							ITextComponent itextcomponent1 = new StringTextComponent(interruptedexception.getMessage());
+							Minecraft.getInstance().getToastGui()
+									.add(SystemToast.func_238534_a_(Minecraft.getInstance(),
+											SystemToast.Type.WORLD_GEN_SETTINGS_TRANSFER, itextcomponent,
+											itextcomponent1));
+							resourcepacklist.close();
+							return;
+						}
+						WorldSettingsImport<JsonElement> worldsettingsimport = WorldSettingsImport.create(
+								JsonOps.INSTANCE, datapackregistries.getResourceManager(), dynamicregistries$impl);
+						JsonParser jsonparser = new JsonParser();
+
+						DataResult<DimensionGeneratorSettings> dataresult;
+						try (BufferedReader bufferedreader = Files
+								.newBufferedReader(Paths.get(modsDir.getAbsolutePath()))) {
+							JsonElement jsonelement = jsonparser.parse(bufferedreader);
+							dataresult = DimensionGeneratorSettings.field_236201_a_.parse(worldsettingsimport,
+									jsonelement);
+						} catch (JsonIOException | JsonSyntaxException | IOException ioexception) {
+							dataresult = DataResult.error("Failed to parse file: " + ioexception.getMessage());
+						}
+
+						if (dataresult.error().isPresent()) {
+							ITextComponent itextcomponent2 = new TranslationTextComponent(
+									"selectWorld.import_worldgen_settings.failure");
+							String s1 = dataresult.error().get().message();
+							LOGGER.error("Error parsing world settings: {}", (Object) s1);
+							ITextComponent itextcomponent3 = new StringTextComponent(s1);
+							Minecraft.getInstance().getToastGui()
+									.add(SystemToast.func_238534_a_(Minecraft.getInstance(),
+											SystemToast.Type.WORLD_GEN_SETTINGS_TRANSFER, itextcomponent2,
+											itextcomponent3));
+						}
+
+						datapackregistries.close();
+						dataresult.resultOrPartial(LOGGER::error).ifPresent((p_239046_5_) -> {
+							try {
+								Class<?> c = cWS.field_238934_c_.getClass();
+								Method m = c.getDeclaredMethod("func_239052_a_", DynamicRegistries.Impl.class,
+										DimensionGeneratorSettings.class);
+								m.setAccessible(true);
+								cWS.field_238934_c_.func_239048_a_(cWS, Minecraft.getInstance(),
+										Minecraft.getInstance().fontRenderer);
+								LOGGER.info("Added Silver Dimension to the world");
+								m.invoke(cWS.field_238934_c_, dynamicregistries$impl, p_239046_5_);
+								event.setGui(cWS);
+
+							} catch (Throwable e) {
+								e.printStackTrace();
+								LOGGER.error(e.getCause());
+							}
+						});
+					}
+				} else {
+					LOGGER.info("Silver Dimension wasn't registered because config disabled this");
+				}
+			}
 		}
 
 		@SubscribeEvent(priority = EventPriority.HIGH)

@@ -22,6 +22,7 @@ public class StructureConfig {
 	public final LootableStructureGenConfig BROWN_LANDINGSTAGE;
 	public final LootableStructureGenConfig ORANGE_SHRINE;
 	public final ForgeConfigSpec.ConfigValue<List<? extends String>> BLACKLISTED_BIOMES;
+	public final ForgeConfigSpec.ConfigValue<Boolean> USE_SILVER_DIMENSION;
 
 	public StructureConfig(final ForgeConfigSpec.Builder SERVER_BUILDER) {
 		NUT_BUSH_PLANTATION = new StructureGenConfig(SERVER_BUILDER, "Nut Bush Plantation", "nut_bush_plantation", 0.6D,
@@ -46,6 +47,10 @@ public class StructureConfig {
 						"structures.blacklisted_biomes", getAllBiomesForCategory(Biome.Category.RIVER,
 								Biome.Category.OCEAN, Biome.Category.THEEND, Biome.Category.NETHER),
 						StructureConfig::validateBiome);
+		USE_SILVER_DIMENSION = SERVER_BUILDER.comment("Do you want to use the Silver Dimension?",
+				"This mod only can use every function if this is true",
+				"Don't wonder about the longer time that's needed to create new world: This caused by the silver_dimension registration")
+				.define("gameplay.silver_dimension", true);
 	}
 
 	public static class StructureGenConfig {
@@ -132,7 +137,7 @@ public class StructureConfig {
 
 	private static boolean validateBiomeCategory(Object o) {
 		for (Biome.Category category : Biome.Category.values()) {
-			if (category == Biome.Category.valueOf((String) o)) {
+			if (category.equals(o) || (o instanceof String && category == Biome.Category.valueOf((String) o))) {
 				return true;
 			}
 		}

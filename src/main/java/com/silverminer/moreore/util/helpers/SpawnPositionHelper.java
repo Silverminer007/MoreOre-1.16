@@ -9,16 +9,20 @@ import net.minecraft.world.gen.Heightmap;
 
 public class SpawnPositionHelper {
 	public static BlockPos calculate(BlockPos pos, World world) {
-		for (int i = 0; i <= 30; i = i > 0 ? -i : 1 - i) {
-			for (int j = 0; j <= 30; j = j > 0 ? -j : 1 - j) {
-				BlockPos blockpos = validatePos(world, pos.getX() + i, pos.getZ() + j);
-				if (blockpos != null) {
-					return blockpos;
+		try {
+			for (int i = 0; i <= 30; i = i > 0 ? -i : 1 - i) {
+				for (int j = 0; j <= 30; j = j > 0 ? -j : 1 - j) {
+					BlockPos blockpos = validatePos(world, pos.getX() + i, pos.getZ() + j);
+					if (blockpos != null) {
+						return blockpos;
+					}
 				}
 			}
-		}
 
-		return world.getHeight(Heightmap.Type.WORLD_SURFACE, pos);
+			return world.getHeight(Heightmap.Type.WORLD_SURFACE, pos);
+		} catch (Throwable e) {
+			return null;
+		}
 	}
 
 	protected static boolean isPositionValid(World world, BlockPos pos) {
