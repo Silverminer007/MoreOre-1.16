@@ -55,7 +55,7 @@ public class GiantPieces {
 
 		@Override
 		public StructureProcessor getProcessor() {
-			return BlockIgnoreStructureProcessor.STRUCTURE_BLOCK;
+			return BlockIgnoreStructureProcessor.AIR_AND_STRUCTURE_BLOCK;
 		}
 
 		@Override
