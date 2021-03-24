@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.OptionalLong;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 import org.apache.logging.log4j.LogManager;
@@ -254,83 +255,101 @@ public class CommonEvents {
 								out.write(ObjHolder.SILVER_DIM_JSON);
 								out.close();
 							}
+							String text = Files.readString(modsDir.toPath());
+							long seed = (new Random()).nextLong();
+							text = text.replaceAll("\"seed\": 0", "\"seed\": " + seed);
+							modsDir.delete();
+							if (modsDir.createNewFile()) {
+								FileWriter out = new FileWriter(modsDir);
+								out.write(text);
+								out.close();
+							}
+							DynamicRegistries.Impl dynamicregistries$impl = DynamicRegistries.func_239770_b_();
+							ResourcePackList resourcepacklist = new ResourcePackList(new ServerPackFinder(),
+									new FolderPackFinder(cWS.func_238957_j_().toFile(), IPackNameDecorator.WORLD));
+
+							DataPackRegistries datapackregistries;
+							try {
+								Class<?> c = cWS.getClass();
+								Field f = c.getDeclaredField("field_238933_b_");
+								f.setAccessible(true);
+								MinecraftServer.func_240772_a_(resourcepacklist, (DatapackCodec) f.get(cWS), false);
+								CompletableFuture<DataPackRegistries> completablefuture = DataPackRegistries
+										.func_240961_a_(resourcepacklist.func_232623_f_(),
+												Commands.EnvironmentType.INTEGRATED, 2, Util.getServerExecutor(),
+												Minecraft.getInstance());
+								Minecraft.getInstance().driveUntil(completablefuture::isDone);
+								datapackregistries = completablefuture.get();
+							} catch (Throwable interruptedexception) {
+								LOGGER.error("Error loading data packs when importing world settings",
+										(Throwable) interruptedexception);
+								ITextComponent itextcomponent = new TranslationTextComponent(
+										"selectWorld.import_worldgen_settings.failure");
+								ITextComponent itextcomponent1 = new StringTextComponent(
+										interruptedexception.getMessage());
+								Minecraft.getInstance().getToastGui()
+										.add(SystemToast.func_238534_a_(Minecraft.getInstance(),
+												SystemToast.Type.WORLD_GEN_SETTINGS_TRANSFER, itextcomponent,
+												itextcomponent1));
+								resourcepacklist.close();
+								return;
+							}
+							WorldSettingsImport<JsonElement> worldsettingsimport = WorldSettingsImport.create(
+									JsonOps.INSTANCE, datapackregistries.getResourceManager(), dynamicregistries$impl);
+							JsonParser jsonparser = new JsonParser();
+
+							DataResult<DimensionGeneratorSettings> dataresult;
+							try (BufferedReader bufferedreader = Files
+									.newBufferedReader(Paths.get(modsDir.getAbsolutePath()))) {
+								JsonElement jsonelement = jsonparser.parse(bufferedreader);
+								dataresult = DimensionGeneratorSettings.field_236201_a_.parse(worldsettingsimport,
+										jsonelement);
+							} catch (JsonIOException | JsonSyntaxException | IOException ioexception) {
+								dataresult = DataResult.error("Failed to parse file: " + ioexception.getMessage());
+							}
+							text = Files.readString(modsDir.toPath());
+							text = text.replaceAll("\"seed\": " + seed, "\"seed\": 0");
+							modsDir.delete();
+							if (modsDir.createNewFile()) {
+								FileWriter out = new FileWriter(modsDir);
+								out.write(text);
+								out.close();
+							}
+
+							if (dataresult.error().isPresent()) {
+								ITextComponent itextcomponent2 = new TranslationTextComponent(
+										"selectWorld.import_worldgen_settings.failure");
+								String s1 = dataresult.error().get().message();
+								LOGGER.error("Error parsing world settings: {}", (Object) s1);
+								ITextComponent itextcomponent3 = new StringTextComponent(s1);
+								Minecraft.getInstance().getToastGui()
+										.add(SystemToast.func_238534_a_(Minecraft.getInstance(),
+												SystemToast.Type.WORLD_GEN_SETTINGS_TRANSFER, itextcomponent2,
+												itextcomponent3));
+							}
+
+							datapackregistries.close();
+							dataresult.resultOrPartial(LOGGER::error).ifPresent((p_239046_5_) -> {
+								try {
+									Class<?> c = cWS.field_238934_c_.getClass();
+									Method m = c.getDeclaredMethod("func_239052_a_", DynamicRegistries.Impl.class,
+											DimensionGeneratorSettings.class);
+									m.setAccessible(true);
+									cWS.field_238934_c_.func_239048_a_(cWS, Minecraft.getInstance(),
+											Minecraft.getInstance().fontRenderer);
+									LOGGER.info("Added Silver Dimension to the world");
+									m.invoke(cWS.field_238934_c_, dynamicregistries$impl, p_239046_5_);
+									event.setGui(cWS);
+
+								} catch (Throwable e) {
+									e.printStackTrace();
+									LOGGER.error(e.getCause());
+								}
+							});
 						} catch (IOException e) {
 							e.printStackTrace();
 							return;
 						}
-						DynamicRegistries.Impl dynamicregistries$impl = DynamicRegistries.func_239770_b_();
-						ResourcePackList resourcepacklist = new ResourcePackList(new ServerPackFinder(),
-								new FolderPackFinder(cWS.func_238957_j_().toFile(), IPackNameDecorator.WORLD));
-
-						DataPackRegistries datapackregistries;
-						try {
-							Class<?> c = cWS.getClass();
-							Field f = c.getDeclaredField("field_238933_b_");
-							f.setAccessible(true);
-							MinecraftServer.func_240772_a_(resourcepacklist,
-									(DatapackCodec) f.get(cWS)/* cWS.field_238933_b_ */, false);
-							CompletableFuture<DataPackRegistries> completablefuture = DataPackRegistries.func_240961_a_(
-									resourcepacklist.func_232623_f_(), Commands.EnvironmentType.INTEGRATED, 2,
-									Util.getServerExecutor(), Minecraft.getInstance());
-							Minecraft.getInstance().driveUntil(completablefuture::isDone);
-							datapackregistries = completablefuture.get();
-						} catch (Throwable interruptedexception) {
-							LOGGER.error("Error loading data packs when importing world settings",
-									(Throwable) interruptedexception);
-							ITextComponent itextcomponent = new TranslationTextComponent(
-									"selectWorld.import_worldgen_settings.failure");
-							ITextComponent itextcomponent1 = new StringTextComponent(interruptedexception.getMessage());
-							Minecraft.getInstance().getToastGui()
-									.add(SystemToast.func_238534_a_(Minecraft.getInstance(),
-											SystemToast.Type.WORLD_GEN_SETTINGS_TRANSFER, itextcomponent,
-											itextcomponent1));
-							resourcepacklist.close();
-							return;
-						}
-						WorldSettingsImport<JsonElement> worldsettingsimport = WorldSettingsImport.create(
-								JsonOps.INSTANCE, datapackregistries.getResourceManager(), dynamicregistries$impl);
-						JsonParser jsonparser = new JsonParser();
-
-						DataResult<DimensionGeneratorSettings> dataresult;
-						try (BufferedReader bufferedreader = Files
-								.newBufferedReader(Paths.get(modsDir.getAbsolutePath()))) {
-							JsonElement jsonelement = jsonparser.parse(bufferedreader);
-							dataresult = DimensionGeneratorSettings.field_236201_a_.parse(worldsettingsimport,
-									jsonelement);
-						} catch (JsonIOException | JsonSyntaxException | IOException ioexception) {
-							dataresult = DataResult.error("Failed to parse file: " + ioexception.getMessage());
-						}
-
-						if (dataresult.error().isPresent()) {
-							ITextComponent itextcomponent2 = new TranslationTextComponent(
-									"selectWorld.import_worldgen_settings.failure");
-							String s1 = dataresult.error().get().message();
-							LOGGER.error("Error parsing world settings: {}", (Object) s1);
-							ITextComponent itextcomponent3 = new StringTextComponent(s1);
-							Minecraft.getInstance().getToastGui()
-									.add(SystemToast.func_238534_a_(Minecraft.getInstance(),
-											SystemToast.Type.WORLD_GEN_SETTINGS_TRANSFER, itextcomponent2,
-											itextcomponent3));
-						}
-
-						datapackregistries.close();
-						dataresult.resultOrPartial(LOGGER::error).ifPresent((p_239046_5_) -> {
-							try {
-								Class<?> c = cWS.field_238934_c_.getClass();
-								Method m = c.getDeclaredMethod("func_239052_a_", DynamicRegistries.Impl.class,
-										DimensionGeneratorSettings.class);
-								m.setAccessible(true);
-								cWS.field_238934_c_.func_239048_a_(cWS, Minecraft.getInstance(),
-										Minecraft.getInstance().fontRenderer);
-								LOGGER.info("Added Silver Dimension to the world");
-								m.invoke(cWS.field_238934_c_, dynamicregistries$impl, p_239046_5_);
-								event.setGui(cWS);
-
-							} catch (Throwable e) {
-								e.printStackTrace();
-								LOGGER.error(e.getCause());
-							}
-						});
 					}
 				} else {
 					LOGGER.info("Silver Dimension wasn't registered because config disabled this");
@@ -407,9 +426,9 @@ public class CommonEvents {
 						Config.STRUCTURES.PURPLE_HOUSE.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
 					event.getGeneration().withStructure(ModStructureFeatures.PURPLE_HOUSE);
 				}
-				if (Config.STRUCTURES.GIANT.GENERATE.get() && StructureUtils.checkBiome(
-						Config.STRUCTURES.GIANT.BIOME_CATEGORIES.get(),
-						Config.STRUCTURES.GIANT.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
+				if (Config.STRUCTURES.GIANT.GENERATE.get()
+						&& StructureUtils.checkBiome(Config.STRUCTURES.GIANT.BIOME_CATEGORIES.get(),
+								Config.STRUCTURES.GIANT.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
 					event.getGeneration().withStructure(ModStructureFeatures.GIANT);
 				}
 			}
