@@ -12,6 +12,7 @@ import com.silverminer.moreore.common.world.gen.structures.runes.gray.GiantStruc
 import com.silverminer.moreore.common.world.gen.structures.runes.green.GreenDungeonStructure;
 import com.silverminer.moreore.common.world.gen.structures.runes.orange.OrangeShrineStructure;
 import com.silverminer.moreore.common.world.gen.structures.runes.purple.PurplehouseStructure;
+import com.silverminer.moreore.common.world.gen.structures.runes.red.BlackSmithStructure;
 import com.silverminer.moreore.common.world.gen.structures.runes.yellow.DesertTempelStructure;
 import com.silverminer.moreore.common.world.gen.structures.tempel.TempelStructure;
 
@@ -54,6 +55,9 @@ public class StructureFeatureInit {
 
 	public static final RegistryObject<HouseStructure> BLUE_HOUSE = register(HouseStructure.SHORT_NAME,
 			new HouseStructure(NoFeatureConfig.field_236558_a_));
+
+	public static final RegistryObject<BlackSmithStructure> BLACK_SMITH = register(BlackSmithStructure.SHORT_NAME,
+			new BlackSmithStructure(NoFeatureConfig.field_236558_a_));
 
 	private static <T extends AbstractStructure<NoFeatureConfig>> RegistryObject<T> register(String name, T structure) {
 		if (!Structure.NAME_STRUCTURE_BIMAP.containsValue(structure)) {

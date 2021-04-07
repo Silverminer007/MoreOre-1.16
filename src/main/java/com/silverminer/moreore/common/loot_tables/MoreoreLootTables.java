@@ -14,4 +14,5 @@ public class MoreoreLootTables {
 	public static final ResourceLocation PURPLE_HOUSE_2 = new ResourceLocation("moreore:chests/purple_house_2");
 	public static final ResourceLocation BLUE_HOUSE = new ResourceLocation("moreore:chests/blue_house");
 	public static final ResourceLocation BLUE_HOUSE_2 = new ResourceLocation("moreore:chests/blue_house_2");
+	public static final ResourceLocation BLACK_SMITH = new ResourceLocation("moreore:chests/blacksmith");
 }

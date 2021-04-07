@@ -436,6 +436,11 @@ public class CommonEvents {
 						Config.STRUCTURES.BLUE_HOUSE.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
 					event.getGeneration().withStructure(ModStructureFeatures.BLUE_HOUSE);
 				}
+				if (Config.STRUCTURES.BLACK_SMITH.GENERATE.get() && StructureUtils.checkBiome(
+						Config.STRUCTURES.BLACK_SMITH.BIOME_CATEGORIES.get(),
+						Config.STRUCTURES.BLACK_SMITH.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
+					event.getGeneration().withStructure(ModStructureFeatures.BLACK_SMITH);
+				}
 			}
 
 			// Enties

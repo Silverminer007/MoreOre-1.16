@@ -8,6 +8,7 @@ import com.silverminer.moreore.common.world.gen.structures.runes.gray.GiantPiece
 import com.silverminer.moreore.common.world.gen.structures.runes.green.GreenDungeonPieces;
 import com.silverminer.moreore.common.world.gen.structures.runes.orange.OrangeShrinePieces;
 import com.silverminer.moreore.common.world.gen.structures.runes.purple.PurplehousePieces;
+import com.silverminer.moreore.common.world.gen.structures.runes.red.BlackSmithPieces;
 import com.silverminer.moreore.common.world.gen.structures.runes.yellow.DesertTempelPieces;
 import com.silverminer.moreore.common.world.gen.structures.tempel.TempelPieces;
 
@@ -28,6 +29,7 @@ public class MoreoreStructurePieceType {
 	public static final IStructurePieceType ORANGE_SHRINE = OrangeShrinePieces.Piece::new;
 	public static final IStructurePieceType PURPLE_HOUSE = PurplehousePieces.Piece::new;
 	public static final IStructurePieceType GIANT = GiantPieces.Piece::new;
+	public static final IStructurePieceType BLACK_SMITH = BlackSmithPieces.Piece::new;
 
 	public static void regsiter() {
 		Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MoreOre.MODID, "tempel"), TEMPEL);
@@ -46,5 +48,7 @@ public class MoreoreStructurePieceType {
 				GIANT);
 		Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MoreOre.MODID, "blue_house"),
 				BLUE_HOUSE);
+		Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MoreOre.MODID, "black_smith"),
+				BLACK_SMITH);
 	}
 }
