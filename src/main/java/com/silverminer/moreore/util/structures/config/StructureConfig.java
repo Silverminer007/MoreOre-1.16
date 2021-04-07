@@ -20,6 +20,7 @@ public class StructureConfig {
 	public final LootableStructureGenConfig GREEN_DUNGEON;
 	public final LootableStructureGenConfig PURPLE_HOUSE;
 	public final LootableStructureGenConfig BROWN_LANDINGSTAGE;
+	public final LootableStructureGenConfig BLUE_HOUSE;
 	public final LootableStructureGenConfig ORANGE_SHRINE;
 	public final LootableStructureGenConfig GIANT;
 	public final ForgeConfigSpec.ConfigValue<List<? extends String>> BLACKLISTED_BIOMES;
@@ -41,8 +42,10 @@ public class StructureConfig {
 				1.0D, 30, 10, 98298754, 1.0D, Category.SWAMP);
 		ORANGE_SHRINE = new LootableStructureGenConfig(SERVER_BUILDER, "Orange Shrine", "orange_shrine", 1.0D, 30, 10,
 				-987516987, 1.0D, Category.SAVANNA);
-		GIANT = new LootableStructureGenConfig(SERVER_BUILDER, "Giant", "giant", 1.0D, 30, 10,
-				90213^93712, 1.0D, Category.EXTREME_HILLS);
+		GIANT = new LootableStructureGenConfig(SERVER_BUILDER, "Giant", "giant", 1.0D, 30, 10, 90213 ^ 93712, 1.0D,
+				Category.EXTREME_HILLS);
+		BLUE_HOUSE = new LootableStructureGenConfig(SERVER_BUILDER, "Blue House", "blue_house", 1.0D, 30, 10,
+				26634567, 1.0D, Category.ICY);
 		BLACKLISTED_BIOMES = SERVER_BUILDER
 				.comment("Structure Generation Config", "Take care what you change, this changes may cant be undone",
 						"", "Biomes in which Structures cant generate in")

@@ -9,7 +9,7 @@ displayName="MoreOre" #mandatory
 updateJSONURL="https://github.com/Silverminer007/MoreOre-1.16/raw/master/updateJSON.json" #optional
 displayURL="https://github.com/Silverminer007/MoreOre-1.16/" #optional
 #logoFile="moreore.png" #optional
-credits="" #optional
+credits="S1lencegamer (Some code and beautiful Structures, wunderful textures and unique ideas), jojo_1 (Amazing purple house), Forscher09 (Many ideas for better gameplay, textures and critcal tester) and CHTPR1 (Blue House and many textures and ideas)" #optional
 # A text field displayed in the mod UI
 authors="Silverminer007" #optional
 description='''
