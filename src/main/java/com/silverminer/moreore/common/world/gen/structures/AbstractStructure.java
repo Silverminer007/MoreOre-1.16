@@ -12,7 +12,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
@@ -68,17 +67,13 @@ public abstract class AbstractStructure<C extends IFeatureConfig> extends Struct
 
 	@Override
 	protected boolean func_230363_a_(ChunkGenerator generator, BiomeProvider provider, long seed, SharedSeedRandom rand,
-			int chunkX, int chunkZ, Biome biome, ChunkPos pos, IFeatureConfig config) {
+			int chunkX, int chunkZ, Biome biome, ChunkPos pos, C config) {
 		if (isSurfaceFlat(generator, chunkX, chunkZ)) {
 
 			// Check the entire size of the structure to see if it's all a viable biome:
 			for (Biome biome1 : provider.getBiomes(chunkX * 16 + 9, generator.getGroundHeight(), chunkZ * 16 + 9,
 					getSize() * 16)) {
 				if (!biome1.getGenerationSettings().hasStructure(this)) {
-					return false;
-				}
-				if (biome1.getCategory() == Category.NETHER || biome1.getCategory() == Category.THEEND
-						|| biome1.getCategory() == Category.OCEAN || biome1.getCategory() == Category.RIVER) {
 					return false;
 				}
 			}

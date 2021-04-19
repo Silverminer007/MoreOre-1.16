@@ -1,10 +1,13 @@
 package com.silverminer.moreore.common.world.gen.structures.runes.blue;
 
 import net.minecraft.util.Rotation;
+import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.GenerationStage.Decoration;
@@ -17,22 +20,23 @@ import javax.annotation.Nonnull;
 import com.mojang.serialization.Codec;
 import com.silverminer.moreore.common.world.gen.structures.AbstractStructure;
 import com.silverminer.moreore.common.world.gen.structures.AbstractStructureStart;
+import com.silverminer.moreore.util.events.handler.CommonEvents;
 import com.silverminer.moreore.util.structures.config.Config;
 
-public class HouseStructure extends AbstractStructure<NoFeatureConfig> {
-	public static final String SHORT_NAME = "blue_house";
+public class BlueRuneStructure extends AbstractStructure<NoFeatureConfig> {
+	public static final String SHORT_NAME = "blue_rune";
 
-	public HouseStructure(Codec<NoFeatureConfig> configFactoryIn) {
+	public BlueRuneStructure(Codec<NoFeatureConfig> configFactoryIn) {
 		super(configFactoryIn, 3, SHORT_NAME);
 	}
 
 	@Override
 	public double getSpawnChance() {
-		return Config.STRUCTURES.BLUE_HOUSE.SPAWN_CHANCE.get();
+		return Config.STRUCTURES.BLUE_RUNE.SPAWN_CHANCE.get();
 	}
 
 	public int getSeedModifier() {
-		return Config.STRUCTURES.BLUE_HOUSE.SEED.get();
+		return Config.STRUCTURES.BLUE_RUNE.SEED.get();
 	}
 
 	@Override
@@ -42,12 +46,35 @@ public class HouseStructure extends AbstractStructure<NoFeatureConfig> {
 
 	@Override
 	public int getDistance() {
-		return Config.STRUCTURES.BLUE_HOUSE.DISTANCE.get();
+		return Config.STRUCTURES.BLUE_RUNE.DISTANCE.get();
 	}
 
 	@Override
 	public int getSeparation() {
-		return Config.STRUCTURES.BLUE_HOUSE.SEPARATION.get();
+		return Config.STRUCTURES.BLUE_RUNE.SEPARATION.get();
+	}
+
+	@Override
+	protected boolean func_230363_a_(ChunkGenerator generator, BiomeProvider provider, long seed, SharedSeedRandom rand,
+			int chunkX, int chunkZ, Biome biome, ChunkPos pos, NoFeatureConfig config) {
+		LOGGER.info("Use House usage: {}", CommonEvents.ForgeEventBus.USE_HOUSE);
+		if (CommonEvents.ForgeEventBus.USE_HOUSE) {
+			return super.func_230363_a_(generator, provider, seed, rand, chunkX, chunkZ, biome, pos, config);
+		}
+
+		// Check the entire size of the structure to see if it's all a viable biome:
+		for (Biome biome1 : provider.getBiomes(chunkX * 16 + 9, generator.getGroundHeight(), chunkZ * 16 + 9,
+				getSize() * 16)) {
+			if (!biome1.getGenerationSettings().hasStructure(this)) {
+				return false;
+			}
+		}
+
+		int i = chunkX >> 4;
+		int j = chunkZ >> 4;
+		rand.setSeed((long) (i ^ j << 4) ^ seed);
+		rand.nextInt();
+		return rand.nextDouble() < getSpawnChance();
 	}
 
 	@Override
@@ -70,7 +97,11 @@ public class HouseStructure extends AbstractStructure<NoFeatureConfig> {
 			int j = chunkZ * 16;
 			BlockPos blockpos = new BlockPos(i, 0, j);
 			Rotation rotation = Rotation.randomRotation(this.rand);
-			HousePieces.generate(templateManager, blockpos, rotation, this.components, this.rand);
+			LOGGER.info("Use House usage: {}", CommonEvents.ForgeEventBus.USE_HOUSE);
+			if (CommonEvents.ForgeEventBus.USE_HOUSE)
+				HousePieces.generate(templateManager, blockpos, rotation, this.components, this.rand);
+			else
+				VikingShipPieces.generate(templateManager, blockpos, rotation, this.components, this.rand);
 			this.recalculateStructureSize();
 		}
 

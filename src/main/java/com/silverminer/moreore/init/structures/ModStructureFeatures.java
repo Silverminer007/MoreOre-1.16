@@ -2,7 +2,7 @@ package com.silverminer.moreore.init.structures;
 
 import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.common.world.gen.structures.nut_bush_plantation.NutBushPlantationStructure;
-import com.silverminer.moreore.common.world.gen.structures.runes.blue.HouseStructure;
+import com.silverminer.moreore.common.world.gen.structures.runes.blue.BlueRuneStructure;
 import com.silverminer.moreore.common.world.gen.structures.runes.brown.BrownLandingstageStructure;
 import com.silverminer.moreore.common.world.gen.structures.runes.gray.GiantStructure;
 import com.silverminer.moreore.common.world.gen.structures.runes.green.GreenDungeonStructure;
@@ -53,9 +53,9 @@ public class ModStructureFeatures {
 			GiantStructure.SHORT_NAME,
 			StructureFeatureInit.GIANT.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
 
-	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> BLUE_HOUSE = register(
-			HouseStructure.SHORT_NAME,
-			StructureFeatureInit.BLUE_HOUSE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
+	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> BLUE_RUNE = register(
+			BlueRuneStructure.SHORT_NAME,
+			StructureFeatureInit.BLUE_RUNE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
 
 	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> BLACK_SMITH = register(
 			BlackSmithStructure.SHORT_NAME,

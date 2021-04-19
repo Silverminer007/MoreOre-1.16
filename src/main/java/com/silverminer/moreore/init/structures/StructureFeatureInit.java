@@ -6,7 +6,7 @@ import com.google.common.collect.ImmutableList;
 import com.silverminer.moreore.MoreOre;
 import com.silverminer.moreore.common.world.gen.structures.AbstractStructure;
 import com.silverminer.moreore.common.world.gen.structures.nut_bush_plantation.NutBushPlantationStructure;
-import com.silverminer.moreore.common.world.gen.structures.runes.blue.HouseStructure;
+import com.silverminer.moreore.common.world.gen.structures.runes.blue.BlueRuneStructure;
 import com.silverminer.moreore.common.world.gen.structures.runes.brown.BrownLandingstageStructure;
 import com.silverminer.moreore.common.world.gen.structures.runes.gray.GiantStructure;
 import com.silverminer.moreore.common.world.gen.structures.runes.green.GreenDungeonStructure;
@@ -53,8 +53,8 @@ public class StructureFeatureInit {
 	public static final RegistryObject<GiantStructure> GIANT = register(GiantStructure.SHORT_NAME,
 			new GiantStructure(NoFeatureConfig.field_236558_a_));
 
-	public static final RegistryObject<HouseStructure> BLUE_HOUSE = register(HouseStructure.SHORT_NAME,
-			new HouseStructure(NoFeatureConfig.field_236558_a_));
+	public static final RegistryObject<BlueRuneStructure> BLUE_RUNE = register(BlueRuneStructure.SHORT_NAME,
+			new BlueRuneStructure(NoFeatureConfig.field_236558_a_));
 
 	public static final RegistryObject<BlackSmithStructure> BLACK_SMITH = register(BlackSmithStructure.SHORT_NAME,
 			new BlackSmithStructure(NoFeatureConfig.field_236558_a_));

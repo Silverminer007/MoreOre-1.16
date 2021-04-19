@@ -26,7 +26,7 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 public class HousePieces {
 
 	private static final ResourceLocation[] location = new ResourceLocation[] {
-			new ResourceLocation(MoreOre.MODID, "runes/blue/" + "blue_house_1") };
+			new ResourceLocation(MoreOre.MODID, "runes/blue/house/" + "blue_house_1") };
 
 	public static void generate(TemplateManager templateManager, BlockPos pos, Rotation rotation,
 			List<StructurePiece> pieces, Random random) {
@@ -52,7 +52,7 @@ public class HousePieces {
 		@Override
 		protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand,
 				MutableBoundingBox sbb) {
-			if (Config.STRUCTURES.BLUE_HOUSE.LOOT_CHANCE.get() > rand.nextDouble()) {
+			if (Config.STRUCTURES.BLUE_RUNE.LOOT_CHANCE.get() > rand.nextDouble()) {
 				if (function.equals("chest")) {
 					worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
 					TileEntity tileentity = worldIn.getTileEntity(pos.down());

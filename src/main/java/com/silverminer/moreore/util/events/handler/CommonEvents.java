@@ -2,6 +2,7 @@ package com.silverminer.moreore.util.events.handler;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -255,7 +256,20 @@ public class CommonEvents {
 								out.write(ObjHolder.SILVER_DIM_JSON);
 								out.close();
 							}
-							String text = Files.readString(modsDir.toPath());
+							BufferedReader br = new BufferedReader(new FileReader(modsDir));
+							StringBuilder sb = new StringBuilder();
+							try {
+								String line = br.readLine();
+
+								while (line != null) {
+									sb.append(line);
+									sb.append(System.lineSeparator());
+									line = br.readLine();
+								}
+							} finally {
+								br.close();
+							}
+							String text = sb.toString();
 							long seed = (new Random()).nextLong();
 							text = text.replaceAll("\"seed\": 0", "\"seed\": " + seed);
 							modsDir.delete();
@@ -307,7 +321,20 @@ public class CommonEvents {
 							} catch (JsonIOException | JsonSyntaxException | IOException ioexception) {
 								dataresult = DataResult.error("Failed to parse file: " + ioexception.getMessage());
 							}
-							text = Files.readString(modsDir.toPath());
+							br = new BufferedReader(new FileReader(modsDir));
+							sb = new StringBuilder();
+							try {
+								String line = br.readLine();
+
+								while (line != null) {
+									sb.append(line);
+									sb.append(System.lineSeparator());
+									line = br.readLine();
+								}
+							} finally {
+								br.close();
+							}
+							text = sb.toString();
 							text = text.replaceAll("\"seed\": " + seed, "\"seed\": 0");
 							modsDir.delete();
 							if (modsDir.createNewFile()) {
@@ -431,16 +458,24 @@ public class CommonEvents {
 								Config.STRUCTURES.GIANT.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
 					event.getGeneration().withStructure(ModStructureFeatures.GIANT);
 				}
-				if (Config.STRUCTURES.BLUE_HOUSE.GENERATE.get() && StructureUtils.checkBiome(
-						Config.STRUCTURES.BLUE_HOUSE.BIOME_CATEGORIES.get(),
-						Config.STRUCTURES.BLUE_HOUSE.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
-					event.getGeneration().withStructure(ModStructureFeatures.BLUE_HOUSE);
-				}
 				if (Config.STRUCTURES.BLACK_SMITH.GENERATE.get() && StructureUtils.checkBiome(
 						Config.STRUCTURES.BLACK_SMITH.BIOME_CATEGORIES.get(),
 						Config.STRUCTURES.BLACK_SMITH.BIOME_BLACKLIST.get(), event.getName(), event.getCategory())) {
 					event.getGeneration().withStructure(ModStructureFeatures.BLACK_SMITH);
 				}
+			}
+			boolean flag = Config.STRUCTURES.BLUE_RUNE.USE_HOUSE.get();
+			LOGGER.info("Use House usage: {}", flag);
+			if (Config.STRUCTURES.BLUE_RUNE.GENERATE.get() && StructureUtils.checkBiome(
+					flag ? Config.STRUCTURES.BLUE_RUNE.BIOME_CATEGORIES.get()
+							: Config.STRUCTURES.BLUE_RUNE.BIOME_CATEGORIES_VIKING_SHIP.get(),
+					flag ? Config.STRUCTURES.BLUE_RUNE.BIOME_BLACKLIST.get()
+							: Config.STRUCTURES.BLUE_RUNE.BIOME_BLACKLIST_VIKING_SHIP.get(),
+					event.getName(), event.getCategory())) {
+				event.getGeneration().withStructure(ModStructureFeatures.BLUE_RUNE);
+			}
+			if(Thread.currentThread().getName() == "Render thread") {
+				USE_HOUSE = flag;
 			}
 
 			// Enties
@@ -453,6 +488,8 @@ public class CommonEvents {
 						.add(new Spawners(ModEntityTypesInit.SQUIRREL.get(), 10, 4, 4));
 			}
 		}
+		/** TODO: This isn't the best way. I have to search for a better one */
+		public static boolean USE_HOUSE = false;
 
 		/**********************************************************************************************************
 		 * Apply Rune effects START

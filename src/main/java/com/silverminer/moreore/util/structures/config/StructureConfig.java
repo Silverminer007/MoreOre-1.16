@@ -20,7 +20,7 @@ public class StructureConfig {
 	public final LootableStructureGenConfig GREEN_DUNGEON;
 	public final LootableStructureGenConfig PURPLE_HOUSE;
 	public final LootableStructureGenConfig BROWN_LANDINGSTAGE;
-	public final LootableStructureGenConfig BLUE_HOUSE;
+	public final BlueRuneStructureGenConfig BLUE_RUNE;
 	public final LootableStructureGenConfig ORANGE_SHRINE;
 	public final LootableStructureGenConfig GIANT;
 	public final LootableStructureGenConfig BLACK_SMITH;
@@ -45,8 +45,8 @@ public class StructureConfig {
 				-987516987, 1.0D, Category.SAVANNA);
 		GIANT = new LootableStructureGenConfig(SERVER_BUILDER, "Giant", "giant", 1.0D, 30, 10, 90213 ^ 93712, 1.0D,
 				Category.EXTREME_HILLS);
-		BLUE_HOUSE = new LootableStructureGenConfig(SERVER_BUILDER, "Blue House", "blue_house", 1.0D, 30, 10,
-				26634567, 1.0D, Category.ICY);
+		BLUE_RUNE = new BlueRuneStructureGenConfig(SERVER_BUILDER, "Blue Rune Structure", "blue_rune", 1.0D, 30, 10,
+				26634567, 1.0D, false, Category.ICY);
 		BLACK_SMITH = new LootableStructureGenConfig(SERVER_BUILDER, "Black Smith", "blacksmith", 1.0D, 30, 10,
 				712234876, 1.0D, Category.MESA);
 		BLACKLISTED_BIOMES = SERVER_BUILDER
@@ -137,6 +137,39 @@ public class StructureConfig {
 		public LootableStructureGenConfig(final ForgeConfigSpec.Builder SERVER_BUILDER, String name, String dataName,
 				int dSeed, double dLootChance) {
 			this(SERVER_BUILDER, name, dataName, 0.6D, 50, 10, dSeed, dLootChance);
+		}
+	}
+
+	public static class BlueRuneStructureGenConfig extends LootableStructureGenConfig {
+		public final ForgeConfigSpec.BooleanValue USE_HOUSE;
+		public final ForgeConfigSpec.ConfigValue<List<? extends Biome.Category>> BIOME_CATEGORIES_VIKING_SHIP;
+		public final ForgeConfigSpec.ConfigValue<List<? extends String>> BIOME_BLACKLIST_VIKING_SHIP;
+
+		public BlueRuneStructureGenConfig(Builder SERVER_BUILDER, String name, String dataName, double dSpawnChance,
+				int dDistance, int dSeparation, int dSeed, double dLootChance, boolean useHouse, Category... category) {
+			super(SERVER_BUILDER, name, dataName, dSpawnChance, dDistance, dSeparation, dSeed, dLootChance,
+					new String[] {}, category);
+			USE_HOUSE = SERVER_BUILDER.comment("Use the house for blue rune? If false, viking ship is used")
+					.define("structures." + dataName + ".useHouse", useHouse);
+			BIOME_CATEGORIES_VIKING_SHIP = SERVER_BUILDER.comment("Biome Types the " + name + " can generate in if use House is false")
+					.defineList("structures." + dataName + ".biome_categories_viking_ship", Arrays.asList(Category.OCEAN),
+							StructureConfig::validateBiomeCategory);
+			BIOME_BLACKLIST_VIKING_SHIP = SERVER_BUILDER.comment("Biomes the " + name + " can NOT generate in if useHouse is false").defineList(
+					"structures." + dataName + ".biome_blacklist_viking_ship", getBlackList(),
+					StructureConfig::validateBiome);
+		}
+
+		private ArrayList<String> blacklist;
+		private ArrayList<String> getBlackList(){
+			if(blacklist == null) {
+				blacklist = new ArrayList<String>();
+				ForgeRegistries.BIOMES.forEach(biome -> {
+					if(biome.getCategory() == Category.OCEAN && biome.getTemperature() >= 0.3F) {
+						blacklist.add(biome.getRegistryName().toString());
+					}
+				});
+			}
+			return blacklist;
 		}
 	}
 
