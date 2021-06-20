@@ -23,43 +23,43 @@ public class ModStructureFeatures {
 
 	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> TEMPEL = register(
 			TempelStructure.SHORT_NAME,
-			StructureFeatureInit.TEMPEL.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
+			StructureFeatureInit.TEMPEL.get().configured(IFeatureConfig.NONE));
 
 	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> DESERT_TEMPEL = register(
 			DesertTempelStructure.SHORT_NAME,
-			StructureFeatureInit.DESERT_TEMPEL.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
+			StructureFeatureInit.DESERT_TEMPEL.get().configured(IFeatureConfig.NONE));
 
 	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> NUT_BUSH_PLANTATION = register(
 			NutBushPlantationStructure.SHORT_NAME,
-			StructureFeatureInit.NUT_BUSH_PLANTATION.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
+			StructureFeatureInit.NUT_BUSH_PLANTATION.get().configured(IFeatureConfig.NONE));
 
 	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> GREEN_DUNGEON = register(
 			GreenDungeonStructure.SHORT_NAME,
-			StructureFeatureInit.GREEN_DUNGEON.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
+			StructureFeatureInit.GREEN_DUNGEON.get().configured(IFeatureConfig.NONE));
 
 	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> ORANGE_SHRINE = register(
 			OrangeShrineStructure.SHORT_NAME,
-			StructureFeatureInit.ORANGE_SHRINE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
+			StructureFeatureInit.ORANGE_SHRINE.get().configured(IFeatureConfig.NONE));
 
 	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> BROWN_LANDINGSTAGE = register(
 			BrownLandingstageStructure.SHORT_NAME,
-			StructureFeatureInit.BROWN_LANDINGSTAGE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
+			StructureFeatureInit.BROWN_LANDINGSTAGE.get().configured(IFeatureConfig.NONE));
 
 	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> PURPLE_HOUSE = register(
 			PurplehouseStructure.SHORT_NAME,
-			StructureFeatureInit.PURPLE_HOUSE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
+			StructureFeatureInit.PURPLE_HOUSE.get().configured(IFeatureConfig.NONE));
 
 	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> GIANT = register(
 			GiantStructure.SHORT_NAME,
-			StructureFeatureInit.GIANT.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
+			StructureFeatureInit.GIANT.get().configured(IFeatureConfig.NONE));
 
 	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> BLUE_RUNE = register(
 			BlueRuneStructure.SHORT_NAME,
-			StructureFeatureInit.BLUE_RUNE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
+			StructureFeatureInit.BLUE_RUNE.get().configured(IFeatureConfig.NONE));
 
 	public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> BLACK_SMITH = register(
 			BlackSmithStructure.SHORT_NAME,
-			StructureFeatureInit.BLACK_SMITH.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
+			StructureFeatureInit.BLACK_SMITH.get().configured(IFeatureConfig.NONE));
 
 	private static <FC extends IFeatureConfig, F extends Structure<FC>> StructureFeature<FC, F> register(String name,
 			StructureFeature<FC, F> structureFeature) {

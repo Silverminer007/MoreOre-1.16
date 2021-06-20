@@ -23,26 +23,26 @@ public class InitBlocks {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MoreOre.MODID);
 
 	public static final RegistryObject<Block> GLOW_BLUE_BLOCK = BLOCKS.register("glow_blue_block",
-			() -> new Block(Block.Properties.from(Blocks.GLOWSTONE)));
+			() -> new Block(Block.Properties.copy(Blocks.GLOWSTONE)));
 
 	public static final RegistryObject<Block> SILVER_PORTAL = BLOCKS.register("silver_portal",
 			() -> new SilverPortalBlock());
 
 	public static final RegistryObject<Block> LAVA_SPONGE = BLOCKS.register("lava_sponge",
-			() -> new LavaSpongeBlock(Block.Properties.from(Blocks.SPONGE)));
+			() -> new LavaSpongeBlock(Block.Properties.copy(Blocks.SPONGE)));
 
 	public static final RegistryObject<Block> BURNED_OUT_LAVA_SPONGE = BLOCKS.register("burned_out_lava_sponge",
-			() -> new BurnedOutLavaSpongeBlock(Block.Properties.from(Blocks.WET_SPONGE)));
+			() -> new BurnedOutLavaSpongeBlock(Block.Properties.copy(Blocks.WET_SPONGE)));
 
 	public static final RegistryObject<Block> SILVER_PORTAL_FRAME = BLOCKS.register("silver_portal_frame",
-			() -> new SilverPortalFrameBlock(Block.Properties.create(Material.ROCK, MaterialColor.BLACK)
-					.hardnessAndResistance(50.0f, 200.0f).sound(SoundType.STONE).harvestLevel(3)));
+			() -> new SilverPortalFrameBlock(Block.Properties.of(Material.STONE, MaterialColor.COLOR_BLACK)
+					.strength(50.0f, 200.0f).sound(SoundType.STONE).harvestLevel(3)));
 
 	public static final RegistryObject<Block> BEAMER = BLOCKS.register("beamer",
-			() -> new BeamerBlock(Block.Properties.from(Blocks.STONE)));
+			() -> new BeamerBlock(Block.Properties.copy(Blocks.STONE)));
 
 	public static final RegistryObject<Block> PATROLPOINT = BLOCKS.register("patrolpoint",
-			() -> new PatrolPointBlock(Block.Properties.from(Blocks.STONE)));
+			() -> new PatrolPointBlock(Block.Properties.copy(Blocks.STONE)));
 
 	public static <T extends Block> RegistryObject<Block> registerCutout(String key, Supplier<T> block) {
 		RegistryObject<Block> temp = BLOCKS.register(key, block);

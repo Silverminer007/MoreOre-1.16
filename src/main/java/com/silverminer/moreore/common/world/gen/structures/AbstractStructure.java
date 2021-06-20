@@ -17,7 +17,6 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.settings.StructureSeparationSettings;
 
 public abstract class AbstractStructure<C extends IFeatureConfig> extends Structure<C> {
 	protected static final Logger LOGGER = LogManager.getLogger(AbstractStructure.class);
@@ -32,7 +31,7 @@ public abstract class AbstractStructure<C extends IFeatureConfig> extends Struct
 	}
 
 	@Override
-	public String getStructureName() {
+	public String getFeatureName() {
 		return new ResourceLocation(MoreOre.MODID, this.name).toString();
 	}
 
@@ -43,10 +42,10 @@ public abstract class AbstractStructure<C extends IFeatureConfig> extends Struct
 		int xStart = (chunkX << 4);
 		int zStart = (chunkZ << 4);
 
-		int i1 = generator.getHeight(xStart, zStart, Heightmap.Type.WORLD_SURFACE_WG);
-		int j1 = generator.getHeight(xStart, zStart + offset, Heightmap.Type.WORLD_SURFACE_WG);
-		int k1 = generator.getHeight(xStart + offset, zStart, Heightmap.Type.WORLD_SURFACE_WG);
-		int l1 = generator.getHeight(xStart + offset, zStart + offset, Heightmap.Type.WORLD_SURFACE_WG);
+		int i1 = generator.getBaseHeight(xStart, zStart, Heightmap.Type.WORLD_SURFACE_WG);
+		int j1 = generator.getBaseHeight(xStart, zStart + offset, Heightmap.Type.WORLD_SURFACE_WG);
+		int k1 = generator.getBaseHeight(xStart + offset, zStart, Heightmap.Type.WORLD_SURFACE_WG);
+		int l1 = generator.getBaseHeight(xStart + offset, zStart + offset, Heightmap.Type.WORLD_SURFACE_WG);
 		int minHeight = Math.min(Math.min(i1, j1), Math.min(k1, l1));
 		int maxHeight = Math.max(Math.max(i1, j1), Math.max(k1, l1));
 
@@ -66,14 +65,14 @@ public abstract class AbstractStructure<C extends IFeatureConfig> extends Struct
 	public abstract double getSpawnChance();
 
 	@Override
-	protected boolean func_230363_a_(ChunkGenerator generator, BiomeProvider provider, long seed, SharedSeedRandom rand,
+	protected boolean isFeatureChunk(ChunkGenerator generator, BiomeProvider provider, long seed, SharedSeedRandom rand,
 			int chunkX, int chunkZ, Biome biome, ChunkPos pos, C config) {
 		if (isSurfaceFlat(generator, chunkX, chunkZ)) {
 
 			// Check the entire size of the structure to see if it's all a viable biome:
-			for (Biome biome1 : provider.getBiomes(chunkX * 16 + 9, generator.getGroundHeight(), chunkZ * 16 + 9,
+			for (Biome biome1 : provider.getBiomesWithin(chunkX * 16 + 9, generator.getGenDepth(), chunkZ * 16 + 9,
 					getSize() * 16)) {
-				if (!biome1.getGenerationSettings().hasStructure(this)) {
+				if (!biome1.getGenerationSettings().isValidStart(this)) {
 					return false;
 				}
 			}
@@ -88,27 +87,11 @@ public abstract class AbstractStructure<C extends IFeatureConfig> extends Struct
 		return false;
 	}
 
-	@Override
-	public ChunkPos getChunkPosForStructure(StructureSeparationSettings settings, long seed,
-			SharedSeedRandom sharedSeedRand, int x, int z) {
-		int spacing = this.getDistance();
-		int separation = this.getSeparation();
+	public boolean isEndStructure() {
+		return false;
+	}
 
-		int k = Math.floorDiv(x, spacing);
-		int l = Math.floorDiv(z, spacing);
-
-		sharedSeedRand.setLargeFeatureSeedWithSalt(seed, k, l, getSeedModifier());
-
-		int i1;
-		int j1;
-		if (this.func_230365_b_()) {
-			i1 = sharedSeedRand.nextInt(spacing - separation);
-			j1 = sharedSeedRand.nextInt(spacing - separation);
-		} else {
-			i1 = (sharedSeedRand.nextInt(spacing - separation) + sharedSeedRand.nextInt(spacing - separation)) / 2;
-			j1 = (sharedSeedRand.nextInt(spacing - separation) + sharedSeedRand.nextInt(spacing - separation)) / 2;
-		}
-
-		return new ChunkPos(k * spacing + i1, l * spacing + j1);
+	public boolean isNetherStructure() {
+		return false;
 	}
 }

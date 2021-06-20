@@ -33,7 +33,7 @@ public final class Utils {
 
 		BlockPos directionVec = to.subtract(from);
 
-		return Direction.getFacingFromVector(directionVec.getX(), directionVec.getY(), directionVec.getZ());
+		return Direction.fromNormal(directionVec.getX(), directionVec.getY(), directionVec.getZ());
 	}
 
 	/**
@@ -64,8 +64,8 @@ public final class Utils {
 	 */
 	public static boolean teleportTo(Entity entity, RegistryKey<World> dimension, BlockPos destination,
 			@Nullable MinecraftServer server) {
-		if (entity == null || dimension == null || destination == null || entity.isBeingRidden()
-				|| entity.isOnePlayerRiding() || !entity.isNonBoss())
+		if (entity == null || dimension == null || destination == null || entity.isVehicle()
+				|| entity.isPassenger() || !entity.canChangeDimensions())
 			return false;
 
 		if (server == null)
@@ -73,17 +73,17 @@ public final class Utils {
 		if (server == null)
 			return false;
 		ServerPlayerEntity player = (entity instanceof ServerPlayerEntity) ? (ServerPlayerEntity) entity : null;
-		boolean interdimensional = (entity.world.getDimensionKey() != dimension);
-		entity.setMotion(Vector3d.ZERO);
+		boolean interdimensional = (entity.level.dimension() != dimension);
+		entity.setDeltaMovement(Vector3d.ZERO);
 
 		if (interdimensional) {
 			return teleportEntityToDimension(server, entity, dimension, destination);
 		} else if (player != null) {
-			player.connection.setPlayerLocation(destination.getX() + 0.5d, destination.getY(),
+			player.connection.teleport(destination.getX() + 0.5d, destination.getY(),
 					destination.getZ() + 0.5d, 0.0F, 0.0F);
-			player.connection.sendPacket(new SPlaySoundEventPacket(1032, BlockPos.ZERO, 0, false));
+			player.connection.send(new SPlaySoundEventPacket(1032, BlockPos.ZERO, 0, false));
 		} else {
-			entity.setLocationAndAngles(destination.getX() + 0.5d, destination.getY(), destination.getZ() + 0.5d, 0.0F,
+			entity.moveTo(destination.getX() + 0.5d, destination.getY(), destination.getZ() + 0.5d, 0.0F,
 					0.0F);
 		}
 		return true;
@@ -92,16 +92,16 @@ public final class Utils {
 	private static boolean teleportEntityToDimension(MinecraftServer server, Entity entity,
 			RegistryKey<World> destinationDimension, BlockPos destination) {
 		if (destinationDimension == null || server == null || entity == null || destination == null
-				|| server.getWorld(destinationDimension) == null) {
+				|| server.getLevel(destinationDimension) == null) {
 			return false;
 		}
 		try {
-			entity.changeDimension(server.getWorld(destinationDimension), new ITeleporter() {
+			entity.changeDimension(server.getLevel(destinationDimension), new ITeleporter() {
 				@Override
 				public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw,
 						Function<Boolean, Entity> repositionEntity) {
 					Entity repositionedEntity = repositionEntity.apply(false);
-					repositionedEntity.setPositionAndUpdate(destination.getX(), destination.getY(), destination.getZ());
+					repositionedEntity.moveTo(destination.getX(), destination.getY(), destination.getZ());
 					return repositionedEntity;
 				}
 			});

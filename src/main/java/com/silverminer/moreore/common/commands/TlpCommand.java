@@ -39,31 +39,31 @@ public class TlpCommand {
 	public static void register(CommandDispatcher<CommandSource> dispatcher) {
 		LiteralCommandNode<CommandSource> literalcommandnode = dispatcher
 				.register(Commands.literal("teleportieren").requires((source) -> {
-					return source.hasPermissionLevel(0);
+					return source.hasPermission(0);
 				}).then(Commands.argument("targets", EntityArgument.entities())
 						.then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
 							return teleportToPos(command.getSource(), EntityArgument.getEntities(command, "targets"),
-									command.getSource().getWorld(), Vec3Argument.getLocation(command, "location"),
+									command.getSource().getLevel(), Vec3Argument.getCoordinates(command, "location"),
 									(ILocationArgument) null);
 						}).then(Commands.argument("rotation", RotationArgument.rotation()).executes((command) -> {
 							return teleportToPos(command.getSource(), EntityArgument.getEntities(command, "targets"),
-									command.getSource().getWorld(), Vec3Argument.getLocation(command, "location"),
+									command.getSource().getLevel(), Vec3Argument.getCoordinates(command, "location"),
 									RotationArgument.getRotation(command, "rotation"));
 						}))).then(Commands.argument("destination", EntityArgument.entity()).executes((command) -> {
 							return teleportToEntity(command.getSource(), EntityArgument.getEntities(command, "targets"),
 									EntityArgument.getEntity(command, "destination"));
 						}))).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
 							return teleportToPos(command.getSource(),
-									Collections.singleton(command.getSource().assertIsEntity()),
-									command.getSource().getWorld(), Vec3Argument.getLocation(command, "location"),
+									Collections.singleton(command.getSource().getEntity()),
+									command.getSource().getLevel(), Vec3Argument.getCoordinates(command, "location"),
 									LocationInput.current());
 						})).then(Commands.argument("destination", EntityArgument.entity()).executes((command) -> {
 							return teleportToEntity(command.getSource(),
-									Collections.singleton(command.getSource().assertIsEntity()),
+									Collections.singleton(command.getSource().getEntity()),
 									EntityArgument.getEntity(command, "destination"));
 						})));
 		dispatcher.register(Commands.literal("tlp").requires((source) -> {
-			return source.hasPermissionLevel(0);
+			return source.hasPermission(0);
 		}).redirect(literalcommandnode));
 	}
 
@@ -75,25 +75,25 @@ public class TlpCommand {
 		int neededLevels = targets.size() * 3;
 		if (level < neededLevels && !((ServerPlayerEntity) source.getEntity()).isCreative()) {
 			if (targets.size() == 1) {
-				source.sendFeedback(new TranslationTextComponent("commands.tlp.failed.entity.notEnoughLevel.single",
+				source.sendSuccess(new TranslationTextComponent("commands.tlp.failed.entity.notEnoughLevel.single",
 						targets.iterator().next().getDisplayName(), destination.getDisplayName()), true);
 			} else {
-				source.sendFeedback(new TranslationTextComponent("commands.tlp.failed.entity.notEnoughLevel.multiple",
+				source.sendSuccess(new TranslationTextComponent("commands.tlp.failed.entity.notEnoughLevel.multiple",
 						targets.size(), destination.getDisplayName()), true);
 			}
 			return 0;
 		}
 		for (Entity entity : targets) {
-			teleport(source, entity, (ServerWorld) destination.world, destination.getPosX(), destination.getPosY(),
-					destination.getPosZ(), EnumSet.noneOf(SPlayerPositionLookPacket.Flags.class),
-					destination.rotationYaw, destination.rotationPitch);
+			teleport(source, entity, (ServerWorld) destination.level, destination.getX(), destination.getY(),
+					destination.getZ(), EnumSet.noneOf(SPlayerPositionLookPacket.Flags.class),
+					destination.yRot, destination.xRot);
 		}
 
 		if (targets.size() == 1) {
-			source.sendFeedback(new TranslationTextComponent("commands.teleport.success.entity.single",
+			source.sendSuccess(new TranslationTextComponent("commands.teleport.success.entity.single",
 					targets.iterator().next().getDisplayName(), destination.getDisplayName()), true);
 		} else {
-			source.sendFeedback(new TranslationTextComponent("commands.teleport.success.entity.multiple",
+			source.sendSuccess(new TranslationTextComponent("commands.teleport.success.entity.multiple",
 					targets.size(), destination.getDisplayName()), true);
 		}
 
@@ -136,10 +136,10 @@ public class TlpCommand {
 		int neededLevels = targets.size() * 3;
 		if (level < neededLevels && !((ServerPlayerEntity) source.getEntity()).isCreative()) {
 			if (targets.size() == 1) {
-				source.sendFeedback(new TranslationTextComponent("commands.tlp.failed.location.notEnoughLevel.single",
+				source.sendSuccess(new TranslationTextComponent("commands.tlp.failed.location.notEnoughLevel.single",
 						targets.iterator().next().getDisplayName(), vec3d.x, vec3d.y, vec3d.z), true);
 			} else {
-				source.sendFeedback(new TranslationTextComponent("commands.tlp.failed.location.notEnoughLevel.multiple",
+				source.sendSuccess(new TranslationTextComponent("commands.tlp.failed.location.notEnoughLevel.multiple",
 						targets.size(), vec3d.x, vec3d.y, vec3d.z), true);
 			}
 			return 0;
@@ -147,18 +147,18 @@ public class TlpCommand {
 
 		for (Entity entity : targets) {
 			if (rotationIn == null) {
-				teleport(source, entity, worldIn, vec3d.x, vec3d.y, vec3d.z, set, entity.rotationYaw,
-						entity.rotationPitch);
+				teleport(source, entity, worldIn, vec3d.x, vec3d.y, vec3d.z, set, entity.yRot,
+						entity.xRot);
 			} else {
 				teleport(source, entity, worldIn, vec3d.x, vec3d.y, vec3d.z, set, vec2f.y, vec2f.x);
 			}
 		}
 
 		if (targets.size() == 1) {
-			source.sendFeedback(new TranslationTextComponent("commands.teleport.success.location.single",
+			source.sendSuccess(new TranslationTextComponent("commands.teleport.success.location.single",
 					targets.iterator().next().getDisplayName(), vec3d.x, vec3d.y, vec3d.z), true);
 		} else {
-			source.sendFeedback(new TranslationTextComponent("commands.teleport.success.location.multiple",
+			source.sendSuccess(new TranslationTextComponent("commands.teleport.success.location.multiple",
 					targets.size(), vec3d.x, vec3d.y, vec3d.z), true);
 		}
 
@@ -169,7 +169,7 @@ public class TlpCommand {
 			double z, Set<SPlayerPositionLookPacket.Flags> relativeList, float yaw, float pitch)
 			throws CommandSyntaxException {
 		BlockPos blockpos = new BlockPos(x, y, z);
-		if (!World.isInvalidPosition(blockpos)) {
+		if (!World.isInWorldBounds(blockpos)) {
 			throw INVALID_POS_EXCEPTION.create();
 		} else {
 			if (source.getEntity() instanceof ServerPlayerEntity) {
@@ -177,7 +177,7 @@ public class TlpCommand {
 				boolean allowteleport = false;
 				if (!player.isCreative()) {
 					if (player.experienceLevel >= 3) {
-						((ServerPlayerEntity) source.getEntity()).addExperienceLevel(-3);
+						((ServerPlayerEntity) source.getEntity()).giveExperienceLevels(-3);
 						allowteleport = true;
 					} else
 						allowteleport = false;
@@ -186,39 +186,39 @@ public class TlpCommand {
 				if (allowteleport) {
 					if (entityIn instanceof ServerPlayerEntity) {
 						ChunkPos chunkpos = new ChunkPos(new BlockPos(x, y, z));
-						worldIn.getChunkProvider().registerTicket(TicketType.POST_TELEPORT, chunkpos, 1,
-								entityIn.getEntityId());
+						worldIn.getChunkSource().registerTickingTicket(TicketType.POST_TELEPORT, chunkpos, 1,
+								entityIn.getId());
 						entityIn.stopRiding();
 						if (((ServerPlayerEntity) entityIn).isSleeping()) {
 							((ServerPlayerEntity) entityIn).stopSleepInBed(true, true);
 						}
 
-						if (worldIn == entityIn.world) {
-							((ServerPlayerEntity) entityIn).connection.setPlayerLocation(x, y, z, yaw, pitch,
+						if (worldIn == entityIn.level) {
+							((ServerPlayerEntity) entityIn).connection.teleport(x, y, z, yaw, pitch,
 									relativeList);
 						} else {
-							((ServerPlayerEntity) entityIn).teleport(worldIn, x, y, z, yaw, pitch);
+							((ServerPlayerEntity) entityIn).teleportTo(worldIn, x, y, z, yaw, pitch);
 						}
 
-						entityIn.setRotationYawHead(yaw);
+						entityIn.setYBodyRot(yaw);
 					} else {
 						float f1 = MathHelper.wrapDegrees(yaw);
 						float f = MathHelper.wrapDegrees(pitch);
 						f = MathHelper.clamp(f, -90.0F, 90.0F);
-						if (worldIn == entityIn.world) {
-							entityIn.setLocationAndAngles(x, y, z, f1, f);
-							entityIn.setRotationYawHead(f1);
+						if (worldIn == entityIn.level) {
+							entityIn.moveTo(x, y, z, f1, f);
+							entityIn.setYBodyRot(f1);
 						} else {
-							entityIn.detach();
+							entityIn.unRide();
 							Entity entity = entityIn;
 							entityIn = entityIn.getType().create(worldIn);
 							if (entityIn == null) {
 								return;
 							}
 
-							entityIn.copyDataFromOld(entity);
-							entityIn.setLocationAndAngles(x, y, z, f1, f);
-							entityIn.setRotationYawHead(f1);
+							entityIn.restoreFrom(entity);
+							entityIn.moveTo(x, y, z, f1, f);
+							entityIn.setYBodyRot(f1);
 							worldIn.addFromAnotherDimension(entityIn);
 						}
 					}

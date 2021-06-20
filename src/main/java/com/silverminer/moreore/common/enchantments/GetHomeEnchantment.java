@@ -15,26 +15,26 @@ public class GetHomeEnchantment extends Enchantment {
 		super(rarityIn, typeIn, slots);
 	}
 
-	public int getMinEnchantability(int enchantmentLevel) {
+	public int getMinCost(int enchantmentLevel) {
 		return 15 + (enchantmentLevel - 1) * 9;
 	}
 
-	public int getMaxEnchantability(int enchantmentLevel) {
-		return super.getMinEnchantability(enchantmentLevel) + 50;
+	public int getMaxCost(int enchantmentLevel) {
+		return super.getMinCost(enchantmentLevel) + 50;
 	}
 
 	public int getMaxLevel() {
 		return 1;
 	}
 
-	public boolean canApplyTogether(Enchantment ench) {
-		return super.canApplyTogether(ench);
+	public boolean checkCompatibility(Enchantment ench) {
+		return super.checkCompatibility(ench);
 	}
 
 	public void onEntityDamaged(LivingEntity user, Entity target, int level) {
 		if (user instanceof ServerPlayerEntity) {
 			ServerPlayerEntity player = (ServerPlayerEntity) user;
-			Utils.teleportTo(player, player.getEntityWorld().getDimensionKey(), player.func_241140_K_(), null);
+			Utils.teleportTo(player, player.getLevel().dimension(), player.getRespawnPosition(), null);
 		}
 	}
 }

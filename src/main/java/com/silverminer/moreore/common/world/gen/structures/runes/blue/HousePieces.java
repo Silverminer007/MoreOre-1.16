@@ -9,10 +9,8 @@ import com.silverminer.moreore.common.world.gen.structures.ColorStructurePiece;
 import com.silverminer.moreore.common.world.gen.structures.MoreoreStructurePieceType;
 import com.silverminer.moreore.util.structures.config.Config;
 
-import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ChestTileEntity;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.LockableLootTileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -46,32 +44,17 @@ public class HousePieces {
 
 		@Override
 		public StructureProcessor getProcessor() {
-			return BlockIgnoreStructureProcessor.AIR_AND_STRUCTURE_BLOCK;
+			return BlockIgnoreStructureProcessor.STRUCTURE_AND_AIR;
 		}
 
 		@Override
 		protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand,
 				MutableBoundingBox sbb) {
-			if (Config.STRUCTURES.BLUE_RUNE.LOOT_CHANCE.get() > rand.nextDouble()) {
-				if (function.equals("chest")) {
-					worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
-					TileEntity tileentity = worldIn.getTileEntity(pos.down());
-					if (tileentity instanceof ChestTileEntity) {
-						((ChestTileEntity) tileentity).setLootTable(MoreoreLootTables.BLUE_HOUSE, rand.nextLong());
-					}
-				}
-				if (function.equals("chest_2")) {
-					worldIn.setBlockState(pos, Blocks.GLASS.getDefaultState(), 3);
-					TileEntity tileentity = worldIn.getTileEntity(pos.down());
-					if (tileentity instanceof ChestTileEntity) {
-						((ChestTileEntity) tileentity).setLootTable(MoreoreLootTables.BLUE_HOUSE_2, rand.nextLong());
-					}
-					tileentity = worldIn.getTileEntity(pos.down(2));
-					if (tileentity instanceof ChestTileEntity) {
-						((ChestTileEntity) tileentity).setLootTable(MoreoreLootTables.BLUE_HOUSE_2, rand.nextLong());
-					}
-				}
-			}
+			boolean loot = Config.STRUCTURES.BLUE_RUNE.LOOT_CHANCE.get() > rand.nextDouble();
+				LockableLootTileEntity.setLootTable(worldIn, rand, pos.below(1),
+						loot ? function.equals("chest") ? MoreoreLootTables.BLUE_HOUSE : function.equals("chest_2") ? MoreoreLootTables.BLUE_HOUSE_2 : MoreoreLootTables.EMPTY : MoreoreLootTables.EMPTY);
+				LockableLootTileEntity.setLootTable(worldIn, rand, pos.below(2),
+						loot ? function.equals("chest") ? MoreoreLootTables.BLUE_HOUSE : function.equals("chest_2") ? MoreoreLootTables.BLUE_HOUSE_2 : MoreoreLootTables.EMPTY : MoreoreLootTables.EMPTY);
 		}
 
 		@Override

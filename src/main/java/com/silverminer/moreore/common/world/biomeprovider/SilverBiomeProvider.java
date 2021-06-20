@@ -17,7 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class SilverBiomeProvider extends BiomeProvider {
 
 	public static final Codec<SilverBiomeProvider> CODEC = RecordCodecBuilder.create((biomeProvider) -> {
-		return biomeProvider.group(Biome.BIOMES_CODEC.fieldOf("biomes").forGetter((provider) -> {
+		return biomeProvider.group(Biome.LIST_CODEC.fieldOf("biomes").forGetter((provider) -> {
 			return provider.biomes;
 		}), Codec.intRange(0, 62).fieldOf("biome_size").orElse(30).forGetter((provider) -> {
 			return provider.biomeSize;
@@ -54,12 +54,12 @@ public class SilverBiomeProvider extends BiomeProvider {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public BiomeProvider getBiomeProvider(long seed) {
+	public BiomeProvider withSeed(long seed) {
 		return this;
 	}
 
 	@Override
-	protected Codec<? extends BiomeProvider> getBiomeProviderCodec() {
+	protected Codec<? extends BiomeProvider> codec() {
 		return CODEC;
 	}
 }

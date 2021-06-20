@@ -36,12 +36,12 @@ public class BananaTreeDecorator extends TreeDecorator {
 	}
 
 	@Override
-	protected TreeDecoratorType<?> func_230380_a_() {
+	protected TreeDecoratorType<?> type() {
 		return TreeDecotratorInit.BANANA.get();
 	}
 
 	@Override
-	public void func_225576_a_(ISeedReader seedReader, Random random, List<BlockPos> positions1,
+	public void place(ISeedReader seedReader, Random random, List<BlockPos> positions1,
 			List<BlockPos> positions2, Set<BlockPos> positions3, MutableBoundingBox boundingbox) {
 		if (!(random.nextFloat() >= this.probability)) {
 			int i = positions1.get(0).getY();
@@ -51,12 +51,12 @@ public class BananaTreeDecorator extends TreeDecorator {
 				for (Direction direction : Direction.Plane.HORIZONTAL) {
 					if (random.nextFloat() <= 0.25F) {
 						Direction direction1 = direction.getOpposite();
-						BlockPos blockpos = pos.add(direction1.getXOffset(), 0, direction1.getZOffset());
-						if (Feature.isAirAt(seedReader, blockpos)) {
-							BlockState blockstate = BiologicBlocks.BANANA.get().getDefaultState()
-									.with(BananaBlock.AGE, random.nextInt(3))
-									.with(BananaBlock.HORIZONTAL_FACING, Direction.Plane.HORIZONTAL.random(random));
-							this.func_227423_a_(seedReader, blockpos, blockstate, positions3, boundingbox);
+						BlockPos blockpos = pos.offset(direction1.getStepX(), 0, direction1.getStepZ());
+						if (Feature.isAir(seedReader, blockpos)) {
+							BlockState blockstate = BiologicBlocks.BANANA.get().defaultBlockState()
+									.setValue(BananaBlock.AGE, random.nextInt(3))
+									.setValue(BananaBlock.FACING, Direction.Plane.HORIZONTAL.getRandomDirection(random));
+							this.setBlock(seedReader, blockpos, blockstate, positions3, boundingbox);
 						}
 					}
 				}

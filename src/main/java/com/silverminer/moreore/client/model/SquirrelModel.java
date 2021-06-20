@@ -32,145 +32,145 @@ public class SquirrelModel<T extends SquirrelEntity> extends AgeableModel<T> {
 	private final ModelRenderer tail3;
 
 	public SquirrelModel() {
-		textureWidth = 64;
-		textureHeight = 64;
+		texWidth = 64;
+		texHeight = 64;
 
 		body = new ModelRenderer(this);
-		body.setRotationPoint(0.0F, 24.0F, 0.0F);
+		body.setPos(0.0F, 24.0F, 0.0F);
 		setRotationAngle(body, 0.0F, 3.1416F, 0.0F);
 
 		belly = new ModelRenderer(this);
-		belly.setRotationPoint(-4.0F, -2.0F, 0.0F);
+		belly.setPos(-4.0F, -2.0F, 0.0F);
 		body.addChild(belly);
-		belly.setTextureOffset(0, 0).addBox(-4.0F, -6.0F, 0.0F, 8.0F, 6.0F, 12.0F, 0.0F, false);
+		belly.setTexSize(0, 0).addBox(-4.0F, -6.0F, 0.0F, 8.0F, 6.0F, 12.0F, 0.0F, false);
 
 		legs = new ModelRenderer(this);
-		legs.setRotationPoint(-2.0F, 0.0F, 4.0F);
+		legs.setPos(-2.0F, 0.0F, 4.0F);
 		belly.addChild(legs);
 
 		legsBack = new ModelRenderer(this);
-		legsBack.setRotationPoint(2.0F, -1.0F, -3.0F);
+		legsBack.setPos(2.0F, -1.0F, -3.0F);
 		legs.addChild(legsBack);
-		legsBack.setTextureOffset(26, 18).addBox(1.8F, -1.0F, -0.8F, 2.0F, 4.0F, 2.0F, 0.0F, false);
-		legsBack.setTextureOffset(18, 18).addBox(-3.8F, -1.0F, -0.8F, 2.0F, 4.0F, 2.0F, 0.0F, false);
+		legsBack.setTexSize(26, 18).addBox(1.8F, -1.0F, -0.8F, 2.0F, 4.0F, 2.0F, 0.0F, false);
+		legsBack.setTexSize(18, 18).addBox(-3.8F, -1.0F, -0.8F, 2.0F, 4.0F, 2.0F, 0.0F, false);
 
 		legsFront = new ModelRenderer(this);
-		legsFront.setRotationPoint(2.0F, -1.0F, 7.0F);
+		legsFront.setPos(2.0F, -1.0F, 7.0F);
 		legs.addChild(legsFront);
-		legsFront.setTextureOffset(0, 6).addBox(1.8F, -1.0F, -1.2F, 2.0F, 4.0F, 2.0F, 0.0F, false);
-		legsFront.setTextureOffset(0, 0).addBox(-3.8F, -1.0F, -1.2F, 2.0F, 4.0F, 2.0F, 0.0F, false);
+		legsFront.setTexSize(0, 6).addBox(1.8F, -1.0F, -1.2F, 2.0F, 4.0F, 2.0F, 0.0F, false);
+		legsFront.setTexSize(0, 0).addBox(-3.8F, -1.0F, -1.2F, 2.0F, 4.0F, 2.0F, 0.0F, false);
 
 		head = new ModelRenderer(this);
-		head.setRotationPoint(-4.0F, -7.0F, 12.0F);
+		head.setPos(-4.0F, -7.0F, 12.0F);
 		body.addChild(head);
-		head.setTextureOffset(0, 30).addBox(-3.0F, -5.0F, -1.0F, 6.0F, 6.0F, 6.0F, 0.0F, false);
+		head.setTexSize(0, 30).addBox(-3.0F, -5.0F, -1.0F, 6.0F, 6.0F, 6.0F, 0.0F, false);
 
 		ears = new ModelRenderer(this);
-		ears.setRotationPoint(0.0F, -4.0F, 1.0F);
+		ears.setPos(0.0F, -4.0F, 1.0F);
 		head.addChild(ears);
-		ears.setTextureOffset(8, 4).addBox(-2.8F, -3.0F, -1.0F, 0.0F, 4.0F, 2.0F, 0.0F, false);
-		ears.setTextureOffset(8, 0).addBox(2.8F, -3.0F, -1.0F, 0.0F, 4.0F, 2.0F, 0.0F, false);
+		ears.setTexSize(8, 4).addBox(-2.8F, -3.0F, -1.0F, 0.0F, 4.0F, 2.0F, 0.0F, false);
+		ears.setTexSize(8, 0).addBox(2.8F, -3.0F, -1.0F, 0.0F, 4.0F, 2.0F, 0.0F, false);
 
 		tail = new ModelRenderer(this);
-		tail.setRotationPoint(-4.0F, -8.0F, 0.0F);
+		tail.setPos(-4.0F, -8.0F, 0.0F);
 		body.addChild(tail);
 
 		tail1 = new ModelRenderer(this);
-		tail1.setRotationPoint(0.0F, 0.0F, 0.0F);
+		tail1.setPos(0.0F, 0.0F, 0.0F);
 		tail.addChild(tail1);
 		setRotationAngle(tail1, 0.1745F, 0.0F, 0.0F);
-		tail1.setTextureOffset(28, 0).addBox(-3.0F, -5.0F, -5.0F, 6.0F, 6.0F, 6.0F, 0.0F, false);
+		tail1.setTexSize(28, 0).addBox(-3.0F, -5.0F, -5.0F, 6.0F, 6.0F, 6.0F, 0.0F, false);
 
 		tail2 = new ModelRenderer(this);
-		tail2.setRotationPoint(0.0F, -4.0F, 0.0F);
+		tail2.setPos(0.0F, -4.0F, 0.0F);
 		tail1.addChild(tail2);
 		setRotationAngle(tail2, -0.1745F, 0.0F, 0.0F);
-		tail2.setTextureOffset(18, 24).addBox(-3.0F, -7.0F, -5.0F, 6.0F, 6.0F, 6.0F, 0.0F, false);
+		tail2.setTexSize(18, 24).addBox(-3.0F, -7.0F, -5.0F, 6.0F, 6.0F, 6.0F, 0.0F, false);
 
 		tail3 = new ModelRenderer(this);
-		tail3.setRotationPoint(0.0F, -6.0F, 0.0F);
+		tail3.setPos(0.0F, -6.0F, 0.0F);
 		tail2.addChild(tail3);
 		setRotationAngle(tail3, -0.1309F, 0.0F, 0.0436F);
 
 		part_r1 = new ModelRenderer(this);
-		part_r1.setRotationPoint(0.0F, -1.0F, 0.5F);
+		part_r1.setPos(0.0F, -1.0F, 0.5F);
 		tail3.addChild(part_r1);
 		setRotationAngle(part_r1, 0.0F, 0.0F, -0.0436F);
-		part_r1.setTextureOffset(0, 18).addBox(-3.0F, -6.0F, -5.5F, 6.0F, 6.0F, 6.0F, 0.0F, false);
+		part_r1.setTexSize(0, 18).addBox(-3.0F, -6.0F, -5.5F, 6.0F, 6.0F, 6.0F, 0.0F, false);
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red,
+	public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red,
 			float green, float blue, float alpha) {
-		float bodyScale = this.isChild ? 4.0F : 2.0F;
-		matrixStack.push();
+		float bodyScale = this.young ? 4.0F : 2.0F;
+		matrixStack.pushPose();
 		float f1 = 1.0F / bodyScale;
 		matrixStack.scale(f1, f1, f1);
-		matrixStack.translate(0.0D, this.isChild ? 4.5D : 1.5D, 0.0D);
-		this.getBodyParts().forEach((modelRenderer) -> {
+		matrixStack.translate(0.0D, this.young ? 4.5D : 1.5D, 0.0D);
+		this.bodyParts().forEach((modelRenderer) -> {
 			modelRenderer.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 		});
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-		modelRenderer.rotateAngleX = x;
-		modelRenderer.rotateAngleY = y;
-		modelRenderer.rotateAngleZ = z;
+		modelRenderer.xRot = x;
+		modelRenderer.yRot = y;
+		modelRenderer.zRot = z;
 	}
 
 	@Override
-	protected Iterable<ModelRenderer> getHeadParts() {
+	protected Iterable<ModelRenderer> headParts() {
 		return ImmutableList.of();
 	}
 
 	@Override
-	protected Iterable<ModelRenderer> getBodyParts() {
+	protected Iterable<ModelRenderer> bodyParts() {
 		return ImmutableList.of(this.body);
 	}
 
 	@Override
-	public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks,
+	public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks,
 			float netHeadYaw, float headPitch) {
 		if (entityIn.isNormal()) {
-			this.tail.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount + 0.3F;
-			this.tail1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F - (float) Math.PI) * 0.5F * limbSwingAmount;
-			this.tail2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount;
-			this.legsBack.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-			this.legsFront.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F
+			this.tail.xRot = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount + 0.3F;
+			this.tail1.xRot = MathHelper.cos(limbSwing * 0.6662F - (float) Math.PI) * 0.5F * limbSwingAmount;
+			this.tail2.xRot = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount;
+			this.legsBack.xRot = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+			this.legsFront.xRot = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F
 					* limbSwingAmount;
-			this.head.rotateAngleX = headPitch * ((float) Math.PI / 180F) * 0.2F;
-			this.head.rotateAngleY = netHeadYaw * ((float) Math.PI / 180F);
-			this.body.rotateAngleX = 0.0F;
+			this.head.xRot = headPitch * ((float) Math.PI / 180F) * 0.2F;
+			this.head.xRot = netHeadYaw * ((float) Math.PI / 180F);
+			this.body.xRot = 0.0F;
 		}
 	}
 
 	public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
-		body.setRotationPoint(0.0F, 24.0F, 0.0F);
+		body.setPos(0.0F, 24.0F, 0.0F);
 		if (entityIn.isSitting()) {
 			setRotationAngle(this.body, (float) Math.PI / 5F, (float) Math.PI, 0.0F);
 			setRotationAngle(this.head, -0.9163F, 0.0F, 0.0F);
-			this.legsBack.rotateAngleX = -(float) Math.PI / 5F;
-			this.legsFront.rotateAngleX = (float) Math.PI / 4F;
-			this.tail.rotateAngleX = -0.3927F;
-			this.tail1.rotateAngleX = 0.1745F;
-			this.tail2.rotateAngleX = -0.1745F;
+			this.legsBack.xRot = -(float) Math.PI / 5F;
+			this.legsFront.xRot = (float) Math.PI / 4F;
+			this.tail.xRot = -0.3927F;
+			this.tail1.xRot = 0.1745F;
+			this.tail2.xRot = -0.1745F;
 		} else if (entityIn.isBesideClimbableBlock()) {
-			this.tail.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount + 0.3F;
-			this.tail1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F - (float) Math.PI) * 0.5F * limbSwingAmount;
-			this.tail2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount;
-			this.legsBack.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-			this.legsFront.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F
+			this.tail.xRot = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount + 0.3F;
+			this.tail1.xRot = MathHelper.cos(limbSwing * 0.6662F - (float) Math.PI) * 0.5F * limbSwingAmount;
+			this.tail2.xRot = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount;
+			this.legsBack.xRot = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+			this.legsFront.xRot = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F
 					* limbSwingAmount;
-			this.head.rotateAngleX = 0.0F;
-			this.head.rotateAngleY = 0.0F;
+			this.head.xRot = 0.0F;
+			this.head.yRot = 0.0F;
 /*			if (entityIn.getNearestDirection() == Direction.UP) {
-				body.setRotationPoint(0.0F, 10.0F, 0.0F);
-				body.rotateAngleX = (float) Math.PI;
+				body.setPos(0.0F, 10.0F, 0.0F);
+				body.xRot = (float) Math.PI;
 			} else if (entityIn.getNearestDirection() == Direction.DOWN) {
 				setRotationAngle(this.body, 0.0F, (float) Math.PI, 0.0F);
 			} else {
-				this.body.rotateAngleX = (float) Math.PI / -2.0F;
+				this.body.xRot = (float) Math.PI / -2.0F;
 			}*/
 		}
 	}

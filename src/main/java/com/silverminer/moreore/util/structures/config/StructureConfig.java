@@ -164,7 +164,7 @@ public class StructureConfig {
 			if(blacklist == null) {
 				blacklist = new ArrayList<String>();
 				ForgeRegistries.BIOMES.forEach(biome -> {
-					if(biome.getCategory() == Category.OCEAN && biome.getTemperature() >= 0.3F) {
+					if(biome.getBiomeCategory() == Category.OCEAN && biome.getBaseTemperature() >= 0.3F) {
 						blacklist.add(biome.getRegistryName().toString());
 					}
 				});
@@ -191,7 +191,7 @@ public class StructureConfig {
 
 		for (Biome biome : ForgeRegistries.BIOMES.getValues()) {
 			for (Biome.Category category : categories) {
-				if (biome.getCategory() == category) {
+				if (biome.getBiomeCategory() == category) {
 					biomes.add(Objects.requireNonNull(biome.getRegistryName()).toString());
 				}
 			}

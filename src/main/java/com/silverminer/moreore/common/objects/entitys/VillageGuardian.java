@@ -68,9 +68,9 @@ public class VillageGuardian extends AnimalEntity {
 	}
 
 	@Override
-	public AgeableEntity func_241840_a(ServerWorld worldIn, AgeableEntity ageable) {
+	public AgeableEntity getBreedOffspring(ServerWorld worldIn, AgeableEntity ageable) {
 		VillageGuardian entity = new VillageGuardian(ModEntityTypesInit.VILLAGE_GUARDIAN.get(), worldIn);
-		entity.onInitialSpawn(worldIn, worldIn.getDifficultyForLocation(new BlockPos(entity.getPositionVec())),
+		entity.finalizeSpawn(worldIn, worldIn.getCurrentDifficultyAt(new BlockPos(entity.blockPosition())),
 				SpawnReason.BREEDING, (ILivingEntityData) null, (CompoundNBT) null);
 		return entity;
 	}
@@ -83,7 +83,7 @@ public class VillageGuardian extends AnimalEntity {
 		this.goalSelector.addGoal(3, new ReturnToVillageGoal(this, 0.6D, false));
 		this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
 		this.goalSelector.addGoal(2,
-				new TemptGoal(this, 1.1D, Ingredient.fromItems(BlockItems.PATROLPOINT.get()), false));
+				new TemptGoal(this, 1.1D, Ingredient.of(BlockItems.PATROLPOINT.get()), false));
 		this.goalSelector.addGoal(4, new MoveThroughVillageGoal(this, 0.6D, false, 4, () -> {
 			return false;
 		}));
@@ -98,10 +98,10 @@ public class VillageGuardian extends AnimalEntity {
 	}
 
 	public static AttributeModifierMap setCustomAttributes() {
-		return AnimalEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D)
-				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D)
-				.createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1.0D)
-				.createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D).create();
+		return AnimalEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 20.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.3D)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 1.0D).add(Attributes.FOLLOW_RANGE, 5.0)
+				.add(Attributes.ATTACK_DAMAGE, 7.0D).build();
 	}
 
 	/**
@@ -111,12 +111,12 @@ public class VillageGuardian extends AnimalEntity {
 		return air;
 	}
 
-	protected void collideWithEntity(Entity entityIn) {
-		if (entityIn instanceof IMob && !(entityIn instanceof CreeperEntity) && this.getRNG().nextInt(20) == 0) {
-			this.setAttackTarget((LivingEntity) entityIn);
+	public void push(Entity entityIn) {
+		if (entityIn instanceof IMob && !(entityIn instanceof CreeperEntity) && this.getRandom().nextInt(20) == 0) {
+			this.setTarget((LivingEntity) entityIn);
 		}
 
-		super.collideWithEntity(entityIn);
+		super.setLastHurtMob(entityIn);
 	}
 
 	/**
@@ -125,82 +125,83 @@ public class VillageGuardian extends AnimalEntity {
 	 * burn.
 	 */
 	@SuppressWarnings("deprecation")
-	public void livingTick() {
-		super.livingTick();
+	public void aiStep() {
+		super.aiStep();
 		if (this.attackTimer > 0) {
 			--this.attackTimer;
 		}
 
-		if (horizontalMag(this.getMotion()) > (double) 2.5000003E-7F && this.rand.nextInt(5) == 0) {
-			int i = MathHelper.floor(this.getPosX());
-			int j = MathHelper.floor(this.getPosY() - (double) 0.2F);
-			int k = MathHelper.floor(this.getPosZ());
+		if (getHorizontalDistanceSqr(this.getDeltaMovement()) > (double) 2.5000003E-7F && this.random.nextInt(5) == 0) {
+			int i = MathHelper.floor(this.getX());
+			int j = MathHelper.floor(this.getY() - (double) 0.2F);
+			int k = MathHelper.floor(this.getZ());
 			BlockPos pos = new BlockPos(i, j, k);
-			BlockState blockstate = this.world.getBlockState(pos);
-			if (!blockstate.isAir(this.world, pos)) {
-				this.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, blockstate).setPos(pos),
-						this.getPosX() + ((double) this.rand.nextFloat() - 0.5D) * (double) this.getWidth(),
-						this.getPosY() + 0.1D,
-						this.getPosZ() + ((double) this.rand.nextFloat() - 0.5D) * (double) this.getWidth(),
-						4.0D * ((double) this.rand.nextFloat() - 0.5D), 0.5D,
-						((double) this.rand.nextFloat() - 0.5D) * 4.0D);
+			BlockState blockstate = this.level.getBlockState(pos);
+			if (!blockstate.isAir(this.level, pos)) {
+				this.level.addParticle(new BlockParticleData(ParticleTypes.BLOCK, blockstate).setPos(pos),
+						this.getX() + ((double) this.random.nextFloat() - 0.5D) * (double) this.getBbWidth(),
+						this.getY() + 0.1D,
+						this.getZ() + ((double) this.random.nextFloat() - 0.5D) * (double) this.getBbWidth(),
+						4.0D * ((double) this.random.nextFloat() - 0.5D), 0.5D,
+						((double) this.random.nextFloat() - 0.5D) * 4.0D);
 			}
 		}
-		if (this.getGrowingAge() != 0) {
+		if (this.getAge() != 0) {
 			this.inLove = 0;
 		}
 
 		if (this.inLove > 0) {
 			--this.inLove;
 			if (this.inLove % 10 == 0) {
-				double d0 = this.rand.nextGaussian() * 0.02D;
-				double d1 = this.rand.nextGaussian() * 0.02D;
-				double d2 = this.rand.nextGaussian() * 0.02D;
-				this.world.addParticle(ParticleTypes.HEART, this.getPosXRandom(1.0D), this.getPosYRandom() + 0.5D,
-						this.getPosZRandom(1.0D), d0, d1, d2);
+				double d0 = this.random.nextGaussian() * 0.02D;
+				double d1 = this.random.nextGaussian() * 0.02D;
+				double d2 = this.random.nextGaussian() * 0.02D;
+				this.level.addParticle(ParticleTypes.HEART, this.getRandomX(1.0D), this.getRandomY() + 0.5D,
+						this.getRandomZ(1.0D), d0, d1, d2);
 			}
 		}
-		if (this.world.isRemote) {
+		if (this.level.isClientSide()) {
 			if (this.forcedAgeTimer > 0) {
 				if (this.forcedAgeTimer % 4 == 0) {
-					this.world.addParticle(ParticleTypes.HAPPY_VILLAGER, this.getPosXRandom(1.0D),
-							this.getPosYRandom() + 0.5D, this.getPosZRandom(1.0D), 0.0D, 0.0D, 0.0D);
+					this.level.addParticle(ParticleTypes.HAPPY_VILLAGER, this.getRandomX(1.0D),
+							this.getRandomY() + 0.5D, this.getRandomZ(1.0D), 0.0D, 0.0D, 0.0D);
 				}
 
 				--this.forcedAgeTimer;
 			}
 		} else if (this.isAlive()) {
-			int i = this.getGrowingAge();
+			int i = this.getAge();
 			if (i < 0) {
 				++i;
-				this.setGrowingAge(i);
+				this.setAge(i);
 			} else if (i > 0) {
 				--i;
-				this.setGrowingAge(i);
+				this.setAge(i);
 			}
 		}
 	}
 
-	public boolean canAttack(EntityType<?> typeIn) {
-		return typeIn == EntityType.CREEPER || typeIn == EntityType.PLAYER ? false : super.canAttack(typeIn);
+	public boolean canAttackType(EntityType<?> typeIn) {
+		return typeIn == EntityType.CREEPER || typeIn == EntityType.PLAYER ? false : super.canAttackType(typeIn);
 	}
 
 	private float getAttackDamage() {
 		return (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
 	}
 
-	public boolean attackEntityAsMob(Entity entityIn) {
+	@Override
+	public boolean doHurtTarget(Entity entityIn) {
 		this.attackTimer = 10;
-		this.world.setEntityState(this, (byte) 4);
+		this.level.broadcastEntityEvent(this, (byte) 4);
 		float f = this.getAttackDamage();
-		float f1 = f > 0.0F ? f / 2.0F + (float) this.rand.nextInt((int) f) : 0.0F;
-		boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), f1);
+		float f1 = f > 0.0F ? f / 2.0F + (float) this.random.nextInt((int) f) : 0.0F;
+		boolean flag = entityIn.hurt(DamageSource.mobAttack(this), f1);
 		if (flag) {
-			entityIn.setMotion(entityIn.getMotion().add(0.0D, (double) 0.4F, 0.0D));
-			this.applyEnchantments(this, entityIn);
+			entityIn.setDeltaMovement(entityIn.getDeltaMovement().add(0.0D, (double) 0.4F, 0.0D));
+			this.doEnchantDamageEffects(this, entityIn);
 		}
 
-		this.playSound(SoundEvents.ENTITY_IRON_GOLEM_ATTACK, 1.0F, 1.0F);
+		this.playSound(SoundEvents.IRON_GOLEM_ATTACK, 1.0F, 1.0F);
 		return flag;
 	}
 
@@ -208,65 +209,65 @@ public class VillageGuardian extends AnimalEntity {
 	 * Handler for {@link World#setEntityState}
 	 */
 	@OnlyIn(Dist.CLIENT)
-	public void handleStatusUpdate(byte id) {
+	public void handleEntityEvent(byte id) {
 		if (id == 4) {
 			this.attackTimer = 10;
-			this.playSound(SoundEvents.ENTITY_IRON_GOLEM_ATTACK, 1.0F, 1.0F);
+			this.playSound(SoundEvents.IRON_GOLEM_DAMAGE, 1.0F, 1.0F);
 		} else if (id == 18) {
 			for (int i = 0; i < 7; ++i) {
-				double d0 = this.rand.nextGaussian() * 0.02D;
-				double d1 = this.rand.nextGaussian() * 0.02D;
-				double d2 = this.rand.nextGaussian() * 0.02D;
-				this.world.addParticle(ParticleTypes.HEART, this.getPosXRandom(1.0D), this.getPosYRandom() + 0.5D,
-						this.getPosZRandom(1.0D), d0, d1, d2);
+				double d0 = this.random.nextGaussian() * 0.02D;
+				double d1 = this.random.nextGaussian() * 0.02D;
+				double d2 = this.random.nextGaussian() * 0.02D;
+				this.level.addParticle(ParticleTypes.HEART, this.getRandomX(1.0D), this.getRandomY() + 0.5D,
+						this.getRandomZ(1.0D), d0, d1, d2);
 			}
 		} else {
-			super.handleStatusUpdate(id);
+			super.handleEntityEvent(id);
 		}
 	}
 
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return SoundEvents.ENTITY_IRON_GOLEM_HURT;
+		return SoundEvents.IRON_GOLEM_HURT;
 	}
 
 	protected SoundEvent getDeathSound() {
-		return SoundEvents.ENTITY_IRON_GOLEM_DEATH;
+		return SoundEvents.IRON_GOLEM_DEATH;
 	}
 
 	protected void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(SoundEvents.ENTITY_IRON_GOLEM_STEP, 1.0F, 1.0F);
+		this.playSound(SoundEvents.IRON_GOLEM_STEP, 1.0F, 1.0F);
 	}
 
 	public boolean isNotColliding(IWorldReader worldIn) {
-		BlockPos blockpos = new BlockPos(this.getPositionVec());
-		BlockPos blockpos1 = blockpos.down();
+		BlockPos blockpos = this.blockPosition();
+		BlockPos blockpos1 = blockpos.below();
 		BlockState blockstate = worldIn.getBlockState(blockpos1);
-		if (!blockstate.isTopSolid(worldIn, blockpos1, this, Direction.DOWN)) {// Could also be an other Direction? I
+		if (!blockstate.entityCanStandOnFace(worldIn, blockpos1, this, Direction.UP)) {// Could also be an other Direction? I
 																				// don't know
 			return false;
 		} else {
 			for (int i = 1; i < 3; ++i) {
-				BlockPos blockpos2 = blockpos.up(i);
+				BlockPos blockpos2 = blockpos.above(i);
 				BlockState blockstate1 = worldIn.getBlockState(blockpos2);
-				if (!WorldEntitySpawner.func_234968_a_(worldIn, blockpos2, blockstate1, blockstate1.getFluidState(),
+				if (!WorldEntitySpawner.isValidEmptySpawnBlock(worldIn, blockpos2, blockstate1, blockstate1.getFluidState(),
 						ModEntityTypesInit.VILLAGE_GUARDIAN.get())) {
 					return false;
 				}
 			}
 
-			return WorldEntitySpawner.func_234968_a_(worldIn, blockpos, worldIn.getBlockState(blockpos),
-					Fluids.EMPTY.getDefaultState(), ModEntityTypesInit.VILLAGE_GUARDIAN.get())
-					&& worldIn.checkNoEntityCollision(this);
+			return WorldEntitySpawner.isValidEmptySpawnBlock(worldIn, blockpos, worldIn.getBlockState(blockpos),
+					Fluids.EMPTY.defaultFluidState(), ModEntityTypesInit.VILLAGE_GUARDIAN.get())
+					&& worldIn.noCollision(this);
 		}
 	}
 
 	/**
 	 * Called when the entity is attacked.
 	 */
-	public boolean attackEntityFrom(DamageSource source, float amount) {
-		boolean flag = super.attackEntityFrom(source, amount);
+	public boolean hurt(DamageSource source, float amount) {
+		boolean flag = super.hurt(source, amount);
 		if (flag) {
-			this.playSound(SoundEvents.ENTITY_IRON_GOLEM_DAMAGE, 1.0F, 1.0F);
+			this.playSound(SoundEvents.IRON_GOLEM_DAMAGE, 1.0F, 1.0F);
 		}
 		return flag;
 	}
@@ -275,23 +276,23 @@ public class VillageGuardian extends AnimalEntity {
 	 * Checks if the parameter is an item which this animal can be fed to breed it
 	 * (wheat, carrots or seeds depending on the animal type)
 	 */
-	public boolean isBreedingItem(ItemStack stack) {
+	public boolean isFood(ItemStack stack) {
 		return stack.getItem() == FootItems.BANANA.get();
 	}
 
 	public boolean processInteract(PlayerEntity player, Hand hand) {
-		ItemStack itemstack = player.getHeldItem(hand);
-		if (this.isBreedingItem(itemstack)) {
-			if (!this.world.isRemote && this.getGrowingAge() == 0 && this.canBreed()) {
-				this.consumeItemFromStack(player, itemstack);
+		ItemStack itemstack = player.getItemInHand(hand);
+		if (this.isFood(itemstack)) {
+			if (!this.level.isClientSide() && this.getAge() == 0 && this.canBreed()) {
+				this.usePlayerItem(player, itemstack);
 				this.setInLove(player);
 				player.swing(hand, true);
 				return true;
 			}
 
-			if (this.isChild()) {
-				this.consumeItemFromStack(player, itemstack);
-				this.ageUp((int) ((float) (-this.getGrowingAge() / 20) * 0.1F), true);
+			if (this.isBaby()) {
+				this.usePlayerItem(player, itemstack);
+				this.ageUp((int) ((float) (-this.getAge() / 20) * 0.1F), true);
 				return true;
 			}
 		}
@@ -301,26 +302,26 @@ public class VillageGuardian extends AnimalEntity {
 			this.heal(25.0F);
 			if (this.getHealth() == f) {
 			} else {
-				float f1 = 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F;
-				this.playSound(SoundEvents.ENTITY_IRON_GOLEM_REPAIR, 1.0F, f1);
-				if (!player.abilities.isCreativeMode) {
+				float f1 = 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F;
+				this.playSound(SoundEvents.IRON_GOLEM_REPAIR, 1.0F, f1);
+				if (!player.abilities.instabuild) {
 					itemstack.shrink(1);
 				}
 			}
 		}
-		if (item instanceof SpawnEggItem && ((SpawnEggItem) item).hasType(itemstack.getTag(), this.getType())) {
-			if (!this.world.isRemote) {
-				AgeableEntity ageableentity = this.func_241840_a((ServerWorld) this.world, this);
+		if (item instanceof SpawnEggItem && ((SpawnEggItem) item).spawnsEntity(itemstack.getTag(), this.getType())) {
+			if (!this.level.isClientSide()) {
+				AgeableEntity ageableentity = this.getBreedOffspring((ServerWorld) this.level, this);
 				if (ageableentity != null) {
-					ageableentity.setGrowingAge(-24000);
-					ageableentity.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), 0.0F, 0.0F);
-					this.world.addEntity(ageableentity);
-					if (itemstack.hasDisplayName()) {
+					ageableentity.setAge(-24000);
+					ageableentity.moveTo(this.getX(), this.getY(), this.getZ(), 0.0F, 0.0F);
+					this.level.addFreshEntity(ageableentity);
+					if (itemstack.hasCustomHoverName()) {
 						ageableentity.setCustomName(itemstack.getDisplayName());
 					}
 
-					this.onChildSpawnFromEgg(player, ageableentity);
-					if (!player.abilities.isCreativeMode) {
+					this.onOffspringSpawnedFromEgg(player, ageableentity);
+					if (!player.abilities.instabuild) {
 						itemstack.shrink(1);
 					}
 				}
@@ -332,25 +333,25 @@ public class VillageGuardian extends AnimalEntity {
 		}
 	}
 
-	public void writeAdditional(CompoundNBT compound) {
-		super.writeAdditional(compound);
-		compound.putInt("Age", this.getGrowingAge());
+	public void addAdditionalSaveData(CompoundNBT compound) {
+		super.addAdditionalSaveData(compound);
+		compound.putInt("Age", this.getAge());
 		compound.putInt("ForcedAge", this.forcedAge);
 		compound.putInt("InLove", this.inLove);
 		if (this.playerInLove != null) {
-			compound.putUniqueId("LoveCause", this.playerInLove);
+			compound.putUUID("LoveCause", this.playerInLove);
 		}
 	}
 
 	/**
 	 * (abstract) Protected helper method to read subclass entity data from NBT.
 	 */
-	public void readAdditional(CompoundNBT compound) {
-		super.readAdditional(compound);
-		this.setGrowingAge(compound.getInt("Age"));
+	public void readAdditionalSaveData(CompoundNBT compound) {
+		super.readAdditionalSaveData(compound);
+		this.setAge(compound.getInt("Age"));
 		this.forcedAge = compound.getInt("ForcedAge");
 		this.inLove = compound.getInt("InLove");
-		this.playerInLove = compound.hasUniqueId("LoveCause") ? compound.getUniqueId("LoveCause") : null;
+		this.playerInLove = compound.hasUUID("LoveCause") ? compound.getUUID("LoveCause") : null;
 	}
 
 	public static class AgeableData implements ILivingEntityData {

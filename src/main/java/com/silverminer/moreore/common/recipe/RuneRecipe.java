@@ -34,15 +34,16 @@ public class RuneRecipe implements IRecipe<IInventory> {
 	 * Used to check if a recipe matches current crafting inventory
 	 */
 	public boolean matches(IInventory inv, World worldIn) {
-		return this.base.test(inv.getStackInSlot(0)) && this.addition.test(inv.getStackInSlot(1));
+		return this.base.test(inv.getItem(0)) && this.addition.test(inv.getItem(1));
 	}
 
+	@Override
 	/**
 	 * Returns an Item that is the result of this recipe
 	 */
-	public ItemStack getCraftingResult(IInventory inv) {
+	public ItemStack assemble(IInventory inv) {
 		ItemStack itemstack = this.result.copy();
-		CompoundNBT compoundnbt = inv.getStackInSlot(0).getTag();
+		CompoundNBT compoundnbt = inv.getItem(0).getTag();
 		if (compoundnbt != null) {
 			itemstack.setTag(compoundnbt.copy());
 		}
@@ -50,10 +51,11 @@ public class RuneRecipe implements IRecipe<IInventory> {
 		return itemstack;
 	}
 
+	@Override
 	/**
 	 * Used to determine if this recipe can fit in a grid of the given width/height
 	 */
-	public boolean canFit(int width, int height) {
+	public boolean canCraftInDimensions(int width, int height) {
 		return width * height >= 2;
 	}
 
@@ -70,7 +72,8 @@ public class RuneRecipe implements IRecipe<IInventory> {
 		return this.addition.test(addition);
 	}
 
-	public ItemStack getIcon() {
+	@Override
+	public ItemStack getResultItem() {
 		return new ItemStack(Blocks.SMITHING_TABLE);
 	}
 
@@ -88,24 +91,27 @@ public class RuneRecipe implements IRecipe<IInventory> {
 
 	public static class Serializer extends net.minecraftforge.registries.ForgeRegistryEntry<IRecipeSerializer<?>>
 			implements IRecipeSerializer<RuneRecipe> {
-		public RuneRecipe read(ResourceLocation recipeId, JsonObject json) {
-			Ingredient ingredient = Ingredient.deserialize(JSONUtils.getJsonObject(json, "base"));
-			Ingredient ingredient1 = Ingredient.deserialize(JSONUtils.getJsonObject(json, "addition"));
-			ItemStack itemstack = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
+		@Override
+		public RuneRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+			Ingredient ingredient = Ingredient.fromJson(JSONUtils.getAsJsonObject(json, "base"));
+			Ingredient ingredient1 = Ingredient.fromJson(JSONUtils.getAsJsonObject(json, "addition"));
+			ItemStack itemstack = ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(json, "result"));
 			return new RuneRecipe(recipeId, ingredient, ingredient1, itemstack);
 		}
 
-		public RuneRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-			Ingredient ingredient = Ingredient.read(buffer);
-			Ingredient ingredient1 = Ingredient.read(buffer);
-			ItemStack itemstack = buffer.readItemStack();
+		@Override
+		public RuneRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
+			Ingredient ingredient = Ingredient.fromNetwork(buffer);
+			Ingredient ingredient1 = Ingredient.fromNetwork(buffer);
+			ItemStack itemstack = buffer.readItem();
 			return new RuneRecipe(recipeId, ingredient, ingredient1, itemstack);
 		}
 
-		public void write(PacketBuffer buffer, RuneRecipe recipe) {
-			recipe.base.write(buffer);
-			recipe.addition.write(buffer);
-			buffer.writeItemStack(recipe.result);
+		@Override
+		public void toNetwork(PacketBuffer buffer, RuneRecipe recipe) {
+			recipe.base.toNetwork(buffer);
+			recipe.addition.toNetwork(buffer);
+			buffer.writeItem(recipe.result);
 		}
 	}
 }

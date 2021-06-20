@@ -23,11 +23,11 @@ public class PlayerInventoryChangePacket {
 	}
 
 	public static void encode(PlayerInventoryChangePacket pkt, PacketBuffer buf) {
-		buf.writeCompoundTag(pkt.nbt);
+		buf.writeNbt(pkt.nbt);
 	}
 
 	public static PlayerInventoryChangePacket decode(PacketBuffer buf) {
-		return new PlayerInventoryChangePacket(buf.readCompoundTag());
+		return new PlayerInventoryChangePacket(buf.readNbt());
 	}
 
 	public static void handle(PlayerInventoryChangePacket pkt, Supplier<NetworkEvent.Context> contextSupplier) {

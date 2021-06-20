@@ -19,7 +19,7 @@ public class SpawnPositionHelper {
 				}
 			}
 
-			return world.getHeight(Heightmap.Type.WORLD_SURFACE, pos);
+			return world.getHeightmapPos(Heightmap.Type.WORLD_SURFACE, pos);
 		} catch (Throwable e) {
 			return null;
 		}
@@ -27,8 +27,8 @@ public class SpawnPositionHelper {
 
 	protected static boolean isPositionValid(World world, BlockPos pos) {
 		return (world.getBlockState(pos).getBlock() == Blocks.AIR)
-				&& (world.getBlockState(pos.up()).getBlock() == Blocks.AIR)
-				&& (world.getBlockState(pos.down()).isSolid());
+				&& (world.getBlockState(pos.above()).getBlock() == Blocks.AIR)
+				&& (world.getBlockState(pos.below()).canOcclude());
 	}
 
 	@Nullable
@@ -37,7 +37,7 @@ public class SpawnPositionHelper {
 		for (int y = 256; y > 0; y--) {
 			BlockPos tempPos = new BlockPos(x, y, z);
 			if (isPositionValid(world, tempPos)) {
-				if ((!world.getDimensionType().getHasCeiling())) {
+				if ((!world.dimensionType().hasCeiling())) {
 					return tempPos;
 				} else if (!firstMatch) {
 					return tempPos;

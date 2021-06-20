@@ -22,7 +22,7 @@ import net.minecraft.world.gen.foliageplacer.FoliagePlacerType;
 public class CircleFoliagePlacer extends FoliagePlacer {
 
 	public static final Codec<CircleFoliagePlacer> CODEC = RecordCodecBuilder.create((p_236742_0_) -> {
-		return func_236740_a_(p_236742_0_).apply(p_236742_0_, CircleFoliagePlacer::new);
+		return circleParts(p_236742_0_).apply(p_236742_0_, CircleFoliagePlacer::new);
 	});
 	protected final int radius;
 
@@ -31,18 +31,18 @@ public class CircleFoliagePlacer extends FoliagePlacer {
 		this.radius = radius;
 	}
 
-	protected static <P extends CircleFoliagePlacer> P3<Mu<P>, FeatureSpread, FeatureSpread, Integer> func_236740_a_(
+	protected static <P extends CircleFoliagePlacer> P3<Mu<P>, FeatureSpread, FeatureSpread, Integer> circleParts(
 			Instance<P> instance) {
-		return func_242830_b(instance).and(Codec.intRange(0, 16).fieldOf("radius").forGetter((foliagePlacer) -> {
+		return foliagePlacerParts(instance).and(Codec.intRange(0, 16).fieldOf("radius").forGetter((foliagePlacer) -> {
 			return foliagePlacer.radius;
 		}));
 	}
 
 	@Override
-	protected void func_230372_a_(IWorldGenerationReader world, Random rand, BaseTreeFeatureConfig treeConfig,
+	protected void createFoliage(IWorldGenerationReader world, Random rand, BaseTreeFeatureConfig treeConfig,
 			int p_230372_4_, Foliage foliage, int hightMin, int p_230372_7_, Set<BlockPos> positions, int hightMax,
 			MutableBoundingBox mbb) {
-		BlockPos startPos = foliage.func_236763_a_();
+		BlockPos startPos = foliage.foliagePos();
 		int startx = startPos.getX();
 		int starty = startPos.getY() - 1;
 		int startz = startPos.getZ();
@@ -53,10 +53,10 @@ public class CircleFoliagePlacer extends FoliagePlacer {
 					if ((x - startx) * (x - startx) + (y - starty) * (y - starty) + (z - startz) * (z - startz) < radius
 							* radius) {
 						BlockPos position = new BlockPos(x, y, z);
-						if (TreeFeature.isAirOrLeavesAt(world, position)) {
-							world.setBlockState(position, treeConfig.leavesProvider.getBlockState(rand, position), 19);
-							mbb.expandTo(new MutableBoundingBox(position, position));
-							positions.add(position.toImmutable());
+						if (TreeFeature.isAirOrLeaves(world, position)) {
+							world.setBlock(position, treeConfig.leavesProvider.getState(rand, position), 19);
+							mbb.expand(new MutableBoundingBox(position, position));
+							positions.add(position.immutable());
 						}
 					}
 				}
@@ -65,16 +65,16 @@ public class CircleFoliagePlacer extends FoliagePlacer {
 	}
 
 	@Override
-	public int func_230374_a_(Random rand, int p_230374_2_, BaseTreeFeatureConfig treeConfig) {
-		return treeConfig.trunkPlacer.func_236917_a_(rand) - 1;
+	public int foliageHeight(Random rand, int p_230374_2_, BaseTreeFeatureConfig treeConfig) {
+		return treeConfig.trunkPlacer.getTreeHeight(rand) - 1;
 	}
 
 	@Override
-	protected FoliagePlacerType<?> func_230371_a_() {
+	protected FoliagePlacerType<?> type() {
 		return FoliagePlacerTypeInit.CIRCLE.get();
 	}
 
-	protected boolean func_230373_a_(Random p_230373_1_, int p_230373_2_, int p_230373_3_, int p_230373_4_,
+	protected boolean shouldSkipLocation(Random p_230373_1_, int p_230373_2_, int p_230373_3_, int p_230373_4_,
 			int p_230373_5_, boolean p_230373_6_) {
 		return p_230373_2_ == p_230373_5_ && p_230373_4_ == p_230373_5_
 				&& (p_230373_1_.nextInt(2) == 0 || p_230373_3_ == 0);

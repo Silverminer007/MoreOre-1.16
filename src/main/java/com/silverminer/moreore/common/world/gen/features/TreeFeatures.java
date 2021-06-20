@@ -15,9 +15,9 @@ import net.minecraft.world.gen.placement.Placement;
 public class TreeFeatures {
 	public static final ConfiguredFeature<?, ?> SILVER_GOLD_TREE_RANDOM = TreeUtils.register("silver_gold_tree_random",
 			Feature.RANDOM_SELECTOR
-					.withConfiguration(new MultipleRandomFeatureConfig(
-							ImmutableList.of(GoldTree.GOLD_TREE_RANDOM.withChance(0.1F)),
+					.configured(new MultipleRandomFeatureConfig(
+							ImmutableList.of(GoldTree.GOLD_TREE_RANDOM.weighted(0.1F)),
 							SilverTree.SILVER_TREE_RANDOM))
-					.withPlacement(Features.Placements.HEIGHTMAP_PLACEMENT)
-					.withPlacement(Placement.COUNT_EXTRA.configure(new AtSurfaceWithExtraConfig(10, 0.1F, 1))));
+					.decorated(Features.Placements.HEIGHTMAP)
+					.decorated(Placement.COUNT_EXTRA.configured(new AtSurfaceWithExtraConfig(10, 0.1F, 1))));
 }

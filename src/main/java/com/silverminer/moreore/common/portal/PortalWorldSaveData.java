@@ -23,12 +23,12 @@ public class PortalWorldSaveData extends WorldSavedData {
 	}
 
 	@Override
-	public void read(CompoundNBT nbt) {
+	public void load(CompoundNBT nbt) {
 		PortalRegistry.readFromNBT(nbt);
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT nbt) {
+	public CompoundNBT save(CompoundNBT nbt) {
 		PortalRegistry.writeToNBT(nbt);
 		return nbt;
 	}
@@ -37,8 +37,8 @@ public class PortalWorldSaveData extends WorldSavedData {
 		if (world == null)
 			return null;
 		LOGGER.debug("PortalWorldSavedData read");
-		DimensionSavedDataManager storage = world.getSavedData();
+		DimensionSavedDataManager storage = world.getDataStorage();
 
-		return storage.getOrCreate(PortalWorldSaveData::new, DATA_NAME);
+		return storage.computeIfAbsent(PortalWorldSaveData::new, DATA_NAME);
 	}
 }

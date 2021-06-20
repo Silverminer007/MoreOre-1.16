@@ -48,17 +48,17 @@ public class ModLogBlock extends RotatedPillarBlock {
 	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player,
 			Hand handIn, BlockRayTraceResult hit) {
 		// Checks if an Axe is in the Hand where the player clicked with
-		if (!((handIn == Hand.MAIN_HAND && player.getHeldItemMainhand().getItem() instanceof AxeItem)
-				|| (handIn == Hand.OFF_HAND && player.getHeldItemOffhand().getItem() instanceof AxeItem))) {
+		if (!((handIn == Hand.MAIN_HAND && player.getMainHandItem().getItem() instanceof AxeItem)
+				|| (handIn == Hand.OFF_HAND && player.getOffhandItem().getItem() instanceof AxeItem))) {
 			return ActionResultType.PASS;
 		}
 		if (LOG_AND_STRIPPED_LOG.containsKey(state.getBlock())) {
 			Block block = LOG_AND_STRIPPED_LOG.get(state.getBlock()).get();
 			// Checks if the Block can be rotated
-			if (block.getDefaultState().getValues().containsKey(AXIS)) {
-				worldIn.setBlockState(pos, block.getDefaultState().with(AXIS, state.get(AXIS)));
+			if (block.defaultBlockState().getValues().containsKey(AXIS)) {
+				worldIn.setBlock(pos, block.defaultBlockState().setValue(AXIS, state.getValue(AXIS)), 3);
 			} else {
-				worldIn.setBlockState(pos, block.getDefaultState());
+				worldIn.setBlock(pos, block.defaultBlockState(), 3);
 			}
 			return ActionResultType.SUCCESS;
 		}

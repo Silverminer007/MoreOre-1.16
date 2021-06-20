@@ -46,7 +46,7 @@ public final class PortalRegistry {
 	public static void clear() {
 		portals.clear();
 
-		MoreOre.portalSaveData.markDirty();
+		MoreOre.portalSaveData.setDirty();
 	}
 
 	/**
@@ -88,13 +88,13 @@ public final class PortalRegistry {
 		if (corner2 == null)
 			return false;
 
-		corner3 = findCorner(world, corner1.getPos().offset(side), side, firstSearchDir.getOpposite());
+		corner3 = findCorner(world, corner1.getPos().relative(side), side, firstSearchDir.getOpposite());
 		if (corner3 == null)
 			return false;
 
-		corner4 = findCorner(world, corner3.getPos().offset(firstSearchDir.getOpposite()), firstSearchDir.getOpposite(),
+		corner4 = findCorner(world, corner3.getPos().relative(firstSearchDir.getOpposite()), firstSearchDir.getOpposite(),
 				side.getOpposite());
-		if (corner4 == null || !corner4.equals(findCorner(world, corner2.getPos().offset(side), side, firstSearchDir)))
+		if (corner4 == null || !corner4.equals(findCorner(world, corner2.getPos().relative(side), side, firstSearchDir)))
 			return false;
 
 		// Check size
@@ -137,24 +137,24 @@ public final class PortalRegistry {
 		Axis portalAxis = isHorizontal ? Axis.Y : Utils.getOrthogonalTo(horizontalCornerFacing);
 
 		// Create portal data structure
-		Portal portal = new Portal(world.getDimensionKey(), portalAxis, corner1, corner2, corner3, corner4);
-		portal.setDestinationDimension(world.getDimensionKey() == World.OVERWORLD
-				? RegistryKey.getOrCreateKey(Registry.WORLD_KEY, MoreOre.SILVER_DIM_TYPE)
+		Portal portal = new Portal(world.dimension(), portalAxis, corner1, corner2, corner3, corner4);
+		portal.setDestinationDimension(world.dimension() == World.OVERWORLD
+				? RegistryKey.create(Registry.DIMENSION_REGISTRY, MoreOre.SILVER_DIM_TYPE)
 				: World.OVERWORLD);
 
 		Iterable<BlockPos> portalPositions = portal.getPortalPositions();
 
 		// Ensure that the inside of the frame only contains air blocks
 		for (BlockPos checkPos : portalPositions) {
-			if (!world.isAirBlock(checkPos))
+			if (!world.isEmptyBlock(checkPos))
 				return false;
 		}
 
 		// Place portal blocks
 
 		for (BlockPos portalPos : portalPositions) {
-			world.setBlockState(portalPos,
-					InitBlocks.SILVER_PORTAL.get().getDefaultState().with(SilverPortalBlock.AXIS, portalAxis));
+			world.setBlock(portalPos,
+					InitBlocks.SILVER_PORTAL.get().defaultBlockState().setValue(SilverPortalBlock.AXIS, portalAxis), 3);
 		}
 
 		// Register portal
@@ -288,14 +288,14 @@ public final class PortalRegistry {
 
 		do {
 			if (!isPortalFrame(world, currentPos)) {
-				if (isPortalFrame(world, currentPos.offset(cornerFacing))) {
+				if (isPortalFrame(world, currentPos.relative(cornerFacing))) {
 					return new Corner(currentPos, searchDir.getOpposite(), cornerFacing);
 				}
 
 				break;
 			}
 
-			currentPos = currentPos.offset(searchDir);
+			currentPos = currentPos.relative(searchDir);
 			size++;
 		} while (size <= 9);
 
@@ -313,12 +313,12 @@ public final class PortalRegistry {
 			return;
 
 		for (BlockPos portalPos : portal.getAllPositions()) {
-			portals.put(portalPos.toImmutable(), portal);
+			portals.put(portalPos.immutable(), portal);
 		}
 
 		// Trigger save of portal data
 
-		MoreOre.portalSaveData.markDirty();
+		MoreOre.portalSaveData.setDirty();
 	}
 
 	/**
@@ -337,7 +337,7 @@ public final class PortalRegistry {
 
 		// Trigger save of portal data
 
-		MoreOre.portalSaveData.markDirty();
+		MoreOre.portalSaveData.setDirty();
 	}
 
 	/**
@@ -401,7 +401,7 @@ public final class PortalRegistry {
 
 		for (BlockPos pos : portals.keySet()) {
 			subTag = new CompoundNBT();
-			subTag.putLong("pos", pos.toLong());
+			subTag.putLong("pos", pos.asLong());
 
 			for (Portal portal : portals.get(pos)) {
 				subTag.putInt("portal" + x++, portalIDs.get(portal));
@@ -456,7 +456,7 @@ public final class PortalRegistry {
 		while (portalBlocksTag.contains(key = String.valueOf(i++))) {
 			tag = portalBlocksTag.getCompound(key);
 
-			portalPos = BlockPos.fromLong(tag.getLong("pos"));
+			portalPos = BlockPos.of(tag.getLong("pos"));
 
 			int x = 0;
 			while (tag.contains(subKey = "portal" + x++)) {

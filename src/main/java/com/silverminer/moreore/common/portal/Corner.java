@@ -67,7 +67,7 @@ public class Corner implements INBTSerializable<CompoundNBT>
 	public BlockPos getInnerCornerPos()
 	{
 		return (pos != null && facingA != null && facingB != null)
-				? pos.offset(facingA).offset(facingB)
+				? pos.relative(facingA).relative(facingB)
 				: null;
 	}
 	
@@ -75,7 +75,7 @@ public class Corner implements INBTSerializable<CompoundNBT>
 	public CompoundNBT serializeNBT()
 	{
 		CompoundNBT tag = new CompoundNBT();
-		tag.putLong("pos", pos.toLong());
+		tag.putLong("pos", pos.asLong());
 		tag.putString("facingA", facingA.name());
 		tag.putString("facingB", facingB.name());
 		
@@ -87,7 +87,7 @@ public class Corner implements INBTSerializable<CompoundNBT>
 	{
 		if (nbt == null) return;
 		
-		pos = BlockPos.fromLong(nbt.getLong("pos"));
+		pos = BlockPos.of(nbt.getLong("pos"));
 		facingA = Direction.byName(nbt.getString("facingA"));
 		facingB = Direction.byName(nbt.getString("facingB"));
 	}

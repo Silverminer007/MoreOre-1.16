@@ -33,92 +33,91 @@ public class EntityUtils {
 	public static boolean spawnZombies(@Nullable DamageSource damageSource, MobEntity entitySource, double spawnChance,
 			int maxZombies, int spawnTries, int players, double equipChance, EntityType<? extends MobEntity> entitytype,
 			boolean shouldSpawnInDay) {
-		if (!(entitySource.world instanceof ServerWorld)) {
+		if (!(entitySource.level instanceof ServerWorld)) {
 			return false;
 		} else {
-			ServerWorld serverworld = (ServerWorld) entitySource.world;
-			LivingEntity livingentity = entitySource.getAttackTarget();
-			if (livingentity == null && damageSource != null && damageSource.getTrueSource() instanceof LivingEntity) {
-				livingentity = (LivingEntity) damageSource.getTrueSource();
+			ServerWorld serverworld = (ServerWorld) entitySource.level;
+			LivingEntity livingentity = entitySource.getTarget();
+			if (livingentity == null && damageSource != null && damageSource.getEntity() instanceof LivingEntity) {
+				livingentity = (LivingEntity) damageSource.getEntity();
 			}
 
-			int i = MathHelper.floor(entitySource.getPosX());
-			int j = MathHelper.floor(entitySource.getPosY());
-			int k = MathHelper.floor(entitySource.getPosZ());
+			int i = MathHelper.floor(entitySource.getX());
+			int j = MathHelper.floor(entitySource.getY());
+			int k = MathHelper.floor(entitySource.getZ());
 
-			if ((double) entitySource.getRNG()
-					.nextFloat() < (entitySource.getAttribute(Attributes.ZOMBIE_SPAWN_REINFORCEMENTS).getValue()
+			if ((double) entitySource.getRandom()
+					.nextFloat() < (entitySource.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE).getValue()
 							* spawnChance)
-					&& entitySource.world.getGameRules().getBoolean(GameRules.DO_MOB_SPAWNING)) {
+					&& entitySource.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
 
 				int spawnedZombies = 0;
 				spawnTries = spawnTries + players * 10;
 				maxZombies = maxZombies + players * 5;
 				for (int l = 0; l < spawnTries; ++l) {
-					int i1 = i + MathHelper.nextInt(entitySource.getRNG(), 7, 40)
-							* MathHelper.nextInt(entitySource.getRNG(), -1, 1);
-					int j1 = j + MathHelper.nextInt(entitySource.getRNG(), 7, 40)
-							* MathHelper.nextInt(entitySource.getRNG(), -1, 1);
-					int k1 = k + MathHelper.nextInt(entitySource.getRNG(), 7, 40)
-							* MathHelper.nextInt(entitySource.getRNG(), -1, 1);
+					int i1 = i + MathHelper.nextInt(entitySource.getRandom(), 7, 40)
+							* MathHelper.nextInt(entitySource.getRandom(), -1, 1);
+					int j1 = j + MathHelper.nextInt(entitySource.getRandom(), 7, 40)
+							* MathHelper.nextInt(entitySource.getRandom(), -1, 1);
+					int k1 = k + MathHelper.nextInt(entitySource.getRandom(), 7, 40)
+							* MathHelper.nextInt(entitySource.getRandom(), -1, 1);
 					BlockPos blockpos = new BlockPos(i1, j1, k1);
-					MobEntity monster = entitytype.create(entitySource.world);
+					MobEntity monster = entitytype.create(entitySource.level);
 					EntitySpawnPlacementRegistry.PlacementType entityspawnplacementregistry$placementtype = EntitySpawnPlacementRegistry
 							.getPlacementType(entitytype);
 					boolean helmet = false;
 					boolean canSpawn = false;
 					if (monster instanceof MonsterEntity) {
-						helmet = !MonsterEntity.isValidLightLevel(serverworld, blockpos, monster.getRNG())
+						helmet = !MonsterEntity.isDarkEnoughToSpawn(serverworld, blockpos, monster.getRandom())
 								&& shouldSpawnInDay;
 						canSpawn = serverworld.getDifficulty() != Difficulty.PEACEFUL
-								&& MonsterEntity.canSpawnOn(entitytype, serverworld, SpawnReason.REINFORCEMENT,
-										blockpos, monster.getRNG())
+								&& MonsterEntity.checkMobSpawnRules(entitytype, serverworld, SpawnReason.REINFORCEMENT,
+										blockpos, monster.getRandom())
 								&& shouldSpawnInDay;
 					}
-					if (WorldEntitySpawner.canCreatureTypeSpawnAtLocation(entityspawnplacementregistry$placementtype,
-							entitySource.world, blockpos, entitytype) || canSpawn) {
-						monster.setPosition((double) i1, (double) j1, (double) k1);
-						if (!entitySource.world.isPlayerWithin((double) i1, (double) j1, (double) k1, 7.0D)
-								&& entitySource.world.checkNoEntityCollision(monster)
-								&& entitySource.world.hasNoCollisions(monster)
-								&& !entitySource.world.containsAnyLiquid(monster.getBoundingBox())) {
+					if (WorldEntitySpawner.canSpawnAtBody(entityspawnplacementregistry$placementtype,
+							entitySource.level, blockpos, entitytype) || canSpawn) {
+						monster.setPos((double) i1, (double) j1, (double) k1);
+						if (!entitySource.level.hasNearbyAlivePlayer((double) i1, (double) j1, (double) k1, 7.0D)
+								&& entitySource.level.noCollision(monster)
+								&& !entitySource.level.containsAnyLiquid(monster.getBoundingBox())) {
 							if (livingentity != null)
-								monster.setAttackTarget(livingentity);
+								monster.setTarget(livingentity);
 							monster.setCustomName(new TranslationTextComponent("name.moreore.trooper"));
-							monster.onInitialSpawn(serverworld,
-									entitySource.world.getDifficultyForLocation(monster.getPosition()),
+							monster.finalizeSpawn(serverworld,
+									entitySource.level.getCurrentDifficultyAt(monster.blockPosition()),
 									SpawnReason.REINFORCEMENT, (ILivingEntityData) null, (CompoundNBT) null);
-							if (entitySource.getRNG().nextDouble() < equipChance
-									&& monster.getItemStackFromSlot(EquipmentSlotType.MAINHAND) == ItemStack.EMPTY) {
-								if (entitySource.getRNG().nextDouble() < equipChance / 16) {
-									monster.setItemStackToSlot(EquipmentSlotType.MAINHAND,
+							if (entitySource.getRandom().nextDouble() < equipChance
+									&& monster.getItemBySlot(EquipmentSlotType.MAINHAND) == ItemStack.EMPTY) {
+								if (entitySource.getRandom().nextDouble() < equipChance / 16) {
+									monster.setItemSlot(EquipmentSlotType.MAINHAND,
 											new ItemStack(Items.DIAMOND_SWORD));
 								} else {
-									monster.setItemStackToSlot(EquipmentSlotType.MAINHAND,
+									monster.setItemSlot(EquipmentSlotType.MAINHAND,
 											new ItemStack(Items.IRON_SWORD));
 								}
 							}
-							if ((entitySource.getRNG().nextDouble() < equipChance || helmet)
-									&& monster.getItemStackFromSlot(EquipmentSlotType.HEAD) == ItemStack.EMPTY) {
-								monster.setItemStackToSlot(EquipmentSlotType.HEAD, new ItemStack(Items.GOLDEN_HELMET));
+							if ((entitySource.getRandom().nextDouble() < equipChance || helmet)
+									&& monster.getItemBySlot(EquipmentSlotType.HEAD) == ItemStack.EMPTY) {
+								monster.setItemSlot(EquipmentSlotType.HEAD, new ItemStack(Items.GOLDEN_HELMET));
 							}
-							if (entitySource.getRNG().nextDouble() < equipChance
-									&& monster.getItemStackFromSlot(EquipmentSlotType.CHEST) == ItemStack.EMPTY) {
-								monster.setItemStackToSlot(EquipmentSlotType.CHEST,
+							if (entitySource.getRandom().nextDouble() < equipChance
+									&& monster.getItemBySlot(EquipmentSlotType.CHEST) == ItemStack.EMPTY) {
+								monster.setItemSlot(EquipmentSlotType.CHEST,
 										new ItemStack(Items.GOLDEN_CHESTPLATE));
 							}
-							if (entitySource.getRNG().nextDouble() < equipChance
-									&& monster.getItemStackFromSlot(EquipmentSlotType.LEGS) == ItemStack.EMPTY) {
-								monster.setItemStackToSlot(EquipmentSlotType.LEGS,
+							if (entitySource.getRandom().nextDouble() < equipChance
+									&& monster.getItemBySlot(EquipmentSlotType.LEGS) == ItemStack.EMPTY) {
+								monster.setItemSlot(EquipmentSlotType.LEGS,
 										new ItemStack(Items.GOLDEN_LEGGINGS));
 							}
-							if (entitySource.getRNG().nextDouble() < equipChance
-									&& monster.getItemStackFromSlot(EquipmentSlotType.FEET) == ItemStack.EMPTY) {
-								monster.setItemStackToSlot(EquipmentSlotType.FEET, new ItemStack(Items.GOLDEN_BOOTS));
+							if (entitySource.getRandom().nextDouble() < equipChance
+									&& monster.getItemBySlot(EquipmentSlotType.FEET) == ItemStack.EMPTY) {
+								monster.setItemSlot(EquipmentSlotType.FEET, new ItemStack(Items.GOLDEN_BOOTS));
 							}
-							serverworld.func_242417_l(monster);
+							serverworld.addFreshEntity(monster);
 							try {
-								monster.getAttribute(Attributes.ZOMBIE_SPAWN_REINFORCEMENTS).applyPersistentModifier(
+								monster.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE).addPermanentModifier(
 										new AttributeModifier("Zombie reinforcement callee charge", (double) 0.05F,
 												AttributeModifier.Operation.ADDITION));
 							} catch (NullPointerException e) {

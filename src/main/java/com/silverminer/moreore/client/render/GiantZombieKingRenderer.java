@@ -34,7 +34,7 @@ public class GiantZombieKingRenderer extends MobRenderer<GiantZombieKingEntity, 
 	/**
 	 * Returns the location of an entity's texture.
 	 */
-	public ResourceLocation getEntityTexture(GiantZombieKingEntity entity) {
+	public ResourceLocation getTextureLocation(GiantZombieKingEntity entity) {
 		return ZOMBIE_TEXTURES;
 	}
 }

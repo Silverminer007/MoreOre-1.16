@@ -11,8 +11,7 @@ import com.silverminer.moreore.util.structures.config.Config;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ChestTileEntity;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.LockableLootTileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -55,34 +54,27 @@ public class GiantPieces {
 
 		@Override
 		public StructureProcessor getProcessor() {
-			return BlockIgnoreStructureProcessor.AIR_AND_STRUCTURE_BLOCK;
+			return BlockIgnoreStructureProcessor.STRUCTURE_AND_AIR;
 		}
 
 		@Override
 		protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand,
 				MutableBoundingBox sbb) {
-			if (Config.STRUCTURES.GIANT.LOOT_CHANCE.get() > rand.nextDouble()) {
-				if (function.equals("chest")) {
-					worldIn.setBlockState(pos, Blocks.MOSSY_STONE_BRICKS.getDefaultState(), 3);
-					TileEntity tileentity = worldIn.getTileEntity(pos.down());
-					if (tileentity instanceof ChestTileEntity) {
-						((ChestTileEntity) tileentity).setLootTable(MoreoreLootTables.GIANT, rand.nextLong());
-					}
-				}
-				if (function.equals("chest2")) {
-					worldIn.setBlockState(pos, Blocks.CHISELED_STONE_BRICKS.getDefaultState(), 3);
-					TileEntity tileentity = worldIn.getTileEntity(pos.down());
-					if (tileentity instanceof ChestTileEntity) {
-						((ChestTileEntity) tileentity).setLootTable(MoreoreLootTables.GIANT, rand.nextLong());
-					}
-				}
-				if (function.equals("chest3")) {
-					worldIn.setBlockState(pos, Blocks.CHISELED_POLISHED_BLACKSTONE.getDefaultState(), 3);
-					TileEntity tileentity = worldIn.getTileEntity(pos.down());
-					if (tileentity instanceof ChestTileEntity) {
-						((ChestTileEntity) tileentity).setLootTable(MoreoreLootTables.GIANT, rand.nextLong());
-					}
-				}
+			boolean loot = Config.STRUCTURES.GIANT.LOOT_CHANCE.get() > rand.nextDouble();
+			if (function.equals("chest")) {
+				worldIn.setBlock(pos, Blocks.MOSSY_STONE_BRICKS.defaultBlockState(), 3);
+				LockableLootTileEntity.setLootTable(worldIn, rand, pos.below(1),
+						loot ? MoreoreLootTables.BLUE_SHIP : MoreoreLootTables.EMPTY);
+			}
+			if (function.equals("chest2")) {
+				worldIn.setBlock(pos, Blocks.CHISELED_STONE_BRICKS.defaultBlockState(), 3);
+				LockableLootTileEntity.setLootTable(worldIn, rand, pos.below(1),
+						loot ? MoreoreLootTables.BLUE_SHIP : MoreoreLootTables.EMPTY);
+			}
+			if (function.equals("chest3")) {
+				worldIn.setBlock(pos, Blocks.CHISELED_POLISHED_BLACKSTONE.defaultBlockState(), 3);
+				LockableLootTileEntity.setLootTable(worldIn, rand, pos.below(1),
+						loot ? MoreoreLootTables.BLUE_SHIP : MoreoreLootTables.EMPTY);
 			}
 		}
 

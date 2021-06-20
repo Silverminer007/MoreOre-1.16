@@ -30,44 +30,44 @@ public class StructureFeatureInit {
 			.create(ForgeRegistries.STRUCTURE_FEATURES, MoreOre.MODID);
 
 	public static final RegistryObject<TempelStructure> TEMPEL = register(TempelStructure.SHORT_NAME,
-			new TempelStructure(NoFeatureConfig.field_236558_a_));
+			new TempelStructure(NoFeatureConfig.CODEC));
 
 	public static final RegistryObject<DesertTempelStructure> DESERT_TEMPEL = register(DesertTempelStructure.SHORT_NAME,
-			new DesertTempelStructure(NoFeatureConfig.field_236558_a_));
+			new DesertTempelStructure(NoFeatureConfig.CODEC));
 
 	public static final RegistryObject<NutBushPlantationStructure> NUT_BUSH_PLANTATION = register(
-			NutBushPlantationStructure.SHORT_NAME, new NutBushPlantationStructure(NoFeatureConfig.field_236558_a_));
+			NutBushPlantationStructure.SHORT_NAME, new NutBushPlantationStructure(NoFeatureConfig.CODEC));
 
 	public static final RegistryObject<GreenDungeonStructure> GREEN_DUNGEON = register(GreenDungeonStructure.SHORT_NAME,
-			new GreenDungeonStructure(NoFeatureConfig.field_236558_a_));
+			new GreenDungeonStructure(NoFeatureConfig.CODEC));
 
 	public static final RegistryObject<OrangeShrineStructure> ORANGE_SHRINE = register(OrangeShrineStructure.SHORT_NAME,
-			new OrangeShrineStructure(NoFeatureConfig.field_236558_a_));
+			new OrangeShrineStructure(NoFeatureConfig.CODEC));
 
 	public static final RegistryObject<BrownLandingstageStructure> BROWN_LANDINGSTAGE = register(
-			BrownLandingstageStructure.SHORT_NAME, new BrownLandingstageStructure(NoFeatureConfig.field_236558_a_));
+			BrownLandingstageStructure.SHORT_NAME, new BrownLandingstageStructure(NoFeatureConfig.CODEC));
 
 	public static final RegistryObject<PurplehouseStructure> PURPLE_HOUSE = register(PurplehouseStructure.SHORT_NAME,
-			new PurplehouseStructure(NoFeatureConfig.field_236558_a_));
+			new PurplehouseStructure(NoFeatureConfig.CODEC));
 
 	public static final RegistryObject<GiantStructure> GIANT = register(GiantStructure.SHORT_NAME,
-			new GiantStructure(NoFeatureConfig.field_236558_a_));
+			new GiantStructure(NoFeatureConfig.CODEC));
 
 	public static final RegistryObject<BlueRuneStructure> BLUE_RUNE = register(BlueRuneStructure.SHORT_NAME,
-			new BlueRuneStructure(NoFeatureConfig.field_236558_a_));
+			new BlueRuneStructure(NoFeatureConfig.CODEC));
 
 	public static final RegistryObject<BlackSmithStructure> BLACK_SMITH = register(BlackSmithStructure.SHORT_NAME,
-			new BlackSmithStructure(NoFeatureConfig.field_236558_a_));
+			new BlackSmithStructure(NoFeatureConfig.CODEC));
 
 	private static <T extends AbstractStructure<NoFeatureConfig>> RegistryObject<T> register(String name, T structure) {
-		if (!Structure.NAME_STRUCTURE_BIMAP.containsValue(structure)) {
-			Structure.NAME_STRUCTURE_BIMAP.putIfAbsent(new ResourceLocation(MoreOre.MODID, name).toString(), structure);
+		if (!Structure.STRUCTURES_REGISTRY.containsValue(structure)) {
+			Structure.STRUCTURES_REGISTRY.putIfAbsent(new ResourceLocation(MoreOre.MODID, name).toString(), structure);
 		}
-		if (!Structure.STRUCTURE_DECORATION_STAGE_MAP.containsValue(structure.getDecorationStage())) {
-			Structure.STRUCTURE_DECORATION_STAGE_MAP.putIfAbsent(structure, structure.getDecorationStage());
+		if (!Structure.STEP.containsValue(structure.step())) {
+			Structure.STEP.putIfAbsent(structure, structure.step());
 		}
 
-		Structure.field_236384_t_ = ImmutableList.<Structure<?>>builder().addAll(Structure.field_236384_t_)
+		Structure.NOISE_AFFECTING_FEATURES = ImmutableList.<Structure<?>>builder().addAll(Structure.NOISE_AFFECTING_FEATURES)
 				.add(structure).build();
 
 		STRUCTURES_LIST.add(structure);

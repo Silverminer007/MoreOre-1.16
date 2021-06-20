@@ -18,19 +18,18 @@ public class ModEntityTypesInit {
 
 	public static final RegistryObject<EntityType<VillageGuardian>> VILLAGE_GUARDIAN = ENTITIES.register(
 			"village_guardian",
-			() -> EntityType.Builder.<VillageGuardian>create(VillageGuardian::new, EntityClassification.CREATURE)
-					.size(0.9f, 2.2f)
+			() -> EntityType.Builder.<VillageGuardian>of(VillageGuardian::new, EntityClassification.CREATURE)
+					.sized(0.9f, 2.2f)
 					.build(new ResourceLocation(MoreOre.MODID, "textures/entity/village_guardian.png").toString()));
 
 	public static final RegistryObject<EntityType<SquirrelEntity>> SQUIRREL = ENTITIES.register("squirrel",
-			() -> EntityType.Builder.<SquirrelEntity>create(SquirrelEntity::new, EntityClassification.CREATURE)
-					.size(0.5f, 0.5f)
+			() -> EntityType.Builder.<SquirrelEntity>of(SquirrelEntity::new, EntityClassification.CREATURE)
+					.sized(0.5f, 0.5f)
 					.build(new ResourceLocation(MoreOre.MODID, "textures/entity/squirrel.png").toString()));
 
 	public static final RegistryObject<EntityType<GiantZombieKingEntity>> GIANT_ZOMBIE_KING = ENTITIES.register(
 			"giant_zombie_king",
-			() -> EntityType.Builder
-					.<GiantZombieKingEntity>create(GiantZombieKingEntity::new, EntityClassification.MONSTER)
-					.immuneToFire().size(4.8F, 16.0F)
+			() -> EntityType.Builder.<GiantZombieKingEntity>of(GiantZombieKingEntity::new, EntityClassification.MONSTER)
+					.fireImmune().sized(4.8F, 16.0F)
 					.build(new ResourceLocation("textures/entity/zombie/zombie.png").toString()));
 }

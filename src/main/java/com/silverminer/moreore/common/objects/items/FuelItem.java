@@ -32,13 +32,13 @@ public class FuelItem extends Item {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 		if (KeyboardHelper.isHoldingShift()) {
 			tooltip.add(new StringTextComponent("This is an test Item"));
 		} else {
 			tooltip.add(new StringTextComponent("Hold" + "\u00A7e" + " Shift " + "\u00A77" + "for more information!"));
 		}
-		super.addInformation(stack, worldIn, tooltip, flagIn);
+		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class FuelItem extends Item {
 
 	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-		if (enchantment.isAllowedOnBooks() && stack.hasEffect()) {
+		if (enchantment.isAllowedOnBooks() && stack.hasFoil()) {
 			return true;
 		}
 		return false;
@@ -60,20 +60,20 @@ public class FuelItem extends Item {
 	}
 
 	@Override
-	public boolean hasEffect(ItemStack stack) {
+	public boolean isFoil(ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-		playerIn.addPotionEffect(new EffectInstance(Effects.ABSORPTION, 500, 255));
-		if (!worldIn.isRemote()) {
-			Utils.teleportTo(playerIn, worldIn.getDimensionKey(),
-					((ServerPlayerEntity) playerIn).func_241140_K_(), null);
+	public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+		playerIn.addEffect(new EffectInstance(Effects.ABSORPTION, 500, 255));
+		if (!worldIn.isClientSide()) {
+			Utils.teleportTo(playerIn, worldIn.dimension(),
+					((ServerPlayerEntity) playerIn).getRespawnPosition(), null);
 		}
-		worldIn.setRainStrength(10.0f);
+		worldIn.setRainLevel(10.0f);
 
-		return super.onItemRightClick(worldIn, playerIn, handIn);
+		return super.use(worldIn, playerIn, handIn);
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public class FuelItem extends Item {
 	}
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context) {
+	public ActionResultType useOn(ItemUseContext context) {
 		return ActionResultType.FAIL;
 	}
 

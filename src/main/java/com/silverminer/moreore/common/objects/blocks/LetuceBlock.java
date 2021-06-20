@@ -26,32 +26,34 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 public class LetuceBlock extends BushBlock implements IGrowable {
-	public static final IntegerProperty AGE = BlockStateProperties.AGE_0_3;
+	public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
 	private static final VoxelShape[] SHAPE_BY_AGE = new VoxelShape[] {
-			Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D),
-			Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D),
-			Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 5.0D, 16.0D),
-			Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 6.0D, 16.0D) };
+			Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D),
+			Block.box(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D),
+			Block.box(0.0D, 0.0D, 0.0D, 16.0D, 5.0D, 16.0D),
+			Block.box(0.0D, 0.0D, 0.0D, 16.0D, 6.0D, 16.0D) };
 
 	public LetuceBlock(Properties builder) {
 		super(builder);
-		this.setDefaultState(this.stateContainer.getBaseState().with(this.getAgeProperty(), Integer.valueOf(0)));
+		//this.registerDefaultState(this.stateDefinition.any().setValue(this.getAgeProperty(), Integer.valueOf(0)));
 	}
 
-	protected IItemProvider getSeedsItem() {
+	protected IItemProvider getBaseSeedId() {
 		return FootItems.LETUCE_SEED.get();
 	}
 
 	@Override
-	public boolean canUseBonemeal(World worldIn, Random rand, BlockPos pos, BlockState state) {
-		return (double) worldIn.rand.nextFloat() < 0.45D;
+	public boolean isBonemealSuccess(World worldIn, Random rand, BlockPos pos, BlockState state) {
+		return (double) worldIn.random.nextFloat() < 0.45D;
 	}
 
+	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		return SHAPE_BY_AGE[state.get(this.getAgeProperty())];
+		return SHAPE_BY_AGE[state.getValue(this.getAgeProperty())];
 	}
 
-	protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
+	@Override
+	protected boolean mayPlaceOn(BlockState state, IBlockReader worldIn, BlockPos pos) {
 		return state.getBlock() == Blocks.FARMLAND;
 	}
 
@@ -60,33 +62,34 @@ public class LetuceBlock extends BushBlock implements IGrowable {
 	}
 
 	public int getMaxAge() {
-		return AGE.getAllowedValues().size() - 1;
+		return AGE.getPossibleValues().size() - 1;
 	}
 
 	protected int getAge(BlockState state) {
-		return state.get(this.getAgeProperty());
+		return state.getValue(this.getAgeProperty());
 	}
 
 	public BlockState withAge(int age) {
-		return this.getDefaultState().with(this.getAgeProperty(), Integer.valueOf(age));
+		return this.defaultBlockState().setValue(this.getAgeProperty(), Integer.valueOf(age));
 	}
 
 	public boolean isMaxAge(BlockState state) {
-		return state.get(this.getAgeProperty()) >= this.getMaxAge();
+		return state.getValue(this.getAgeProperty()) >= this.getMaxAge();
 	}
 
+	@Override
 	@SuppressWarnings("deprecation")
 	public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
 		super.tick(state, worldIn, pos, rand);
 		if (!worldIn.isAreaLoaded(pos, 1))
 			return; // Forge: prevent loading unloaded chunks when checking neighbor's light
-		if (worldIn.getLightSubtracted(pos, 0) >= 9) {
+		if (worldIn.getMaxLocalRawBrightness(pos, 0) >= 9) {
 			int i = this.getAge(state);
 			if (i < this.getMaxAge()) {
 				float f = getGrowthChance(this, worldIn, pos);
 				if (net.minecraftforge.common.ForgeHooks.onCropsGrowPre(worldIn, pos, state,
 						rand.nextInt((int) (25.0F / f) + 1) == 0)) {
-					worldIn.setBlockState(pos, this.withAge(i + 1), 2);
+					worldIn.setBlock(pos, this.withAge(i + 1), 2);
 					net.minecraftforge.common.ForgeHooks.onCropsGrowPost(worldIn, pos, state);
 				}
 			}
@@ -94,32 +97,33 @@ public class LetuceBlock extends BushBlock implements IGrowable {
 
 	}
 
-	public void grow(World worldIn, BlockPos pos, BlockState state) {
+	@Override
+	public void performBonemeal(ServerWorld worldIn, Random random, BlockPos pos, BlockState state) {
 		int i = this.getAge(state) + this.getBonemealAgeIncrease(worldIn);
 		int j = this.getMaxAge();
 		if (i > j) {
 			i = j;
 		}
 
-		worldIn.setBlockState(pos, this.withAge(i), 2);
+		worldIn.setBlock(pos, this.withAge(i), 2);
 	}
 
 	protected int getBonemealAgeIncrease(World worldIn) {
-		return MathHelper.nextInt(worldIn.rand, 2, 5);
+		return MathHelper.nextInt(worldIn.random, 2, 5);
 	}
 
 	protected static float getGrowthChance(Block blockIn, IBlockReader worldIn, BlockPos pos) {
 		float f = 1.0F;
-		BlockPos blockpos = pos.down();
+		BlockPos blockpos = pos.below();
 
 		for (int i = -1; i <= 1; ++i) {
 			for (int j = -1; j <= 1; ++j) {
 				float f1 = 0.0F;
-				BlockState blockstate = worldIn.getBlockState(blockpos.add(i, 0, j));
-				if (blockstate.canSustainPlant(worldIn, blockpos.add(i, 0, j), net.minecraft.util.Direction.UP,
+				BlockState blockstate = worldIn.getBlockState(blockpos.offset(i, 0, j));
+				if (blockstate.canSustainPlant(worldIn, blockpos.offset(i, 0, j), net.minecraft.util.Direction.UP,
 						(net.minecraftforge.common.IPlantable) blockIn)) {
 					f1 = 1.0F;
-					if (blockstate.isFertile(worldIn, blockpos.add(i, 0, j))) {
+					if (blockstate.isFertile(worldIn, blockpos.offset(i, 0, j))) {
 						f1 = 3.0F;
 					}
 				}
@@ -155,37 +159,37 @@ public class LetuceBlock extends BushBlock implements IGrowable {
 		return f;
 	}
 
-	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-		return (worldIn.getLightSubtracted(pos, 0) >= 8 || worldIn.canSeeSky(pos))
-				&& super.isValidPosition(state, worldIn, pos) && this.isValidGround(worldIn.getBlockState(pos.down()), worldIn, pos.down());
+	public boolean canSurvive(BlockState state, IWorldReader worldIn, BlockPos pos) {
+		return (worldIn.getMaxLocalRawBrightness(pos, 0) >= 8 || worldIn.canSeeSky(pos))
+				&& super.canSurvive(state, worldIn, pos) && this.mayPlaceOn(worldIn.getBlockState(pos.below()), worldIn, pos.below());
 	}
 
+	@Override
 	@SuppressWarnings("deprecation")
-	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
+	public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
 		if (entityIn instanceof RavagerEntity
 				&& net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(worldIn, entityIn)) {
 			worldIn.destroyBlock(pos, true, entityIn);
 		}
 
-		super.onEntityCollision(state, worldIn, pos, entityIn);
+		super.entityInside(state, worldIn, pos, entityIn);
 	}
 
-	public ItemStack getItem(IBlockReader worldIn, BlockPos pos, BlockState state) {
-		return new ItemStack(this.getSeedsItem());
+	@Override
+	public ItemStack getCloneItemStack(IBlockReader worldIn, BlockPos pos, BlockState state) {
+		return new ItemStack(this.getBaseSeedId());
 	}
 
+	@Override
 	/**
 	 * Whether this IGrowable can grow
 	 */
-	public boolean canGrow(IBlockReader worldIn, BlockPos pos, BlockState state, boolean isClient) {
+	public boolean isValidBonemealTarget(IBlockReader worldIn, BlockPos pos, BlockState state, boolean isClient) {
 		return !this.isMaxAge(state);
 	}
 
-	public void grow(ServerWorld worldIn, Random rand, BlockPos pos, BlockState state) {
-		this.grow(worldIn, pos, state);
-	}
-
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+	@Override
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(AGE);
 	}
 }

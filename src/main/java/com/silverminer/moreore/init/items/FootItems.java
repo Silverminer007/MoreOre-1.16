@@ -19,21 +19,21 @@ public class FootItems {
 
 	public static final RegistryObject<Item> BANANA = InitItems
 			.registerCompostItems("banana",
-					() -> new Item(new Item.Properties().group(ModItemGroups.BIOLOGIC)
-							.food(new Food.Builder().hunger(3).saturation(1.2f).fastToEat()
+					() -> new Item(new Item.Properties().tab(ModItemGroups.BIOLOGIC)
+							.food(new Food.Builder().nutrition(3).saturationMod(1.2f).fast()
 									.effect(() -> new EffectInstance(Effects.NIGHT_VISION, 2000), 0.5f).build())),
 					0.3F);
 
 	public static final RegistryObject<Item> BANANA_SEED = InitItems.registerCompostItems("banana_seed",
-			() -> new BlockNamedItem(BiologicBlocks.BANANA.get(), new Item.Properties().group(ModItemGroups.BIOLOGIC)),
+			() -> new BlockNamedItem(BiologicBlocks.BANANA.get(), new Item.Properties().tab(ModItemGroups.BIOLOGIC)),
 			0.3F);
 
 	public static final RegistryObject<Item> LETUCE_SEED = InitItems.registerCompostItems("letuce_seed",
-			() -> new BlockItem(BiologicBlocks.LETUCE.get(), new Item.Properties().group(ModItemGroups.BIOLOGIC)),
+			() -> new BlockItem(BiologicBlocks.LETUCE.get(), new Item.Properties().tab(ModItemGroups.BIOLOGIC)),
 			0.3F);
 
 	public static final RegistryObject<Item> LETUCE = InitItems.registerCompostItems("letuce",
-			() -> new Item(new Item.Properties().group(ModItemGroups.BIOLOGIC)
-					.food(new Food.Builder().hunger(4).saturation(0.8f).build())),
+			() -> new Item(new Item.Properties().tab(ModItemGroups.BIOLOGIC)
+					.food(new Food.Builder().nutrition(4).saturationMod(0.8f).build())),
 			0.3F);
 }

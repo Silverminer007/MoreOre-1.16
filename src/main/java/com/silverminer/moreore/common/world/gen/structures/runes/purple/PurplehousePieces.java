@@ -11,8 +11,7 @@ import com.silverminer.moreore.util.structures.config.Config;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ChestTileEntity;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.LockableLootTileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -27,7 +26,7 @@ public class PurplehousePieces {
 
 	private static final ResourceLocation[] location = new ResourceLocation[] {
 			new ResourceLocation(MoreOre.MODID, "runes/purple/" + "purple_house" + "_1"),
-			new ResourceLocation(MoreOre.MODID, "runes/purple/" + "purple_house" + "_2")};
+			new ResourceLocation(MoreOre.MODID, "runes/purple/" + "purple_house" + "_2") };
 
 	public static void generate(TemplateManager templateManager, BlockPos pos, Rotation rotation,
 			List<StructurePiece> pieces, Random random) {
@@ -56,21 +55,16 @@ public class PurplehousePieces {
 		@Override
 		protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand,
 				MutableBoundingBox sbb) {
-			if (Config.STRUCTURES.PURPLE_HOUSE.LOOT_CHANCE.get() > rand.nextDouble()) {
-				if (function.equals("chest_1")) {
-					worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
-					TileEntity tileentity = worldIn.getTileEntity(pos.down(2));
-					if (tileentity instanceof ChestTileEntity) {
-						((ChestTileEntity) tileentity).setLootTable(MoreoreLootTables.PURPLE_HOUSE_1, rand.nextLong());
-					}
-				}
-				if (function.equals("chest_2")) {
-					worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
-					TileEntity tileentity = worldIn.getTileEntity(pos.down());
-					if (tileentity instanceof ChestTileEntity) {
-						((ChestTileEntity) tileentity).setLootTable(MoreoreLootTables.PURPLE_HOUSE_2, rand.nextLong());
-					}
-				}
+			boolean loot = Config.STRUCTURES.PURPLE_HOUSE.LOOT_CHANCE.get() > rand.nextDouble();
+			if (function.equals("chest_1")) {
+				worldIn.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+				LockableLootTileEntity.setLootTable(worldIn, rand, pos.below(2),
+						loot ? MoreoreLootTables.PURPLE_HOUSE_1 : MoreoreLootTables.EMPTY);
+			}
+			if (function.equals("chest_2")) {
+				worldIn.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+				LockableLootTileEntity.setLootTable(worldIn, rand, pos.below(1),
+						loot ? MoreoreLootTables.PURPLE_HOUSE_2 : MoreoreLootTables.EMPTY);
 			}
 		}
 	}

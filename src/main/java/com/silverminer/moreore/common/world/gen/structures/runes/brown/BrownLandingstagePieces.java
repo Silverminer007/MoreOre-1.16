@@ -9,10 +9,8 @@ import com.silverminer.moreore.common.world.gen.structures.ColorStructurePiece;
 import com.silverminer.moreore.common.world.gen.structures.MoreoreStructurePieceType;
 import com.silverminer.moreore.util.structures.config.Config;
 
-import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ChestTileEntity;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.LockableLootTileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -58,21 +56,14 @@ public class BrownLandingstagePieces {
 		@Override
 		protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand,
 				MutableBoundingBox sbb) {
-			if (Config.STRUCTURES.BROWN_LANDINGSTAGE.LOOT_CHANCE.get() > rand.nextDouble()) {
-				if (function.equals("chest_1")) {
-					worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
-					TileEntity tileentity = worldIn.getTileEntity(pos.down());
-					if (tileentity instanceof ChestTileEntity) {
-						((ChestTileEntity) tileentity).setLootTable(MoreoreLootTables.LANDINGSTAGE_1, rand.nextLong());
-					}
-				}
-				if (function.equals("chest_2")) {
-					worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
-					TileEntity tileentity = worldIn.getTileEntity(pos.down());
-					if (tileentity instanceof ChestTileEntity) {
-						((ChestTileEntity) tileentity).setLootTable(MoreoreLootTables.LANDINGSTAGE_2, rand.nextLong());
-					}
-				}
+			boolean loot = Config.STRUCTURES.BROWN_LANDINGSTAGE.LOOT_CHANCE.get() > rand.nextDouble();
+			if (function.equals("chest_1")) {
+				LockableLootTileEntity.setLootTable(worldIn, rand, pos.below(1),
+						loot ? MoreoreLootTables.LANDINGSTAGE_1 : MoreoreLootTables.EMPTY);
+			}
+			if (function.equals("chest_2")) {
+				LockableLootTileEntity.setLootTable(worldIn, rand, pos.below(1),
+						loot ? MoreoreLootTables.LANDINGSTAGE_2 : MoreoreLootTables.EMPTY);
 			}
 		}
 

@@ -11,6 +11,7 @@ import com.silverminer.moreore.init.FoliagePlacerTypeInit;
 import com.silverminer.moreore.init.ModEntityTypesInit;
 import com.silverminer.moreore.init.RecipeSerializerInit;
 import com.silverminer.moreore.init.TreeDecotratorInit;
+import com.silverminer.moreore.init.WorldTypeInit;
 import com.silverminer.moreore.init.blocks.BiologicBlocks;
 import com.silverminer.moreore.init.blocks.InitBlocks;
 import com.silverminer.moreore.init.blocks.OreBlocks;
@@ -78,6 +79,7 @@ public class MoreOre {
 		FoliagePlacerTypeInit.TYPES.register(modEventBus);
 		RecipeSerializerInit.SERIALIZER.register(modEventBus);
 		ContainerTypesInit.CONTAINER.register(modEventBus);
+		WorldTypeInit.TYPES.register(modEventBus);
 		//Config
 		Config.register(ModLoadingContext.get());
 	}

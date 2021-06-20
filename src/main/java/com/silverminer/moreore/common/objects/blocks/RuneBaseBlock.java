@@ -34,47 +34,48 @@ public class RuneBaseBlock extends Block {
 		super(properties);
 	}
 
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer,
+	@Override
+	public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer,
 			ItemStack stack) {
-		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+		super.setPlacedBy(worldIn, pos, state, placer, stack);
 		checkGiantZombieKingSpawn(worldIn, pos, state);
 	}
 
 	public static void checkGiantZombieKingSpawn(World worldIn, BlockPos pos, BlockState blockstate) {
-		if (!worldIn.isRemote) {
-			boolean flag = blockstate.isIn(RuneBlocks.RUNE_BASE_BLOCK.get());
+		if (!worldIn.isClientSide) {
+			boolean flag = blockstate.is(RuneBlocks.RUNE_BASE_BLOCK.get());
 			if (flag && pos.getY() >= 0 && worldIn.getDifficulty() != Difficulty.PEACEFUL) {
 				BlockPattern blockpattern = getOrCreateGiantZombieKing();
-				BlockPattern.PatternHelper blockpattern$patternhelper = blockpattern.match(worldIn, pos);
+				BlockPattern.PatternHelper blockpattern$patternhelper = blockpattern.find(worldIn, pos);
 				if (blockpattern$patternhelper != null) {
-					for (int i = 0; i < blockpattern.getPalmLength(); ++i) {
-						for (int j = 0; j < blockpattern.getThumbLength(); ++j) {
-							CachedBlockInfo cachedblockinfo = blockpattern$patternhelper.translateOffset(i, j, 0);
-							worldIn.setBlockState(cachedblockinfo.getPos(), Blocks.AIR.getDefaultState(), 2);
-							worldIn.playEvent(2001, cachedblockinfo.getPos(),
-									Block.getStateId(cachedblockinfo.getBlockState()));
+					for (int i = 0; i < blockpattern.getHeight(); ++i) {
+						for (int j = 0; j < blockpattern.getWidth(); ++j) {
+							CachedBlockInfo cachedblockinfo = blockpattern$patternhelper.getBlock(i, j, 0);
+							worldIn.setBlock(cachedblockinfo.getPos(), Blocks.AIR.defaultBlockState(), 2);
+							worldIn.globalLevelEvent(2001, cachedblockinfo.getPos(),
+									Block.getId(cachedblockinfo.getState()));
 						}
 					}
 
 					GiantZombieKingEntity zombieKing = ModEntityTypesInit.GIANT_ZOMBIE_KING.get().create(worldIn);
-					BlockPos blockpos = blockpattern$patternhelper.translateOffset(1, 2, 0).getPos();
-					zombieKing.setLocationAndAngles((double) blockpos.getX() + 0.5D, (double) blockpos.getY() + 0.55D,
+					BlockPos blockpos = blockpattern$patternhelper.getBlock(1, 2, 0).getPos();
+					zombieKing.moveTo((double) blockpos.getX() + 0.5D, (double) blockpos.getY() + 0.55D,
 							(double) blockpos.getZ() + 0.5D,
 							blockpattern$patternhelper.getForwards().getAxis() == Direction.Axis.X ? 0.0F : 90.0F,
 							0.0F);
-					zombieKing.renderYawOffset = blockpattern$patternhelper.getForwards()
+					zombieKing.yBodyRot = blockpattern$patternhelper.getForwards()
 							.getAxis() == Direction.Axis.X ? 0.0F : 90.0F;
 
-					for (ServerPlayerEntity serverplayerentity : worldIn.getEntitiesWithinAABB(ServerPlayerEntity.class,
-							zombieKing.getBoundingBox().grow(50.0D))) {
+					for (ServerPlayerEntity serverplayerentity : worldIn.getEntitiesOfClass(ServerPlayerEntity.class,
+							zombieKing.getBoundingBox().inflate(50.0D))) {
 						CriteriaTriggers.SUMMONED_ENTITY.trigger(serverplayerentity, zombieKing);
 					}
 
-					worldIn.addEntity(zombieKing);
+					worldIn.addFreshEntity(zombieKing);
 
-					for (int k = 0; k < blockpattern.getPalmLength(); ++k) {
-						for (int l = 0; l < blockpattern.getThumbLength(); ++l) {
-							worldIn.func_230547_a_(blockpattern$patternhelper.translateOffset(k, l, 0).getPos(),
+					for (int k = 0; k < blockpattern.getHeight(); ++k) {
+						for (int l = 0; l < blockpattern.getWidth(); ++l) {
+							worldIn.blockUpdated(blockpattern$patternhelper.getBlock(k, l, 0).getPos(),
 									Blocks.AIR);
 						}
 					}
@@ -92,7 +93,7 @@ public class RuneBaseBlock extends Block {
 									.or(BlockStateMatcher.forBlock(Blocks.ZOMBIE_WALL_HEAD))))
 					.where('r', CachedBlockInfo.hasState(BlockStateMatcher.forBlock(RuneBlocks.RUNE_BASE_BLOCK.get())))
 					.where('o', (cachedInfo) -> {
-						return cachedInfo.getBlockState().isIn(ModTags.GIANT_ZOMBIE_SUMMON_BLOCKS);
+						return cachedInfo.getState().is(ModTags.GIANT_ZOMBIE_SUMMON_BLOCKS);
 					}).where('a', CachedBlockInfo.hasState(BlockMaterialMatcher.forMaterial(Material.AIR)))
 					.where('c', CachedBlockInfo.hasState(BlockStateMatcher.forBlock(Blocks.CRYING_OBSIDIAN))).build();
 		}

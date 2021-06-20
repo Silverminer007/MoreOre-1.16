@@ -11,8 +11,8 @@ import net.minecraft.tags.ItemTags;
 
 public class ModTags {
 	public static final ITag.INamedTag<Block> GIANT_ZOMBIE_SUMMON_BLOCKS = BlockTags
-			.makeWrapperTag(MoreOre.MODID + ":giant_zombie_summon_blocks");
+			.bind(MoreOre.MODID + ":giant_zombie_summon_blocks");
 
 	public static final INamedTag<Item> RUNE_SHARDS = ItemTags
-			.makeWrapperTag(MoreOre.MODID + ":rune_shards");
+			.bind(MoreOre.MODID + ":rune_shards");
 }

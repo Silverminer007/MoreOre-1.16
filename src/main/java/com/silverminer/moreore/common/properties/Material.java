@@ -29,7 +29,7 @@ public enum Material implements IStringSerializable {
 		for (Material material : materials) {
 			amaterials.add(material);
 		}
-		int pos = amaterials.indexOf(state.get(BeamerBlock.MATERIAL));
+		int pos = amaterials.indexOf(state.getValue(BeamerBlock.MATERIAL));
 		if (pos == amaterials.size() - 1) {
 			return materials[1];
 		} else {
@@ -38,7 +38,7 @@ public enum Material implements IStringSerializable {
 	}
 
 	@Override
-	public String getString() {
+	public String getSerializedName() {
 		return this.name;
 	}
 }

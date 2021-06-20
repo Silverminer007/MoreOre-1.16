@@ -15,7 +15,7 @@ public class RuneItem extends Item {
 	private final IRuneType type;
 
 	public RuneItem(IRuneType type, Properties properties) {
-		super(properties.defaultMaxDamage(type.getMaxUses()));
+		super(properties.durability(type.getMaxUses()));
 		this.type = type;
 	}
 
@@ -24,10 +24,10 @@ public class RuneItem extends Item {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 		if (flagIn.isAdvanced()) {
 			tooltip.add(new TranslationTextComponent(this.getRuneType().getDescriptionKey()));
 		}
-		super.addInformation(stack, worldIn, tooltip, flagIn);
+		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 }

@@ -9,11 +9,8 @@ import com.silverminer.moreore.common.world.gen.structures.ColorStructurePiece;
 import com.silverminer.moreore.common.world.gen.structures.MoreoreStructurePieceType;
 import com.silverminer.moreore.util.structures.config.Config;
 
-import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ChestTileEntity;
 import net.minecraft.tileentity.LockableLootTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -35,8 +32,8 @@ public class VikingShipPieces {
 	public static void generate(TemplateManager templateManager, BlockPos pos, Rotation rotation,
 			List<StructurePiece> pieces, Random random) {
 		pieces.add(new VikingShipPieces.Piece(templateManager, part1, pos, rotation, 0));
-		pieces.add(new VikingShipPieces.Piece(templateManager, part2, pos.add(new BlockPos(27, 0, 0).rotate(rotation)),
-				rotation, 0));
+		pieces.add(new VikingShipPieces.Piece(templateManager, part2,
+				pos.offset(new BlockPos(27, 0, 0).rotate(rotation)), rotation, 0));
 	}
 
 	public static class Piece extends ColorStructurePiece {
@@ -51,49 +48,33 @@ public class VikingShipPieces {
 
 		@Override
 		public StructureProcessor getProcessor() {
-			return BlockIgnoreStructureProcessor.AIR_AND_STRUCTURE_BLOCK;
+			return BlockIgnoreStructureProcessor.STRUCTURE_AND_AIR;
 		}
 
 		@Override
 		protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand,
 				MutableBoundingBox sbb) {
-			if (Config.STRUCTURES.BLUE_RUNE.LOOT_CHANCE.get() > rand.nextDouble()) {
-				if (function.equals("chest")) {
-					worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
-					TileEntity tileentity = worldIn.getTileEntity(pos.down());
-					if (tileentity instanceof ChestTileEntity) {
-						((ChestTileEntity) tileentity).setLootTable(MoreoreLootTables.BLUE_SHIP, rand.nextLong());
-					}
+			boolean loot = Config.STRUCTURES.BLUE_RUNE.LOOT_CHANCE.get() > rand.nextDouble();
+			if (function.equals("chest")) {
+				LockableLootTileEntity.setLootTable(worldIn, rand, pos.below(1),
+						loot ? MoreoreLootTables.BLUE_SHIP : MoreoreLootTables.EMPTY);
+			}
+			if (function.equals("barrel_1")) {
+				for (int i = 1; i <= 1; i++) {
+					LockableLootTileEntity.setLootTable(worldIn, rand, pos.below(i),
+							loot ? MoreoreLootTables.BLUE_SHIP_BARREL : MoreoreLootTables.EMPTY);
 				}
-				if (function.equals("barrel_1")) {
-					for (int i = 1; i <= 1; i++) {
-						worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
-						TileEntity tileentity = worldIn.getTileEntity(pos.down(i));
-						if (tileentity instanceof LockableLootTileEntity) {
-							((LockableLootTileEntity) tileentity).setLootTable(MoreoreLootTables.BLUE_SHIP_BARREL,
-									rand.nextLong());
-						}
-					}
+			}
+			if (function.equals("barrel_2")) {
+				for (int i = 1; i <= 2; i++) {
+					LockableLootTileEntity.setLootTable(worldIn, rand, pos.below(i),
+							loot ? MoreoreLootTables.BLUE_SHIP_BARREL : MoreoreLootTables.EMPTY);
 				}
-				if (function.equals("barrel_2")) {
-					for (int i = 1; i <= 2; i++) {
-						worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
-						TileEntity tileentity = worldIn.getTileEntity(pos.down(i));
-						if (tileentity instanceof LockableLootTileEntity) {
-							((LockableLootTileEntity) tileentity).setLootTable(MoreoreLootTables.BLUE_SHIP_BARREL,
-									rand.nextLong());
-						}
-					}
-				}
-				if (function.equals("barrel_3")) {
-					for (int i = 1; i <= 3; i++) {
-						worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
-						TileEntity tileentity = worldIn.getTileEntity(pos.down(i));
-						if (tileentity instanceof LockableLootTileEntity) {
-							((LockableLootTileEntity) tileentity).setLootTable(MoreoreLootTables.BLUE_SHIP_BARREL,
-									rand.nextLong());
-						}
-					}
+			}
+			if (function.equals("barrel_3")) {
+				for (int i = 1; i <= 3; i++) {
+					LockableLootTileEntity.setLootTable(worldIn, rand, pos.below(i),
+							loot ? MoreoreLootTables.BLUE_SHIP_BARREL : MoreoreLootTables.EMPTY);
 				}
 			}
 		}

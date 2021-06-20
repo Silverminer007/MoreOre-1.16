@@ -18,16 +18,16 @@ public class RunetableScreen extends AbstractRepairScreen<RunetableContainer> {
 
 	public RunetableScreen(RunetableContainer container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title, GUI);
-		this.xSize = 204;
-		this.titleX = 50;
+		this.imageWidth = 204;
+		this.titleLabelX = 50;
 	}
 
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
-		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, x, y);
-		int i = (this.width - this.xSize) / 2;
-		int j = (this.height - this.ySize) / 2;
-		for (int k = RuneInventoryRegistry.getInventorySize(this.getContainer().activeUUID); k < 3; k++) {
-			this.blit(matrixStack, i + 176, j + 7 + k * 22, this.xSize, 21, 18, 18);
+	protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
+		super.renderBg(matrixStack, partialTicks, x, y);
+		int i = (this.width - this.imageWidth) / 2;
+		int j = (this.height - this.imageHeight) / 2;
+		for (int k = RuneInventoryRegistry.getInventorySize(this.getMenu().activeUUID); k < 3; k++) {
+			this.blit(matrixStack, i + 176, j + 7 + k * 22, this.imageWidth, 21, 18, 18);
 		}
 	}
 }

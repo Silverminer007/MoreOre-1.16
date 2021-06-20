@@ -24,15 +24,16 @@ public class BeamerBlock extends Block {
 
 	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player,
 			Hand handIn, BlockRayTraceResult hit) {
-		worldIn.setBlockState(pos, state.with(MATERIAL, Material.getNext(state)), 3);
+		worldIn.setBlock(pos, state.setValue(MATERIAL, Material.getNext(state)), 3);
 		return ActionResultType.SUCCESS;
 	}
 
-	public void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+	@Override
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(MATERIAL);
 	}
 
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return this.getDefaultState().with(MATERIAL, Material.BEAMER);
+		return this.defaultBlockState().setValue(MATERIAL, Material.BEAMER);
 	}
 }

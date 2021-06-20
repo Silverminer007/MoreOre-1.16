@@ -29,7 +29,7 @@ public class RuneInventoryRegistry {
 
 	private static void markDirty() {
 		if (MoreOre.runeSaveData != null)
-			MoreOre.runeSaveData.markDirty();
+			MoreOre.runeSaveData.setDirty();
 	}
 
 	public static boolean addPlayer(UUID uuid) {
@@ -46,7 +46,7 @@ public class RuneInventoryRegistry {
 	public static boolean setStackToSlot(UUID uuid, ItemStack stack, int slot) {
 		addPlayer(uuid);
 		if (RUNE_INVENTORY_SIZE.get(uuid) > slot) {
-			RUNE_INVENTORY.get(uuid).setInventorySlotContents(slot, stack);
+			RUNE_INVENTORY.get(uuid).setItem(slot, stack);
 			markDirty();
 			return true;
 		}
@@ -54,12 +54,12 @@ public class RuneInventoryRegistry {
 	}
 
 	public static void removeStackFromSlot(UUID uuid, int slot) {
-		RUNE_INVENTORY.get(uuid).removeStackFromSlot(slot);
+		RUNE_INVENTORY.get(uuid).removeItemNoUpdate(slot);
 		markDirty();
 	}
 
 	public static ItemStack getStackFromSlot(UUID uuid, int slot) {
-		return RUNE_INVENTORY.get(uuid).getStackInSlot(slot);
+		return RUNE_INVENTORY.get(uuid).getItem(slot);
 	}
 
 	public static Inventory getInventory(UUID uuid) {
@@ -68,8 +68,8 @@ public class RuneInventoryRegistry {
 	}
 
 	public static Inventory setInventory(PlayerEntity player, Inventory inv) {
-		MinecraftForge.EVENT_BUS.post(new RuneInventoryChangeEvent(player, inv, getInventory(player.getUniqueID())));
-		return setInventory(player.getUniqueID(), inv);
+		MinecraftForge.EVENT_BUS.post(new RuneInventoryChangeEvent(player, inv, getInventory(player.getUUID())));
+		return setInventory(player.getUUID(), inv);
 	}
 
 	private static Inventory setInventory(UUID uuid, Inventory inv) {
@@ -120,8 +120,8 @@ public class RuneInventoryRegistry {
 
 	public static CompoundNBT writePlayerToNBT(UUID uuid) {
 		CompoundNBT nbt = new CompoundNBT();
-		nbt.putUniqueId("uuid", uuid);
-		nbt.put("inventory", RUNE_INVENTORY.get(uuid).write());
+		nbt.putUUID("uuid", uuid);
+		nbt.put("inventory", RUNE_INVENTORY.get(uuid).createTag());
 		nbt.putInt("invSize", RUNE_INVENTORY_SIZE.get(uuid));
 		return nbt;
 	}
@@ -137,9 +137,9 @@ public class RuneInventoryRegistry {
 	}
 
 	public static void readPlayerFromNBT(CompoundNBT tag) {
-		UUID uuid = tag.getUniqueId("uuid");
+		UUID uuid = tag.getUUID("uuid");
 		addPlayer(uuid);
-		RUNE_INVENTORY.get(uuid).read(tag.getList("inventory", 10));
+		RUNE_INVENTORY.get(uuid).fromTag(tag.getList("inventory", 10));
 		RUNE_INVENTORY_SIZE.put(uuid, tag.getInt("invSize"));
 	}
 }

@@ -23,43 +23,43 @@ public class NutBush extends BigTree {
 
 	public static final ConfiguredFeature<BaseTreeFeatureConfig, ?> SMALL_NUT_BUSH_CONFIG = TreeUtils.register(
 			"small_nut_bush",
-			Feature.TREE.withConfiguration((new BaseTreeFeatureConfig.Builder(
-					new SimpleBlockStateProvider(BiologicBlocks.NUT_BUSH_LOG.get().getDefaultState()),
-					new SimpleBlockStateProvider(BiologicBlocks.NUT_BUSH_LEAVES.get().getDefaultState()),
-					new CircleFoliagePlacer(FeatureSpread.func_242252_a(2), FeatureSpread.func_242252_a(0), 2),
-					new StraightTrunkPlacer(2, 0, 0), new TwoLayerFeature(1, 0, 1))).setIgnoreVines().build()));
+			Feature.TREE.configured((new BaseTreeFeatureConfig.Builder(
+					new SimpleBlockStateProvider(BiologicBlocks.NUT_BUSH_LOG.get().defaultBlockState()),
+					new SimpleBlockStateProvider(BiologicBlocks.NUT_BUSH_LEAVES.get().defaultBlockState()),
+					new CircleFoliagePlacer(FeatureSpread.fixed(2), FeatureSpread.fixed(0), 2),
+					new StraightTrunkPlacer(2, 0, 0), new TwoLayerFeature(1, 0, 1))).ignoreVines().build()));
 
 	public static final ConfiguredFeature<BaseTreeFeatureConfig, ?> NUT_BUSH_CONFIG = TreeUtils.register("nut_bush",
-			Feature.TREE.withConfiguration((new BaseTreeFeatureConfig.Builder(
-					new SimpleBlockStateProvider(BiologicBlocks.NUT_BUSH_LOG.get().getDefaultState()),
-					new SimpleBlockStateProvider(BiologicBlocks.NUT_BUSH_LEAVES.get().getDefaultState()),
-					new CircleFoliagePlacer(FeatureSpread.func_242252_a(2), FeatureSpread.func_242252_a(0), 3),
-					new StraightTrunkPlacer(4, 0, 0), new TwoLayerFeature(1, 0, 1))).setIgnoreVines().build()));
+			Feature.TREE.configured((new BaseTreeFeatureConfig.Builder(
+					new SimpleBlockStateProvider(BiologicBlocks.NUT_BUSH_LOG.get().defaultBlockState()),
+					new SimpleBlockStateProvider(BiologicBlocks.NUT_BUSH_LEAVES.get().defaultBlockState()),
+					new CircleFoliagePlacer(FeatureSpread.fixed(2), FeatureSpread.fixed(0), 3),
+					new StraightTrunkPlacer(4, 0, 0), new TwoLayerFeature(1, 0, 1))).ignoreVines().build()));
 
 	public static final ConfiguredFeature<BaseTreeFeatureConfig, ?> HUGE_NUT_BUSH_CONFIG = TreeUtils.register(
 			"huge_nut_bush",
-			Feature.TREE.withConfiguration((new BaseTreeFeatureConfig.Builder(
-					new SimpleBlockStateProvider(BiologicBlocks.NUT_BUSH_LOG.get().getDefaultState()),
-					new SimpleBlockStateProvider(BiologicBlocks.NUT_BUSH_LEAVES.get().getDefaultState()),
-					new CircleFoliagePlacer(FeatureSpread.func_242252_a(3), FeatureSpread.func_242252_a(0), 4),
-					new StraightTrunkPlacer(6, 0, 0), new TwoLayerFeature(1, 0, 1))).setIgnoreVines().build()));
+			Feature.TREE.configured((new BaseTreeFeatureConfig.Builder(
+					new SimpleBlockStateProvider(BiologicBlocks.NUT_BUSH_LOG.get().defaultBlockState()),
+					new SimpleBlockStateProvider(BiologicBlocks.NUT_BUSH_LEAVES.get().defaultBlockState()),
+					new CircleFoliagePlacer(FeatureSpread.fixed(3), FeatureSpread.fixed(0), 4),
+					new StraightTrunkPlacer(6, 0, 0), new TwoLayerFeature(1, 0, 1))).ignoreVines().build()));
 
 	public static final ConfiguredFeature<?, ?> NUT_BUSH_RANDOM = TreeUtils.register("nut_bush_random",
 			Feature.RANDOM_SELECTOR
-					.withConfiguration(new MultipleRandomFeatureConfig(
-							ImmutableList.of(HUGE_NUT_BUSH_CONFIG.withChance(0.05F),
-									SMALL_NUT_BUSH_CONFIG.withChance(0.05F), NUT_BUSH_CONFIG.withChance(0.1F)),
+					.configured(new MultipleRandomFeatureConfig(
+							ImmutableList.of(HUGE_NUT_BUSH_CONFIG.weighted(0.05F),
+									SMALL_NUT_BUSH_CONFIG.weighted(0.05F), NUT_BUSH_CONFIG.weighted(0.1F)),
 							Features.BIRCH_OTHER))
-					.withPlacement(Features.Placements.HEIGHTMAP_PLACEMENT)
-					.withPlacement(Placement.COUNT_EXTRA.configure(new AtSurfaceWithExtraConfig(10, 0.1F, 1))));
+					.decorated(Features.Placements.HEIGHTMAP)
+					.decorated(Placement.COUNT_EXTRA.configured(new AtSurfaceWithExtraConfig(10, 0.1F, 1))));
 
 	@Override
-	public ConfiguredFeature<BaseTreeFeatureConfig, ?> getTreeFeature(Random randomIn, boolean p_225546_2_) {
+	public ConfiguredFeature<BaseTreeFeatureConfig, ?> getConfiguredFeature(Random randomIn, boolean p_225546_2_) {
 		return randomIn.nextInt() < 0.7 ? NUT_BUSH_CONFIG : SMALL_NUT_BUSH_CONFIG;
 	}
 
 	@Override
-	protected ConfiguredFeature<BaseTreeFeatureConfig, ?> getHugeTreeFeature(Random p_225547_1_) {
+	protected ConfiguredFeature<BaseTreeFeatureConfig, ?> getConfiguredMegaFeature(Random p_225547_1_) {
 		return HUGE_NUT_BUSH_CONFIG;
 	}
 

@@ -18,7 +18,7 @@ public class VillageGuardianRenderer<T extends Entity> extends MobRenderer<Villa
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(VillageGuardian entity) {
+	public ResourceLocation getTextureLocation(VillageGuardian entity) {
 		return TEXTURE;
 	}
 }

@@ -40,7 +40,7 @@ public class BlueRuneStructure extends AbstractStructure<NoFeatureConfig> {
 	}
 
 	@Override
-	public Decoration getDecorationStage() {
+	public Decoration step() {
 		return GenerationStage.Decoration.SURFACE_STRUCTURES;
 	}
 
@@ -55,17 +55,16 @@ public class BlueRuneStructure extends AbstractStructure<NoFeatureConfig> {
 	}
 
 	@Override
-	protected boolean func_230363_a_(ChunkGenerator generator, BiomeProvider provider, long seed, SharedSeedRandom rand,
+	protected boolean isFeatureChunk(ChunkGenerator generator, BiomeProvider provider, long seed, SharedSeedRandom rand,
 			int chunkX, int chunkZ, Biome biome, ChunkPos pos, NoFeatureConfig config) {
-		LOGGER.info("Use House usage: {}", CommonEvents.ForgeEventBus.USE_HOUSE);
 		if (CommonEvents.ForgeEventBus.USE_HOUSE) {
-			return super.func_230363_a_(generator, provider, seed, rand, chunkX, chunkZ, biome, pos, config);
+			return super.isFeatureChunk(generator, provider, seed, rand, chunkX, chunkZ, biome, pos, config);
 		}
 
 		// Check the entire size of the structure to see if it's all a viable biome:
-		for (Biome biome1 : provider.getBiomes(chunkX * 16 + 9, generator.getGroundHeight(), chunkZ * 16 + 9,
+		for (Biome biome1 : provider.getBiomesWithin(chunkX * 16 + 9, generator.getGenDepth(), chunkZ * 16 + 9,
 				getSize() * 16)) {
-			if (!biome1.getGenerationSettings().hasStructure(this)) {
+			if (!biome1.getGenerationSettings().isValidStart(this)) {
 				return false;
 			}
 		}
@@ -91,18 +90,18 @@ public class BlueRuneStructure extends AbstractStructure<NoFeatureConfig> {
 		}
 
 		@Override
-		public void func_230364_a_(DynamicRegistries registries, ChunkGenerator chunkGenerator,
+		public void generatePieces(DynamicRegistries registries, ChunkGenerator chunkGenerator,
 				TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config) {
 			int i = chunkX * 16;
 			int j = chunkZ * 16;
 			BlockPos blockpos = new BlockPos(i, 0, j);
-			Rotation rotation = Rotation.randomRotation(this.rand);
+			Rotation rotation = Rotation.getRandom(this.random);
 			LOGGER.info("Use House usage: {}", CommonEvents.ForgeEventBus.USE_HOUSE);
 			if (CommonEvents.ForgeEventBus.USE_HOUSE)
-				HousePieces.generate(templateManager, blockpos, rotation, this.components, this.rand);
+				HousePieces.generate(templateManager, blockpos, rotation, this.pieces, this.random);
 			else
-				VikingShipPieces.generate(templateManager, blockpos, rotation, this.components, this.rand);
-			this.recalculateStructureSize();
+				VikingShipPieces.generate(templateManager, blockpos, rotation, this.pieces, this.random);
+			this.calculateBoundingBox();
 		}
 
 		public boolean needsGround() {

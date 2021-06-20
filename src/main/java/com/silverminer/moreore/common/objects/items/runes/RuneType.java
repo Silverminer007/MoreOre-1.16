@@ -31,7 +31,7 @@ public enum RuneType implements IRuneType {
 	}
 
 	@Override
-	public String getString() {
+	public String getSerializedName() {
 		return this.getDescriptionKey();
 	}
 
@@ -42,7 +42,7 @@ public enum RuneType implements IRuneType {
 
 	public RuneType fromStringOrDefault(String key, RuneType typeD) {
 		for(RuneType type : RuneType.values()) {
-			if(type.getString().equals(key)) {
+			if(type.getSerializedName().equals(key)) {
 				return type;
 			}
 		}

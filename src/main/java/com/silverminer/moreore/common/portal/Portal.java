@@ -33,7 +33,7 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 	private Corner corner2;
 	private Corner corner3;
 	private Corner corner4;
-	private RegistryKey<World> destinationDim = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, MoreOre.SILVER_DIM_TYPE);
+	private RegistryKey<World> destinationDim = RegistryKey.create(Registry.DIMENSION_REGISTRY, MoreOre.SILVER_DIM_TYPE);
 
 	public Portal() {
 	}
@@ -122,7 +122,7 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 	 * @return An {@link Iterable} of {@link BlockPos}.
 	 */
 	public Iterable<BlockPos> getAllPositions() {
-		return BlockPos.getAllInBoxMutable(corner1.getPos(), corner4.getPos());
+		return BlockPos.betweenClosed(corner1.getPos(), corner4.getPos());
 	}
 
 	/**
@@ -131,7 +131,7 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 	 * @return An {@link Iterable} of {@link BlockPos}.
 	 */
 	public Iterable<BlockPos> getPortalPositions() {
-		return BlockPos.getAllInBoxMutable(corner1.getInnerCornerPos(), corner4.getInnerCornerPos());
+		return BlockPos.betweenClosed(corner1.getInnerCornerPos(), corner4.getInnerCornerPos());
 	}
 
 	/**
@@ -162,34 +162,34 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 		Direction dir4To2 = Utils.getRelativeDirection(corner4.getPos(), corner2.getPos());
 		Direction dir4To3 = Utils.getRelativeDirection(corner4.getPos(), corner3.getPos());
 
-		// Offset the corner positions towards their adjacent corners and get all
+		// relative the corner positions towards their adjacent corners and get all
 		// positions
 		// in between. This way we get all the frame positions without the corners
 		// themselves.
 
-		BlockPos from1 = corner1.getPos().offset(dir1To2);
-		BlockPos to1 = corner2.getPos().offset(dir1To2.getOpposite());
+		BlockPos from1 = corner1.getPos().relative(dir1To2);
+		BlockPos to1 = corner2.getPos().relative(dir1To2.getOpposite());
 
-		BlockPos from2 = corner1.getPos().offset(dir1To3);
-		BlockPos to2 = corner3.getPos().offset(dir1To3.getOpposite());
+		BlockPos from2 = corner1.getPos().relative(dir1To3);
+		BlockPos to2 = corner3.getPos().relative(dir1To3.getOpposite());
 
-		BlockPos from3 = corner4.getPos().offset(dir4To2);
-		BlockPos to3 = corner2.getPos().offset(dir4To2.getOpposite());
+		BlockPos from3 = corner4.getPos().relative(dir4To2);
+		BlockPos to3 = corner2.getPos().relative(dir4To2.getOpposite());
 
-		BlockPos from4 = corner4.getPos().offset(dir4To3);
-		BlockPos to4 = corner3.getPos().offset(dir4To3.getOpposite());
+		BlockPos from4 = corner4.getPos().relative(dir4To3);
+		BlockPos to4 = corner3.getPos().relative(dir4To3.getOpposite());
 
 		// BlockPos.getAllInBox() delivers wrong results (duplicates and missing
 		// positions).
 		// So I have to do this nonsense. Minecraft 1.14.4 (10.10.2019)
-		for (BlockPos pos : BlockPos.getAllInBoxMutable(from1, to1))
-			frame.add(pos.toImmutable());
-		for (BlockPos pos : BlockPos.getAllInBoxMutable(from2, to2))
-			frame.add(pos.toImmutable());
-		for (BlockPos pos : BlockPos.getAllInBoxMutable(from3, to3))
-			frame.add(pos.toImmutable());
-		for (BlockPos pos : BlockPos.getAllInBoxMutable(from4, to4))
-			frame.add(pos.toImmutable());
+		for (BlockPos pos : BlockPos.betweenClosed(from1, to1))
+			frame.add(pos.immutable());
+		for (BlockPos pos : BlockPos.betweenClosed(from2, to2))
+			frame.add(pos.immutable());
+		for (BlockPos pos : BlockPos.betweenClosed(from3, to3))
+			frame.add(pos.immutable());
+		for (BlockPos pos : BlockPos.betweenClosed(from4, to4))
+			frame.add(pos.immutable());
 
 		if (includeCorners) {
 			frame.add(corner1.getPos());
@@ -229,8 +229,8 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 	public CompoundNBT serializeNBT() {
 		CompoundNBT tag = new CompoundNBT();
 		tag.putString("dimension",
-				(dimension != null && dimension.getLocation() != null && dimension.getLocation().toString() != null)
-						? dimension.getLocation().toString()
+				(dimension != null && dimension.location() != null && dimension.location().toString() != null)
+						? dimension.location().toString()
 						: "");
 		tag.putString("axis", axis.name());
 		tag.put("corner1", corner1.serializeNBT());
@@ -238,7 +238,7 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 		tag.put("corner3", corner3.serializeNBT());
 		tag.put("corner4", corner4.serializeNBT());
 		tag.putString("destinationDim",
-				(destinationDim.getLocation().toString() != null) ? destinationDim.getLocation().toString()
+				(destinationDim.location().toString() != null) ? destinationDim.location().toString()
 						: MoreOre.SILVER_DIM_TYPE.toString());
 
 		return tag;
@@ -253,8 +253,8 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 		// :LegacyDimensionId
 		if (nbt.contains("dimension", 8)) // Type 8 means string.
 		{
-			ResourceLocation dimensionRegistryKey = ResourceLocation.tryCreate(nbt.getString("dimension"));
-			dimension = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, dimensionRegistryKey);
+			ResourceLocation dimensionRegistryKey = ResourceLocation.tryParse(nbt.getString("dimension"));
+			dimension = RegistryKey.create(Registry.DIMENSION_REGISTRY, dimensionRegistryKey);
 		} else {
 			dimension = World.OVERWORLD;
 		}
@@ -275,10 +275,10 @@ public class Portal implements INBTSerializable<CompoundNBT> {
 
 		// Type 8 means string
 		if (nbt.contains("destinationDim", 8)) {
-			ResourceLocation dimensionRegistryKey = ResourceLocation.tryCreate(nbt.getString("destinationDim"));
-			destinationDim = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, dimensionRegistryKey);
+			ResourceLocation dimensionRegistryKey = ResourceLocation.tryParse(nbt.getString("destinationDim"));
+			destinationDim = RegistryKey.create(Registry.DIMENSION_REGISTRY, dimensionRegistryKey);
 		} else {
-			destinationDim = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, MoreOre.SILVER_DIM_TYPE);
+			destinationDim = RegistryKey.create(Registry.DIMENSION_REGISTRY, MoreOre.SILVER_DIM_TYPE);
 		}
 	}
 

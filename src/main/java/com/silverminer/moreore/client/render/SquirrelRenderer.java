@@ -31,7 +31,7 @@ public class SquirrelRenderer<T extends Entity> extends MobRenderer<SquirrelEnti
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(SquirrelEntity entity) {
+	public ResourceLocation getTextureLocation(SquirrelEntity entity) {
 		return TEXTURE;
 	}
 
@@ -44,12 +44,12 @@ public class SquirrelRenderer<T extends Entity> extends MobRenderer<SquirrelEnti
 		public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn,
 				SquirrelEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks,
 				float ageInTicks, float netHeadYaw, float headPitch) {
-			if (entitylivingbaseIn.isChild())
+			if (entitylivingbaseIn.isBaby())
 				return;
-			matrixStackIn.push();
-			ModelRenderer head = this.getEntityModel().head;
-			matrixStackIn.translate((double) (head.rotationPointX / 16.0F), (double) (head.rotationPointY / 16.0F),
-					(double) (head.rotationPointZ / 16.0F));
+			matrixStackIn.pushPose();
+			ModelRenderer head = this.getParentModel().head;
+			matrixStackIn.translate((double) (head.x / 16.0F), (double) (head.y / 16.0F),
+					(double) (head.z / 16.0F));
 			if (!entitylivingbaseIn.isSitting()) {
 				matrixStackIn.translate(0.365D, 1.725D, -1.325D);
 			} else {
@@ -57,14 +57,14 @@ public class SquirrelRenderer<T extends Entity> extends MobRenderer<SquirrelEnti
 			}
 			float f = 0.25F;
 			matrixStackIn.scale(f, f, f);
-			matrixStackIn.rotate(Vector3f.YP.rotationDegrees(netHeadYaw));
-			matrixStackIn.rotate(Vector3f.XP.rotationDegrees(headPitch - 90.0F));
-			matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180.0F));
+			matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(netHeadYaw));
+			matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(headPitch - 90.0F));
+			matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
 
-			ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
-			Minecraft.getInstance().getFirstPersonRenderer().renderItemSide(entitylivingbaseIn, itemstack,
+			ItemStack itemstack = entitylivingbaseIn.getItemBySlot(EquipmentSlotType.MAINHAND);
+			Minecraft.getInstance().getItemInHandRenderer().renderItem(entitylivingbaseIn, itemstack,
 					ItemCameraTransforms.TransformType.GROUND, false, matrixStackIn, bufferIn, packedLightIn);
-			matrixStackIn.pop();
+			matrixStackIn.popPose();
 		}
 	}
 }

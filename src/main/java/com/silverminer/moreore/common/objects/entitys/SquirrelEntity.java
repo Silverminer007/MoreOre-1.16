@@ -63,19 +63,19 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 public class SquirrelEntity extends AnimalEntity {
-	private static final DataParameter<Boolean> IS_CLIMBING = EntityDataManager.createKey(SquirrelEntity.class,
+	private static final DataParameter<Boolean> IS_CLIMBING = EntityDataManager.defineId(SquirrelEntity.class,
 			DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> IS_SITTING = EntityDataManager.createKey(SquirrelEntity.class,
+	private static final DataParameter<Boolean> IS_SITTING = EntityDataManager.defineId(SquirrelEntity.class,
 			DataSerializers.BOOLEAN);
 	/**
 	 * Wheater the Squirrel eats the Nut or places it
 	 */
-	private static final DataParameter<Boolean> EAT_NUT = EntityDataManager.createKey(SquirrelEntity.class,
+	private static final DataParameter<Boolean> EAT_NUT = EntityDataManager.defineId(SquirrelEntity.class,
 			DataSerializers.BOOLEAN);
 	private static final DataParameter<Direction> NEAREST_CLIMBABLE_BLOCK = EntityDataManager
-			.createKey(SquirrelEntity.class, DataSerializers.DIRECTION);
+			.defineId(SquirrelEntity.class, DataSerializers.DIRECTION);
 	private static final Predicate<ItemEntity> TRUSTED_TARGET_SELECTOR = (item) -> {
-		return !item.cannotPickup() && item.isAlive() && item.getItem().getItem() == TreeItems.NUTS.get();
+		return !item.isPickable() && item.isAlive() && item.getItem().getItem() == TreeItems.NUTS.get();
 	};
 
 	public SquirrelEntity(EntityType<? extends AnimalEntity> type, World worldIn) {
@@ -90,9 +90,9 @@ public class SquirrelEntity extends AnimalEntity {
 	}
 
 	@Override
-	public AgeableEntity func_241840_a(ServerWorld worldIn, AgeableEntity ageable) {
+	public AgeableEntity getBreedOffspring(ServerWorld worldIn, AgeableEntity ageable) {
 		SquirrelEntity entity = new SquirrelEntity(ModEntityTypesInit.SQUIRREL.get(), worldIn);
-		entity.onInitialSpawn(worldIn, worldIn.getDifficultyForLocation(new BlockPos(entity.getPositionVec())),
+		entity.finalizeSpawn(worldIn, worldIn.getCurrentDifficultyAt(new BlockPos(entity.position())),
 				SpawnReason.BREEDING, (ILivingEntityData) null, (CompoundNBT) null);
 		return entity;
 	}
@@ -102,7 +102,7 @@ public class SquirrelEntity extends AnimalEntity {
 		this.goalSelector.addGoal(0, new SwimGoal());
 		this.goalSelector.addGoal(1, new FollowParentGoal(this, 0.5D));
 		this.goalSelector.addGoal(2, new BreedGoal(this, 0.5D));
-		this.goalSelector.addGoal(3, new TemptGoal(this, 0.7D, Ingredient.fromItems(TreeItems.NUTS.get()), false));
+		this.goalSelector.addGoal(3, new TemptGoal(this, 0.7D, Ingredient.of(TreeItems.NUTS.get()), false));
 		this.goalSelector.addGoal(4, new PanicGoal(this, 0.9D));
 
 		this.goalSelector.addGoal(4,
@@ -132,12 +132,12 @@ public class SquirrelEntity extends AnimalEntity {
 		this.goalSelector.addGoal(8, new WaterAvoidingRandomWalkingGoal(this, 0.5D, 0.1F));
 	}
 
-	protected void registerData() {
-		super.registerData();
-		this.dataManager.register(IS_CLIMBING, false);
-		this.dataManager.register(IS_SITTING, false);
-		this.dataManager.register(EAT_NUT, false);
-		this.dataManager.register(NEAREST_CLIMBABLE_BLOCK, Direction.DOWN);
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(IS_CLIMBING, false);
+		this.entityData.define(IS_SITTING, false);
+		this.entityData.define(EAT_NUT, false);
+		this.entityData.define(NEAREST_CLIMBABLE_BLOCK, Direction.DOWN);
 	}
 
 	/**
@@ -145,17 +145,17 @@ public class SquirrelEntity extends AnimalEntity {
 	 */
 	public void tick() {
 		super.tick();
-		if (this.getItemStackFromSlot(EquipmentSlotType.MAINHAND).getCount() == 0) {
-			this.setItemStackToSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
+		if (this.getItemBySlot(EquipmentSlotType.MAINHAND).getCount() == 0) {
+			this.setItemSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
 		}
-		if (!this.world.isRemote) {
-			if (this.collidedHorizontally || this.collidedVertically) {
+		if (!this.level.isClientSide()) {
+			if (this.horizontalCollision || this.verticalCollision) {
 				this.setBesideClimbableBlock(true);
 				this.setNearestDirection(Direction.NORTH);
-				for (Direction d : Direction.getFacingDirections(this)) {
-					BlockPos pos = this.getPosition().add(d.getDirectionVec());
-					BlockState state = this.world.getBlockState(pos);
-					if (state.getBlock().isIn(BlockTags.LOGS) || state.getBlock().isIn(BlockTags.LEAVES)) {
+				for (Direction d : Direction.orderedByNearest(this)) {
+					BlockPos pos = this.blockPosition().offset(d.getNormal());
+					BlockState state = this.level.getBlockState(pos);
+					if (state.getBlock().is(BlockTags.LOGS) || state.getBlock().is(BlockTags.LEAVES)) {
 						this.setBesideClimbableBlock(true);
 						this.setNearestDirection(d);
 						return;
@@ -176,19 +176,19 @@ public class SquirrelEntity extends AnimalEntity {
 	}
 
 	public boolean isBesideClimbableBlock() {
-		return this.dataManager.get(IS_CLIMBING);
+		return this.entityData.get(IS_CLIMBING);
 	}
 
 	public void setBesideClimbableBlock(boolean climbing) {
-		this.dataManager.set(IS_CLIMBING, climbing);
+		this.entityData.set(IS_CLIMBING, climbing);
 	}
 
 	public Direction getNearestDirection() {
-		return this.dataManager.get(NEAREST_CLIMBABLE_BLOCK);
+		return this.entityData.get(NEAREST_CLIMBABLE_BLOCK);
 	}
 
 	public void setNearestDirection(Direction d) {
-		this.dataManager.set(NEAREST_CLIMBABLE_BLOCK, d);
+		this.entityData.set(NEAREST_CLIMBABLE_BLOCK, d);
 	}
 
 	public void resetPosition() {
@@ -200,7 +200,7 @@ public class SquirrelEntity extends AnimalEntity {
 	}
 
 	public void setStitting(boolean sitting) {
-		this.dataManager.set(IS_SITTING, sitting);
+		this.entityData.set(IS_SITTING, sitting);
 	}
 
 	public boolean isNormal() {
@@ -208,49 +208,49 @@ public class SquirrelEntity extends AnimalEntity {
 	}
 
 	public boolean isSitting() {
-		return this.dataManager.get(IS_SITTING);
+		return this.entityData.get(IS_SITTING);
 	}
 
 	public boolean isEatingNut() {
-		return this.dataManager.get(EAT_NUT);
+		return this.entityData.get(EAT_NUT);
 	}
 
 	public void setEatingNut(boolean eatingNut) {
-		this.dataManager.set(EAT_NUT, eatingNut);
+		this.entityData.set(EAT_NUT, eatingNut);
 	}
 
-	public double getPosYEye() {
-		return this.isSitting() ? super.getPosYEye() + 0.2D : super.getPosYEye();
+	public double getEyeY() {
+		return this.isSitting() ? super.getEyeY() + 0.2D : super.getEyeY();
 	}
 
 	/**
 	 * Checks if the parameter is an item which this animal can be fed to breed it
 	 * (wheat, carrots or seeds depending on the animal type)
 	 */
-	public boolean isBreedingItem(ItemStack stack) {
+	public boolean isFood(ItemStack stack) {
 		return stack.getItem() == TreeItems.NUTS.get();
 	}
 
 	public boolean processInteract(PlayerEntity player, Hand hand) {
-		ItemStack itemstack = player.getHeldItem(hand);
-		if (this.isBreedingItem(itemstack)) {
+		ItemStack itemstack = player.getItemInHand(hand);
+		if (this.isFood(itemstack)) {
 			if (this.setInLove(itemstack, player, hand))
 				return true;
 		}
 		Item item = itemstack.getItem();
-		if (item instanceof SpawnEggItem && ((SpawnEggItem) item).hasType(itemstack.getTag(), this.getType())) {
-			if (!this.world.isRemote) {
-				AgeableEntity ageableentity = this.func_241840_a((ServerWorld) this.world, this);
+		if (item instanceof SpawnEggItem && ((SpawnEggItem) item).spawnsEntity(itemstack.getTag(), this.getType())) {
+			if (!this.level.isClientSide()) {
+				AgeableEntity ageableentity = this.getBreedOffspring((ServerWorld) this.level, this);
 				if (ageableentity != null) {
-					ageableentity.setGrowingAge(-24000);
-					ageableentity.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), 0.0F, 0.0F);
-					this.world.addEntity(ageableentity);
-					if (itemstack.hasDisplayName()) {
+					ageableentity.ageUp(-24000);
+					ageableentity.moveTo(this.getX(), this.getY(), this.getZ(), 0.0F, 0.0F);
+					this.level.addFreshEntity(ageableentity);
+					if (itemstack.hasCustomHoverName()) {
 						ageableentity.setCustomName(itemstack.getDisplayName());
 					}
 
-					this.onChildSpawnFromEgg(player, ageableentity);
-					if (!player.abilities.isCreativeMode) {
+					this.onOffspringSpawnedFromEgg(player, ageableentity);
+					if (!player.abilities.instabuild) {
 						itemstack.shrink(1);
 					}
 				}
@@ -263,43 +263,42 @@ public class SquirrelEntity extends AnimalEntity {
 	}
 
 	private boolean setInLove(ItemStack item, @Nullable PlayerEntity player, @Nullable Hand hand) {
-		if (!this.world.isRemote && this.getGrowingAge() == 0 && this.canBreed()) {
+		if (!this.level.isClientSide() && this.getAge() == 0 && this.canBreed()) {
 			if (player != null)
-				this.consumeItemFromStack(player, item);
+				this.usePlayerItem(player, item);
 			this.setInLove(player);
 			if (player != null && hand != null)
 				player.swing(hand, true);
 			return true;
 		}
 
-		if (this.isChild()) {
+		if (this.isBaby()) {
 			if (player != null)
-				this.consumeItemFromStack(player, item);
+				this.usePlayerItem(player, item);
 			else
-				this.getItemStackFromSlot(EquipmentSlotType.MAINHAND).shrink(1);
-			this.ageUp((int) ((float) (-this.getGrowingAge() / 20) * 0.1F), true);
+				this.getItemBySlot(EquipmentSlotType.MAINHAND).shrink(1);
+			this.ageUp((int) -this.getAge() / 200, true);
 			return true;
 		}
 		return false;
 	}
 
 	public static AttributeModifierMap setCustomAttributes() {
-		return AnimalEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 6.0D)
-				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D)
-				.createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1.0D)
-				.createMutableAttribute(Attributes.ATTACK_DAMAGE, 2.0D).create();
+		return AnimalEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 6.0D).add(Attributes.FOLLOW_RANGE, 32.0)
+				.add(Attributes.MOVEMENT_SPEED, 0.5D).add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)
+				.add(Attributes.ATTACK_DAMAGE, 2.0D).build();
 	}
 
-	public void writeAdditional(CompoundNBT compound) {
+	public void addAdditionalSaveData(CompoundNBT compound) {
 		compound.putBoolean("EatNut", this.isEatingNut());
-		super.writeAdditional(compound);
+		super.addAdditionalSaveData(compound);
 	}
 
-	public void readAdditional(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundNBT compound) {
 		if (compound.contains("EatNut", 1)) {
 			this.setEatingNut(compound.getBoolean("EatNut"));
 		}
-		super.readAdditional(compound);
+		super.readAdditionalSaveData(compound);
 	}
 
 	public void generateWillEatNut() {
@@ -307,7 +306,7 @@ public class SquirrelEntity extends AnimalEntity {
 		// wahrscheinlichkeit vom essen zu haben, aber bei 2.0 (Wüste) nicht bei 0%
 		// plazieren zu sein
 		this.setEatingNut(
-				this.getRNG().nextFloat() <= (this.world.getBiome(this.getPosition()).getTemperature() / 2.1));
+				this.getRandom().nextFloat() <= (this.level.getBiome(this.blockPosition()).getBaseTemperature() / 2.1));
 	}
 
 	public class FindNutGoal extends MoveToBlockGoal {
@@ -320,24 +319,24 @@ public class SquirrelEntity extends AnimalEntity {
 		/**
 		 * Return true to set given position as destination
 		 */
-		protected boolean shouldMoveTo(IWorldReader worldIn, BlockPos pos) {
+		protected boolean isValidTarget(IWorldReader worldIn, BlockPos pos) {
 			BlockState blockstate = worldIn.getBlockState(pos);
 			boolean flag = blockstate.getBlock() == BiologicBlocks.NUT_BUSH_LEAVES.get();
 			if (flag) {
-				flag = blockstate.get(NutBushLeavesBlock.AGE) == 1;
+				flag = blockstate.getValue(NutBushLeavesBlock.AGE) == 1;
 			}
-			return flag && worldIn.getBlockState(pos.up()).getBlock() == Blocks.AIR;
+			return flag && worldIn.getBlockState(pos.above()).getBlock() == Blocks.AIR;
 		}
 
 		/**
 		 * Keep ticking a continuous task that has already been started
 		 */
 		public void tick() {
-			if (!this.shouldMoveTo(this.creature.world, this.destinationBlock)) {
-				this.searchForDestination();
+			if (!this.isValidTarget(this.mob.level, this.blockPos)) {
+				this.findNearestBlock();
 			}
 			super.tick();
-			if (this.getIsAboveDestination()) {
+			if (this.isReachedTarget()) {
 				if (this.timer >= 40) {
 					this.pickNuts();
 				} else {
@@ -347,27 +346,25 @@ public class SquirrelEntity extends AnimalEntity {
 		}
 
 		protected void pickNuts() {
-			if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(SquirrelEntity.this.world,
-					this.creature)) {
-				BlockState blockstate = this.creature.world.getBlockState(this.destinationBlock);
+			if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(SquirrelEntity.this.level, this.mob)) {
+				BlockState blockstate = this.mob.level.getBlockState(this.blockPos);
 				if (blockstate.getBlock() == BiologicBlocks.NUT_BUSH_LEAVES.get()) {
-					int j = 1 + this.creature.world.rand.nextInt(2);
-					ItemStack itemstack = SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
+					int j = 1 + this.mob.level.random.nextInt(2);
+					ItemStack itemstack = SquirrelEntity.this.getItemBySlot(EquipmentSlotType.MAINHAND);
 					if (itemstack.isEmpty()) {
-						this.creature.setItemStackToSlot(EquipmentSlotType.MAINHAND,
-								new ItemStack(TreeItems.NUTS.get()));
+						this.mob.setItemSlot(EquipmentSlotType.MAINHAND, new ItemStack(TreeItems.NUTS.get()));
 						SquirrelEntity.this.generateWillEatNut();
 						--j;
 					}
 
 					if (j > 0) {
-						Block.spawnAsEntity(SquirrelEntity.this.world, this.destinationBlock,
+						Block.popResource(SquirrelEntity.this.level, this.blockPos,
 								new ItemStack(TreeItems.NUTS.get(), j));
 					}
 
-					SquirrelEntity.this.playSound(SoundEvents.ITEM_SWEET_BERRIES_PICK_FROM_BUSH, 1.0F, 1.0F);
-					SquirrelEntity.this.world.setBlockState(this.destinationBlock,
-							blockstate.with(NutBushLeavesBlock.AGE, 0), 2);
+					SquirrelEntity.this.playSound(SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, 1.0F, 1.0F);
+					SquirrelEntity.this.level.setBlock(this.blockPos, blockstate.setValue(NutBushLeavesBlock.AGE, 0),
+							2);
 				}
 			}
 		}
@@ -376,18 +373,18 @@ public class SquirrelEntity extends AnimalEntity {
 		 * Returns whether execution should begin. You can also read and cache any state
 		 * necessary for execution in this method as well.
 		 */
-		public boolean shouldExecute() {
+		public boolean canUse() {
 			return !SquirrelEntity.this.isSitting()
-					&& SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND) == ItemStack.EMPTY
-					&& !SquirrelEntity.this.isSleeping() && super.shouldExecute();
+					&& SquirrelEntity.this.getItemBySlot(EquipmentSlotType.MAINHAND) == ItemStack.EMPTY
+					&& !SquirrelEntity.this.isSleeping() && super.canUse();
 		}
 
 		/**
 		 * Execute a one shot task or start executing a continuous task
 		 */
-		public void startExecuting() {
+		public void start() {
 			this.timer = 0;
-			super.startExecuting();
+			super.start();
 		}
 	}
 
@@ -402,11 +399,11 @@ public class SquirrelEntity extends AnimalEntity {
 		/**
 		 * Return true to set given position as destination
 		 */
-		protected boolean shouldMoveTo(IWorldReader worldIn, BlockPos pos) {
+		protected boolean isValidTarget(IWorldReader worldIn, BlockPos pos) {
 			Block block = worldIn.getBlockState(pos).getBlock();
-			boolean rightBlock = (block.isIn(BlockTags.LOGS) || block.isIn(BlockTags.LEAVES));
-			boolean lastTreeAway = (this.lastTree != null ? !pos.withinDistance(this.lastTree, 10) : true);
-			boolean air = (worldIn.getBlockState(pos.up()).getBlock() == Blocks.AIR);
+			boolean rightBlock = (block.is(BlockTags.LOGS) || block.is(BlockTags.LEAVES));
+			boolean lastTreeAway = (this.lastTree != null ? !pos.closerThan(this.lastTree, 10) : true);
+			boolean air = (worldIn.getBlockState(pos.above()).getBlock() == Blocks.AIR);
 			return rightBlock && lastTreeAway && air;
 		}
 
@@ -414,15 +411,14 @@ public class SquirrelEntity extends AnimalEntity {
 		 * Keep ticking a continuous task that has already been started
 		 */
 		public void tick() {
-			if (!this.shouldMoveTo(this.creature.world, this.destinationBlock)
-					|| this.destinationBlock == BlockPos.ZERO) {
-				this.searchForDestination();
+			if (!this.isValidTarget(this.mob.level, this.blockPos) || this.blockPos == BlockPos.ZERO) {
+				this.findNearestBlock();
 			}
 			super.tick();
-			if (this.getIsAboveDestination()) {
+			if (this.isReachedTarget()) {
 				if (this.timer >= 200) {
-					this.lastTree = this.creature.getPosition();
-					this.searchForDestination();
+					this.lastTree = this.mob.blockPosition();
+					this.findNearestBlock();
 					this.timer = 0;
 				} else {
 					++this.timer;
@@ -434,19 +430,19 @@ public class SquirrelEntity extends AnimalEntity {
 		 * Returns whether execution should begin. You can also read and cache any state
 		 * necessary for execution in this method as well.
 		 */
-		public boolean shouldExecute() {
+		public boolean canUse() {
 			return !SquirrelEntity.this.isSitting()
-					&& SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND) == ItemStack.EMPTY
-					&& !SquirrelEntity.this.isSleeping() && super.shouldExecute();
+					&& SquirrelEntity.this.getItemBySlot(EquipmentSlotType.MAINHAND) == ItemStack.EMPTY
+					&& !SquirrelEntity.this.isSleeping() && super.canUse();
 		}
 
 		/**
 		 * Execute a one shot task or start executing a continuous task
 		 */
-		public void startExecuting() {
+		public void start() {
 			this.timer = 0;
-			this.destinationBlock = BlockPos.ZERO;
-			super.startExecuting();
+			this.blockPos = BlockPos.ZERO;
+			super.start();
 		}
 	}
 
@@ -464,18 +460,18 @@ public class SquirrelEntity extends AnimalEntity {
 		 * Returns whether execution should begin. You can also read and cache any state
 		 * necessary for execution in this method as well.
 		 */
-		public boolean shouldExecute() {
-			return SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem() == TreeItems.NUTS
-					.get() && !SquirrelEntity.this.isSleeping() && super.shouldExecute()
-					&& !SquirrelEntity.this.isEatingNut() && !SquirrelEntity.this.isSitting();
+		public boolean canUse() {
+			return SquirrelEntity.this.getItemBySlot(EquipmentSlotType.MAINHAND).getItem() == TreeItems.NUTS.get()
+					&& !SquirrelEntity.this.isSleeping() && super.canUse() && !SquirrelEntity.this.isEatingNut()
+					&& !SquirrelEntity.this.isSitting();
 		}
 
 		/**
 		 * Return true to set given position as destination
 		 */
-		protected boolean shouldMoveTo(IWorldReader worldIn, BlockPos pos) {
-			return worldIn.getBlockState(pos).getBlock().isIn(BlockTags.BAMBOO_PLANTABLE_ON)
-					&& worldIn.getBlockState(pos.up()).getBlock() == Blocks.AIR;
+		protected boolean isValidTarget(IWorldReader worldIn, BlockPos pos) {
+			return worldIn.getBlockState(pos).getBlock().is(BlockTags.BAMBOO_PLANTABLE_ON)
+					&& worldIn.getBlockState(pos.above()).getBlock() == Blocks.AIR;
 		}
 
 		/**
@@ -483,32 +479,31 @@ public class SquirrelEntity extends AnimalEntity {
 		 */
 		public void tick() {
 			super.tick();
-			if (this.getIsAboveDestination()) {
+			if (this.isReachedTarget()) {
 				if (this.timer >= 50) {
 					this.placeNuts();
 				} else {
 					++this.timer;
-					this.addBlockParticles(SquirrelEntity.this.world.getBlockState(this.destinationBlock), 15,
+					this.addBlockParticles(SquirrelEntity.this.level.getBlockState(this.blockPos), 15,
 							SquirrelEntity.this);
 				}
 			}
 		}
 
 		protected void placeNuts() {
-			if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(SquirrelEntity.this.world, this.creature)
-					&& this.creature.getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem() == TreeItems.NUTS
-							.get()) {
-				this.creature.world.setBlockState(this.func_241846_j(),
-						BiologicBlocks.NUT_BUSH_SAPLING.get().getDefaultState());
-				this.creature.getItemStackFromSlot(EquipmentSlotType.MAINHAND).shrink(1);
+			if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(SquirrelEntity.this.level, this.mob)
+					&& this.mob.getItemBySlot(EquipmentSlotType.MAINHAND).getItem() == TreeItems.NUTS.get()) {
+				this.mob.level.setBlockAndUpdate(this.getMoveToTarget(),
+						BiologicBlocks.NUT_BUSH_SAPLING.get().defaultBlockState());
+				this.mob.getItemBySlot(EquipmentSlotType.MAINHAND).shrink(1);
 				SquirrelEntity.this.generateWillEatNut();
 			}
 		}
 
-		public void startExecuting() {
+		public void start() {
 			this.timer = 0;
 			this.hasDestination = false;
-			super.startExecuting();
+			super.start();
 		}
 
 		/**
@@ -521,18 +516,18 @@ public class SquirrelEntity extends AnimalEntity {
 			if (this.hasDestination)
 				return true;
 			int i = this.searchLength2;
-			BlockPos blockpos = this.creature.getPosition();
+			BlockPos blockpos = this.mob.blockPosition();
 			BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
 
-			for (int k = this.field_203112_e; k <= 256; k = k > 0 ? -k : 1 - k) {
+			for (int k = this.verticalSearchStart; k <= 256; k = k > 0 ? -k : 1 - k) {
 				for (int l = 0; l < i; ++l) {
 					for (int i1 = 0; i1 <= l; i1 = i1 > 0 ? -i1 : 1 - i1) {
 						for (int j1 = i1 < l && i1 > -l ? l : 0; j1 <= l; j1 = j1 > 0 ? -j1 : 1 - j1) {
-							blockpos$mutable.setAndOffset(blockpos, i1, k - 1, j1);
-							if (this.creature.isWithinHomeDistanceFromPosition(blockpos$mutable)
-									&& this.shouldMoveTo(this.creature.world, blockpos$mutable)
-									&& this.creature.getRNG().nextFloat() < (this.timer++ / Math.pow(i * 2, 3))) {
-								this.destinationBlock = blockpos$mutable;
+							blockpos$mutable.setWithOffset(blockpos, i1, k - 1, j1);
+							if (this.mob.isWithinRestriction(blockpos$mutable)
+									&& this.isValidTarget(this.mob.level, blockpos$mutable)
+									&& this.mob.getRandom().nextFloat() < (this.timer++ / Math.pow(i * 2, 3))) {
+								this.blockPos = blockpos$mutable;
 								this.hasDestination = true;
 								return true;
 							}
@@ -546,22 +541,22 @@ public class SquirrelEntity extends AnimalEntity {
 
 		private void addBlockParticles(BlockState block, int count, SquirrelEntity squirrel) {
 			for (int i = 0; i < count; ++i) {
-				Vector3d vector3d = new Vector3d(((double) squirrel.rand.nextFloat() - 0.5D) * 0.1D,
+				Vector3d vector3d = new Vector3d(((double) squirrel.random.nextFloat() - 0.5D) * 0.1D,
 						Math.random() * 0.1D + 0.1D, 0.0D);
-				vector3d = vector3d.rotatePitch(-squirrel.rotationPitch * ((float) Math.PI / 180F));
-				vector3d = vector3d.rotateYaw(-squirrel.rotationYaw * ((float) Math.PI / 180F));
-				double d0 = (double) (-squirrel.rand.nextFloat()) * 0.6D - 0.3D;
-				Vector3d vector3d1 = new Vector3d(((double) squirrel.rand.nextFloat() - 0.5D) * 0.3D, d0, 0.6D);
-				vector3d1 = vector3d1.rotatePitch(-squirrel.rotationPitch * ((float) Math.PI / 180F));
-				vector3d1 = vector3d1.rotateYaw(-squirrel.rotationYaw * ((float) Math.PI / 180F));
-				vector3d1 = vector3d1.add(squirrel.getPosX(), squirrel.getPosY(), squirrel.getPosZ());
+				vector3d = vector3d.xRot(-squirrel.xRot * ((float) Math.PI / 180F));
+				vector3d = vector3d.yRot(-squirrel.yRot * ((float) Math.PI / 180F));
+				double d0 = (double) (-squirrel.random.nextFloat()) * 0.6D - 0.3D;
+				Vector3d vector3d1 = new Vector3d(((double) squirrel.random.nextFloat() - 0.5D) * 0.3D, d0, 0.6D);
+				vector3d1 = vector3d1.xRot(-squirrel.xRot * ((float) Math.PI / 180F));
+				vector3d1 = vector3d1.yRot(-squirrel.yRot * ((float) Math.PI / 180F));
+				vector3d1 = vector3d1.add(squirrel.getX(), squirrel.getY(), squirrel.getZ());
 				// Forge: Fix MC-2518 spawnParticle is nooped on server, need to use server
 				// specific variant
-				if (squirrel.world instanceof ServerWorld)
-					((ServerWorld) squirrel.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, block),
+				if (squirrel.level instanceof ServerWorld)
+					((ServerWorld) squirrel.level).sendParticles(new BlockParticleData(ParticleTypes.BLOCK, block),
 							vector3d1.x, vector3d1.y, vector3d1.z, 1, vector3d.x, vector3d.y + 0.05D, vector3d.z, 0.0D);
 				else
-					squirrel.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, block), vector3d1.x,
+					squirrel.level.addParticle(new BlockParticleData(ParticleTypes.BLOCK, block), vector3d1.x,
 							vector3d1.y, vector3d1.z, vector3d.x, vector3d.y + 0.05D, vector3d.z);
 			}
 		}
@@ -578,9 +573,9 @@ public class SquirrelEntity extends AnimalEntity {
 		 * Returns whether execution should begin. You can also read and cache any state
 		 * necessary for execution in this method as well.
 		 */
-		public boolean shouldExecute() {
-			return SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem() == TreeItems.NUTS
-					.get() && !SquirrelEntity.this.isSleeping() && SquirrelEntity.this.isEatingNut();
+		public boolean canUse() {
+			return SquirrelEntity.this.getItemBySlot(EquipmentSlotType.MAINHAND).getItem() == TreeItems.NUTS.get()
+					&& !SquirrelEntity.this.isSleeping() && SquirrelEntity.this.isEatingNut();
 		}
 
 		/**
@@ -595,33 +590,30 @@ public class SquirrelEntity extends AnimalEntity {
 		}
 
 		protected void eatNut() {
-			if (SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem() == TreeItems.NUTS
-					.get()) {
+			if (SquirrelEntity.this.getItemBySlot(EquipmentSlotType.MAINHAND).getItem() == TreeItems.NUTS.get()) {
 				this.nutTimer++;
 				SquirrelEntity squirrel = SquirrelEntity.this;
 				if (this.nutTimer >= 80) {
-					this.onFoodEaten(squirrel.getEntityWorld(),
-							squirrel.getItemStackFromSlot(EquipmentSlotType.MAINHAND), squirrel);
+					this.onFoodEaten(squirrel.level, squirrel.getItemBySlot(EquipmentSlotType.MAINHAND), squirrel);
 					squirrel.heal(0.5F);
-					squirrel.getItemStackFromSlot(EquipmentSlotType.MAINHAND).shrink(1);
+					squirrel.getItemBySlot(EquipmentSlotType.MAINHAND).shrink(1);
 					squirrel.resetPosition();
 					SquirrelEntity.this.generateWillEatNut();
 				} else {
-					this.addItemParticles(SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND), 5,
-							squirrel);
+					this.addItemParticles(SquirrelEntity.this.getItemBySlot(EquipmentSlotType.MAINHAND), 5, squirrel);
 					this.playSound(
-							squirrel.getEatSound(SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND)),
-							0.5F + 0.5F * (float) squirrel.rand.nextInt(2),
-							(squirrel.rand.nextFloat() - squirrel.rand.nextFloat()) * 0.2F + 1.0F, squirrel);
+							squirrel.getEatingSound(SquirrelEntity.this.getItemBySlot(EquipmentSlotType.MAINHAND)),
+							0.5F + 0.5F * (float) squirrel.random.nextInt(2),
+							(squirrel.random.nextFloat() - squirrel.random.nextFloat()) * 0.2F + 1.0F, squirrel);
 				}
 			}
 		}
 
 		public ItemStack onFoodEaten(World world, ItemStack item, SquirrelEntity entity) {
-			if (item.isFood()) {
-				world.playSound((PlayerEntity) null, entity.getPosX(), entity.getPosY(), entity.getPosZ(),
-						entity.getEatSound(item), SoundCategory.NEUTRAL, 1.0F,
-						1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.4F);
+			if (item.isEdible()) {
+				world.playSound((PlayerEntity) null, entity.getX(), entity.getY(), entity.getZ(),
+						entity.getEatingSound(item), SoundCategory.NEUTRAL, 1.0F,
+						1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.4F);
 				this.applyFoodEffects(item, world, entity);
 				item.shrink(1);
 			}
@@ -630,10 +622,11 @@ public class SquirrelEntity extends AnimalEntity {
 
 		private void applyFoodEffects(ItemStack itemStack, World world, LivingEntity entity) {
 			Item item = itemStack.getItem();
-			if (item.isFood()) {
-				for (Pair<EffectInstance, Float> pair : item.getFood().getEffects()) {
-					if (!world.isRemote && pair.getFirst() != null && world.rand.nextFloat() < pair.getSecond()) {
-						entity.addPotionEffect(new EffectInstance(pair.getFirst()));
+			if (item.isEdible()) {
+				for (Pair<EffectInstance, Float> pair : item.getFoodProperties().getEffects()) {
+					if (!world.isClientSide() && pair.getFirst() != null
+							&& world.random.nextFloat() < pair.getSecond()) {
+						entity.addEffect(new EffectInstance(pair.getFirst()));
 					}
 				}
 			}
@@ -641,37 +634,37 @@ public class SquirrelEntity extends AnimalEntity {
 
 		private void addItemParticles(ItemStack stack, int count, SquirrelEntity squirrel) {
 			for (int i = 0; i < count; ++i) {
-				Vector3d vector3d = new Vector3d(((double) squirrel.rand.nextFloat() - 0.5D) * 0.1D - 0.15,
+				Vector3d vector3d = new Vector3d(((double) squirrel.random.nextFloat() - 0.5D) * 0.1D - 0.15,
 						Math.random() * 0.1D + 0.1D, 0.3D);
-				vector3d = vector3d.rotatePitch(-squirrel.rotationPitch * ((float) Math.PI / 180F));
-				vector3d = vector3d.rotateYaw(-squirrel.rotationYaw * ((float) Math.PI / 180F));
-				double d0 = (double) (-squirrel.rand.nextFloat()) * 0.6D - 0.3D;
-				Vector3d vector3d1 = new Vector3d(((double) squirrel.rand.nextFloat() - 0.5D) * 0.3D, d0, 0.6D);
-				vector3d1 = vector3d1.rotatePitch(-squirrel.rotationPitch * ((float) Math.PI / 180F));
-				vector3d1 = vector3d1.rotateYaw(-squirrel.rotationYaw * ((float) Math.PI / 180F));
-				vector3d1 = vector3d1.add(squirrel.getPosX(), squirrel.getPosYEye(), squirrel.getPosZ());
+				vector3d = vector3d.xRot(-squirrel.xRot * ((float) Math.PI / 180F));
+				vector3d = vector3d.yRot(-squirrel.yRot * ((float) Math.PI / 180F));
+				double d0 = (double) (-squirrel.random.nextFloat()) * 0.6D - 0.3D;
+				Vector3d vector3d1 = new Vector3d(((double) squirrel.random.nextFloat() - 0.5D) * 0.3D, d0, 0.6D);
+				vector3d1 = vector3d1.xRot(-squirrel.xRot * ((float) Math.PI / 180F));
+				vector3d1 = vector3d1.yRot(-squirrel.yRot * ((float) Math.PI / 180F));
+				vector3d1 = vector3d1.add(squirrel.getX(), squirrel.getEyeY(), squirrel.getZ());
 				// Forge: Fix MC-2518 spawnParticle is nooped on server, need to use server
 				// specific variant
-				if (squirrel.world instanceof ServerWorld)
-					((ServerWorld) squirrel.world).spawnParticle(new ItemParticleData(ParticleTypes.ITEM, stack),
+				if (squirrel.level instanceof ServerWorld)
+					((ServerWorld) squirrel.level).sendParticles(new ItemParticleData(ParticleTypes.ITEM, stack),
 							vector3d1.x, vector3d1.y, vector3d1.z, 1, vector3d.x, vector3d.y + 0.05D, vector3d.z, 0.0D);
 				else
-					squirrel.world.addParticle(new ItemParticleData(ParticleTypes.ITEM, stack), vector3d1.x,
+					squirrel.level.addParticle(new ItemParticleData(ParticleTypes.ITEM, stack), vector3d1.x,
 							vector3d1.y, vector3d1.z, vector3d.x, vector3d.y + 0.05D, vector3d.z);
 			}
 		}
 
 		public void playSound(SoundEvent soundIn, float volume, float pitch, SquirrelEntity squirrel) {
 			if (!squirrel.isSilent()) {
-				squirrel.world.playSound((PlayerEntity) null, squirrel.getPosX(), squirrel.getPosY(),
-						squirrel.getPosZ(), soundIn, squirrel.getSoundCategory(), volume, pitch);
+				squirrel.level.playSound((PlayerEntity) null, squirrel.getX(), squirrel.getY(), squirrel.getZ(),
+						soundIn, squirrel.getSoundSource(), volume, pitch);
 			}
 		}
 
 		/**
 		 * Execute a one shot task or start executing a continuous task
 		 */
-		public void startExecuting() {
+		public void start() {
 			this.nutTimer = 0;
 		}
 	}
@@ -685,36 +678,36 @@ public class SquirrelEntity extends AnimalEntity {
 		 * Returns whether execution should begin. You can also read and cache any state
 		 * necessary for execution in this method as well.
 		 */
-		public boolean shouldExecute() {
-			return SquirrelEntity.this.isInWater() && SquirrelEntity.this.func_233571_b_(FluidTags.WATER) > 0.25D
+		public boolean canUse() {
+			return SquirrelEntity.this.isInWater() && SquirrelEntity.this.getFluidHeight(FluidTags.WATER) > 0.25D
 					|| SquirrelEntity.this.isInLava();
 		}
 	}
 
 	public class FindNutsFromGroundGoal extends Goal {
 		public FindNutsFromGroundGoal() {
-			this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
+			this.setFlags(EnumSet.of(Goal.Flag.MOVE));
 		}
 
+		@Override
 		/**
 		 * Returns whether execution should begin. You can also read and cache any state
 		 * necessary for execution in this method as well.
 		 */
-		public boolean shouldExecute() {
+		public boolean canUse() {
 			if (SquirrelEntity.this.isSitting()) {
 				return false;
 			}
-			if (!SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND).isEmpty()) {
+			if (!SquirrelEntity.this.getItemBySlot(EquipmentSlotType.MAINHAND).isEmpty()) {
 				return false;
 			} else {
-				if (SquirrelEntity.this.getRNG().nextInt(10) != 0) {
+				if (SquirrelEntity.this.getRandom().nextInt(10) != 0) {
 					return false;
 				} else {
-					List<ItemEntity> list = SquirrelEntity.this.world.getEntitiesWithinAABB(ItemEntity.class,
-							SquirrelEntity.this.getBoundingBox().grow(8.0D, 8.0D, 8.0D),
+					List<ItemEntity> list = SquirrelEntity.this.level.getEntitiesOfClass(ItemEntity.class,
+							SquirrelEntity.this.getBoundingBox().inflate(8.0D, 8.0D, 8.0D),
 							SquirrelEntity.TRUSTED_TARGET_SELECTOR);
-					return !list.isEmpty()
-							&& SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND).isEmpty();
+					return !list.isEmpty() && SquirrelEntity.this.getItemBySlot(EquipmentSlotType.MAINHAND).isEmpty();
 				}
 			}
 		}
@@ -723,15 +716,15 @@ public class SquirrelEntity extends AnimalEntity {
 		 * Keep ticking a continuous task that has already been started
 		 */
 		public void tick() {
-			List<ItemEntity> list = SquirrelEntity.this.world.getEntitiesWithinAABB(ItemEntity.class,
-					SquirrelEntity.this.getBoundingBox().grow(8.0D, 8.0D, 8.0D),
+			List<ItemEntity> list = SquirrelEntity.this.level.getEntitiesOfClass(ItemEntity.class,
+					SquirrelEntity.this.getBoundingBox().inflate(8.0D, 8.0D, 8.0D),
 					SquirrelEntity.TRUSTED_TARGET_SELECTOR);
-			ItemStack itemstack = SquirrelEntity.this.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
+			ItemStack itemstack = SquirrelEntity.this.getItemBySlot(EquipmentSlotType.MAINHAND);
 			if (itemstack.isEmpty() && !list.isEmpty()) {
-				SquirrelEntity.this.getNavigator().tryMoveToEntityLiving(list.get(0), 0.5D);
+				SquirrelEntity.this.getNavigation().moveTo(list.get(0), 0.5D);
 			}
-			if (itemstack.isEmpty() && SquirrelEntity.this.getDistanceSq(list.get(0)) <= 1.0F) {
-				SquirrelEntity.this.setItemStackToSlot(EquipmentSlotType.MAINHAND, list.get(0).getItem());
+			if (itemstack.isEmpty() && SquirrelEntity.this.distanceToSqr(list.get(0)) <= 1.0F) {
+				SquirrelEntity.this.setItemSlot(EquipmentSlotType.MAINHAND, list.get(0).getItem());
 				SquirrelEntity.this.generateWillEatNut();
 				list.get(0).remove();
 			}
@@ -740,12 +733,12 @@ public class SquirrelEntity extends AnimalEntity {
 		/**
 		 * Execute a one shot task or start executing a continuous task
 		 */
-		public void startExecuting() {
-			List<ItemEntity> list = SquirrelEntity.this.world.getEntitiesWithinAABB(ItemEntity.class,
-					SquirrelEntity.this.getBoundingBox().grow(8.0D, 8.0D, 8.0D),
+		public void start() {
+			List<ItemEntity> list = SquirrelEntity.this.level.getEntitiesOfClass(ItemEntity.class,
+					SquirrelEntity.this.getBoundingBox().inflate(8.0D, 8.0D, 8.0D),
 					SquirrelEntity.TRUSTED_TARGET_SELECTOR);
 			if (!list.isEmpty()) {
-				SquirrelEntity.this.getNavigator().tryMoveToEntityLiving(list.get(0), 0.5D);
+				SquirrelEntity.this.getNavigation().moveTo(list.get(0), 0.5D);
 			}
 		}
 	}
@@ -755,8 +748,8 @@ public class SquirrelEntity extends AnimalEntity {
 			super(animal, speed);
 		}
 
-		public boolean shouldExecute() {
-			return super.shouldExecute() && !SquirrelEntity.this.isSitting();
+		public boolean canUse() {
+			return super.canUse() && !SquirrelEntity.this.isSitting();
 		}
 	}
 
@@ -765,8 +758,8 @@ public class SquirrelEntity extends AnimalEntity {
 			super(animal, speed);
 		}
 
-		public boolean shouldExecute() {
-			return super.shouldExecute() && !SquirrelEntity.this.isSitting();
+		public boolean canUse() {
+			return super.canUse() && !SquirrelEntity.this.isSitting();
 		}
 	}
 
@@ -775,38 +768,38 @@ public class SquirrelEntity extends AnimalEntity {
 			super(animal, speed);
 		}
 
-		public boolean shouldExecute() {
-			return super.shouldExecute() && !SquirrelEntity.this.isSitting();
+		public boolean canUse() {
+			return super.canUse() && !SquirrelEntity.this.isSitting();
 		}
 	}
 
 	public class TemptGoal extends net.minecraft.entity.ai.goal.TemptGoal {
-		public TemptGoal(CreatureEntity creatureIn, double speedIn, Ingredient temptItemsIn,
+		public TemptGoal(CreatureEntity mobIn, double speedIn, Ingredient temptItemsIn,
 				boolean scaredByPlayerMovementIn) {
-			this(creatureIn, speedIn, scaredByPlayerMovementIn, temptItemsIn);
+			this(mobIn, speedIn, scaredByPlayerMovementIn, temptItemsIn);
 		}
 
-		public TemptGoal(CreatureEntity creatureIn, double speedIn, boolean scaredByPlayerMovementIn,
+		public TemptGoal(CreatureEntity mobIn, double speedIn, boolean scaredByPlayerMovementIn,
 				Ingredient temptItemsIn) {
-			super(creatureIn, speedIn, scaredByPlayerMovementIn, temptItemsIn);
+			super(mobIn, speedIn, scaredByPlayerMovementIn, temptItemsIn);
 		}
 
-		public boolean shouldExecute() {
-			return super.shouldExecute() && !SquirrelEntity.this.isSitting();
+		public boolean canUse() {
+			return super.canUse() && !SquirrelEntity.this.isSitting();
 		}
 	}
 
 	public class WaterAvoidingRandomWalkingGoal extends net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal {
-		public WaterAvoidingRandomWalkingGoal(CreatureEntity creature, double speedIn) {
-			this(creature, speedIn, 0.001F);
+		public WaterAvoidingRandomWalkingGoal(CreatureEntity mob, double speedIn) {
+			this(mob, speedIn, 0.001F);
 		}
 
-		public WaterAvoidingRandomWalkingGoal(CreatureEntity creature, double speedIn, float probabilityIn) {
-			super(creature, speedIn, probabilityIn);
+		public WaterAvoidingRandomWalkingGoal(CreatureEntity mob, double speedIn, float probabilityIn) {
+			super(mob, speedIn, probabilityIn);
 		}
 
-		public boolean shouldExecute() {
-			return super.shouldExecute() && !SquirrelEntity.this.isSitting();
+		public boolean canUse() {
+			return super.canUse() && !SquirrelEntity.this.isSitting();
 		}
 	}
 }

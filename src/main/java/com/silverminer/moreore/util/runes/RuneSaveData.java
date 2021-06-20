@@ -24,13 +24,14 @@ public class RuneSaveData extends WorldSavedData {
 	}
 
 	@Override
-	public void read(CompoundNBT nbt) {
+	public void load(CompoundNBT nbt) {
 		RuneInventoryRegistry.readFromNBT(nbt);
+		// TODO Check need for send at player join (event)
 		MoreorePacketHandler.sendToAll(new InventoryChangePacket(nbt));
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT nbt) {
+	public CompoundNBT save(CompoundNBT nbt) {
 		RuneInventoryRegistry.writeToNBT(nbt);
 		return nbt;
 	}
@@ -39,8 +40,8 @@ public class RuneSaveData extends WorldSavedData {
 		if (world == null)
 			return null;
 		LOGGER.debug("RuneSavedData read");
-		DimensionSavedDataManager storage = world.getSavedData();
+		DimensionSavedDataManager storage = world.getDataStorage();
 
-		return storage.getOrCreate(RuneSaveData::new, DATA_NAME);
+		return storage.computeIfAbsent(RuneSaveData::new, DATA_NAME);
 	}
 }

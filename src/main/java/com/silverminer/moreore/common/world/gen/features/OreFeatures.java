@@ -26,29 +26,29 @@ public class OreFeatures {
 
 	public static void registerOres() {
 		SILVER = register(OreBlocks.SILVER_ORE.getId(), Feature.ORE
-				.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD,
-						OreBlocks.SILVER_ORE.get().getDefaultState(), 9))
-				.withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(0, 5, 49))).square().func_242731_b(7));
+				.configured(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,
+						OreBlocks.SILVER_ORE.get().defaultBlockState(), 9))
+				.decorated(Placement.RANGE.configured(new TopSolidRangeConfig(0, 5, 49))).squared().count(7));
 
 		RUBIN = register(OreBlocks.RUBIN_ORE.getId(), Feature.ORE
-				.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD,
-						OreBlocks.RUBIN_ORE.get().getDefaultState(), 12))
-				.withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(0, 5, 56))).square().func_242731_b(6));
+				.configured(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,
+						OreBlocks.RUBIN_ORE.get().defaultBlockState(), 12))
+				.decorated(Placement.RANGE.configured(new TopSolidRangeConfig(0, 5, 56))).squared().count(6));
 
 		SAPHIR = register(OreBlocks.SAPHIR_ORE.getId(), Feature.ORE
-				.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD,
-						OreBlocks.SAPHIR_ORE.get().getDefaultState(), 12))
-				.withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(0, 5, 56))).square().func_242731_b(6));
+				.configured(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,
+						OreBlocks.SAPHIR_ORE.get().defaultBlockState(), 12))
+				.decorated(Placement.RANGE.configured(new TopSolidRangeConfig(0, 5, 56))).squared().count(6));
 
 		ALEXANDRIT = register(OreBlocks.ALEXANDRIT_ORE.getId(), Feature.ORE
-				.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD,
-						OreBlocks.ALEXANDRIT_ORE.get().getDefaultState(), 3))
-				.withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(5, 5, 16))).square().func_242731_b(8));
+				.configured(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,
+						OreBlocks.ALEXANDRIT_ORE.get().defaultBlockState(), 3))
+				.decorated(Placement.RANGE.configured(new TopSolidRangeConfig(5, 5, 16))).squared().count(8));
 
 		RAINBOW = register(OreBlocks.RAINBOW_ORE.getId(), Feature.ORE
-				.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD,
-						OreBlocks.RAINBOW_ORE.get().getDefaultState(), 2))
-				.withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(5, 5, 16))).square().func_242731_b(9));
+				.configured(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,
+						OreBlocks.RAINBOW_ORE.get().defaultBlockState(), 2))
+				.decorated(Placement.RANGE.configured(new TopSolidRangeConfig(5, 5, 16))).squared().count(9));
 	}
 
 	private static <FC extends IFeatureConfig> ConfiguredFeature<FC, ?> register(ResourceLocation key,

@@ -50,28 +50,28 @@ import com.silverminer.moreore.util.helpers.SpawnPositionHelper;
  * Represents the actual portals in the center of the portal multiblock.
  */
 public class SilverPortalBlock extends BreakableBlock {
-	private static final VoxelShape X_AABB = Block.makeCuboidShape(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D);
-	private static final VoxelShape Y_AABB = Block.makeCuboidShape(0.0D, 6.0D, 0.0D, 16.0D, 10.0D, 16.0D);
-	private static final VoxelShape Z_AABB = Block.makeCuboidShape(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D);
+	private static final VoxelShape X_AABB = Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D);
+	private static final VoxelShape Y_AABB = Block.box(0.0D, 6.0D, 0.0D, 16.0D, 10.0D, 16.0D);
+	private static final VoxelShape Z_AABB = Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D);
 
 	public static final EnumProperty<Axis> AXIS = EnumProperty.create("axis", Axis.class, Axis.X, Axis.Y, Axis.Z);
 
 	public SilverPortalBlock() {
 		// indestructible by normal means
-		super(Block.Properties.create(Material.PORTAL).doesNotBlockMovement().noDrops().hardnessAndResistance(-1.0F)
-				.setLightLevel((light) -> {
+		super(Block.Properties.of(Material.PORTAL).noCollission().noDrops().strength(-1.0F)
+				.lightLevel((light) -> {
 					return 11;
 				}).sound(SoundType.GLASS));
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> stateBuilder) {
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> stateBuilder) {
 		stateBuilder.add(AXIS);
 	}
 
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader blockReader, BlockPos pos, ISelectionContext selection) {
-		Axis portalAxis = state.get(AXIS);
+		Axis portalAxis = state.getValue(AXIS);
 
 		switch (portalAxis) {
 		case Y:
@@ -87,11 +87,11 @@ public class SilverPortalBlock extends BreakableBlock {
 	private int timer = 0;
 
 	@Override
-	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entity) {
-		if (!worldIn.isRemote && entity.isAlive() && !entity.isPassenger() && !entity.isBeingRidden()
-				&& entity.isNonBoss()
-				&& VoxelShapes.compare(
-						VoxelShapes.create(entity.getBoundingBox().offset((double) (-pos.getX()),
+	public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entity) {
+		if (!worldIn.isClientSide && entity.isAlive() && !entity.isPassenger() && !entity.isVehicle()
+				&& entity.canChangeDimensions()
+				&& VoxelShapes.joinIsNotEmpty(
+						VoxelShapes.create(entity.getBoundingBox().move((double) (-pos.getX()),
 								(double) (-pos.getY()), (double) (-pos.getZ()))),
 						state.getShape(worldIn, pos), IBooleanFunction.AND)) {
 
@@ -101,7 +101,7 @@ public class SilverPortalBlock extends BreakableBlock {
 				if (worldIn instanceof ServerWorld) {
 					server = worldIn.getServer();
 				}
-				List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos, worldIn.getDimensionKey());
+				List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos, worldIn.dimension());
 				if (affectedPortals != null && !(affectedPortals.size() < 1)) {
 					Portal firstPortal = affectedPortals.get(0);
 					destination = firstPortal.getDestinationDimension();
@@ -110,19 +110,19 @@ public class SilverPortalBlock extends BreakableBlock {
 						if (entity instanceof ItemEntity) {
 							ItemEntity itemE = ((ItemEntity) entity);
 							if (itemE.getItem().getItem() instanceof NameTagItem) {
-								String text = itemE.getItem().getDisplayName().getUnformattedComponentText();
-								RegistryKey<World> newDim = RegistryKey.getOrCreateKey(Registry.WORLD_KEY,
+								String text = itemE.getItem().getDisplayName().getString();
+								RegistryKey<World> newDim = RegistryKey.create(Registry.DIMENSION_REGISTRY,
 										new ResourceLocation(text));
-								if (server.getWorld(newDim) != null && newDim != firstPortal.getDestinationDimension()
-										&& newDim != World.THE_END) {
+								if (server.getLevel(newDim) != null && newDim != firstPortal.getDestinationDimension()
+										&& newDim != World.END) {
 									PortalRegistry.unregister(worldIn, firstPortal);
 									PortalRegistry.register(worldIn, (firstPortal.setDestinationDimension(newDim)));
-									worldIn.getEntitiesWithinAABB(PlayerEntity.class,
-											entity.getBoundingBox().grow(10.0D, 10.0D, 10.0D))
+									worldIn.getEntitiesOfClass(PlayerEntity.class,
+											entity.getBoundingBox().inflate(10.0D, 10.0D, 10.0D))
 											.forEach(player -> player.sendMessage(
 													new TranslationTextComponent("moreore.portal.set_dest_dim",
-															newDim.getLocation()),
-													entity.getUniqueID()));
+															newDim.location()),
+													entity.getUUID()));
 									itemE.getItem().shrink(1);
 									return;
 								}
@@ -133,22 +133,19 @@ public class SilverPortalBlock extends BreakableBlock {
 					}
 				}
 
-				RegistryKey<World> silverDim = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, MoreOre.SILVER_DIM_TYPE);
+				RegistryKey<World> silverDim = RegistryKey.create(Registry.DIMENSION_REGISTRY, MoreOre.SILVER_DIM_TYPE);
 				if (destination == null) {
-					destination = entity.world.getDimensionKey() == World.OVERWORLD ? silverDim : World.OVERWORLD;
+					destination = entity.level.dimension() == World.OVERWORLD ? silverDim : World.OVERWORLD;
 				}
-				if (entity.func_242280_ah())
-					return;
-				World newWorld = server.getWorld(destination);
+				World newWorld = server.getLevel(destination);
 				BlockPos destinationPos = SpawnPositionHelper.calculate(pos, newWorld);
 				if (destinationPos == null || !Utils.teleportTo(entity, destination, destinationPos, server)) {
 					this.sendToPlayer(entity);
 				} else {
-					entity.func_242279_ag();
 					if (entity instanceof PlayerEntity)
 						((PlayerEntity) entity)
 								.sendMessage(new TranslationTextComponent("moreore.portal.teleported_to_dim",
-										destination.getLocation().toString()), entity.getUniqueID());
+										destination.location().toString()), entity.getUUID());
 				}
 			} catch (Throwable e) {
 				this.sendToPlayer(entity);
@@ -159,17 +156,17 @@ public class SilverPortalBlock extends BreakableBlock {
 	private void sendToPlayer(Entity entity) {
 		if (entity instanceof PlayerEntity && timer == 0)
 			((PlayerEntity) entity).sendMessage(new TranslationTextComponent("moreore.portal.dim_unaccessable"),
-					entity.getUniqueID());
+					entity.getUUID());
 		timer += timer > 100 ? -timer : 1;
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void onReplaced(BlockState oldState, World world, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (!world.isRemote) {
+	public void onRemove(BlockState oldState, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+		if (!world.isClientSide()) {
 			// Deactivate damaged portals.
 
-			List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos, world.getDimensionKey());
+			List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos, world.dimension());
 			if (affectedPortals == null || affectedPortals.size() < 1) {
 				return;
 			}
@@ -180,11 +177,11 @@ public class SilverPortalBlock extends BreakableBlock {
 			}
 		}
 
-		super.onReplaced(oldState, world, pos, newState, isMoving);
+		super.onRemove(oldState, world, pos, newState, isMoving);
 	}
 
 	@Override
-	public ItemStack getItem(IBlockReader reader, BlockPos pos, BlockState state) {
+	public ItemStack getCloneItemStack(IBlockReader reader, BlockPos pos, BlockState state) {
 		return ItemStack.EMPTY;
 	}
 
@@ -192,8 +189,8 @@ public class SilverPortalBlock extends BreakableBlock {
 	@OnlyIn(Dist.CLIENT)
 	public void animateTick(BlockState state, World world, BlockPos pos, Random rand) {
 		if (rand.nextInt(100) == 0) {
-			world.playSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D,
-					SoundEvents.BLOCK_PORTAL_AMBIENT, SoundCategory.BLOCKS, 0.5F, rand.nextFloat() * 0.4F + 0.8F,
+			world.playLocalSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D,
+					SoundEvents.PORTAL_AMBIENT, SoundCategory.BLOCKS, 0.5F, rand.nextFloat() * 0.4F + 0.8F,
 					false);
 		}
 
@@ -221,21 +218,21 @@ public class SilverPortalBlock extends BreakableBlock {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
+	public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player,
 			Hand hand, BlockRayTraceResult hit) {
-		if (player.getHeldItem(hand).getItem() instanceof NameTagItem) {
-			List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos.toImmutable(), world.getDimensionKey());
+		if (player.getItemInHand(hand).getItem() instanceof NameTagItem) {
+			List<Portal> affectedPortals = PortalRegistry.getPortalsAt(pos.immutable(), world.dimension());
 			if (affectedPortals != null && !(affectedPortals.size() < 1)) {
 				Portal firstPortal = affectedPortals.get(0);
 				RegistryKey<World> dim = firstPortal.getDestinationDimension();
-				String text = dim.getLocation().toString().replaceAll("minecraft:", "");
+				String text = dim.location().toString().replaceAll("minecraft:", "");
 				if (!text.isEmpty()) {
-					player.getHeldItem(hand).setDisplayName(new StringTextComponent(text));
+					player.getItemInHand(hand).setHoverName(new StringTextComponent(text));
 					return ActionResultType.SUCCESS;
 				}
 			}
 		}
 
-		return super.onBlockActivated(state, world, pos, player, hand, hit);
+		return super.use(state, world, pos, player, hand, hit);
 	}
 }

@@ -25,16 +25,16 @@ public class RunetableBlock extends CraftingTableBlock {
 
 	public INamedContainerProvider getContainer(BlockState state, World worldIn, BlockPos pos) {
 		return new SimpleNamedContainerProvider((id, inventory, player) -> {
-			return new RunetableContainer(id, inventory, IWorldPosCallable.of(worldIn, pos));
+			return new RunetableContainer(id, inventory, IWorldPosCallable.create(worldIn, pos));
 		}, CONTAINER_NAME);
 	}
 
 	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player,
 			Hand handIn, BlockRayTraceResult hit) {
-		if (worldIn.isRemote) {
+		if (worldIn.isClientSide()) {
 			return ActionResultType.SUCCESS;
 		} else {
-			player.openContainer(state.getContainer(worldIn, pos));
+			player.openMenu(state.getMenuProvider(worldIn, pos));
 			return ActionResultType.CONSUME;
 		}
 	}

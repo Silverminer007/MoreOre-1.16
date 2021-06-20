@@ -11,8 +11,7 @@ import com.silverminer.moreore.util.structures.config.Config;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ChestTileEntity;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.LockableLootTileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -65,21 +64,16 @@ public class GreenDungeonPieces {
 		@Override
 		protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand,
 				MutableBoundingBox sbb) {
-			if (Config.STRUCTURES.GREEN_DUNGEON.LOOT_CHANCE.get() > rand.nextDouble()) {
-				if (function.equals("chest")) {
-					worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
-					TileEntity tileentity = worldIn.getTileEntity(pos.down());
-					if (tileentity instanceof ChestTileEntity) {
-						((ChestTileEntity) tileentity).setLootTable(MoreoreLootTables.GREEN_DUNGEON, rand.nextLong());
-					}
-				}
-				if (function.equals("chest_r")) {
-					worldIn.setBlockState(pos, Blocks.COBWEB.getDefaultState(), 3);
-					TileEntity tileentity = worldIn.getTileEntity(pos.down());
-					if (tileentity instanceof ChestTileEntity) {
-						((ChestTileEntity) tileentity).setLootTable(MoreoreLootTables.GREEN_DUNGEON, rand.nextLong());
-					}
-				}
+			boolean loot = Config.STRUCTURES.GREEN_DUNGEON.LOOT_CHANCE.get() > rand.nextDouble();
+			if (function.equals("chest")) {
+				worldIn.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+				LockableLootTileEntity.setLootTable(worldIn, rand, pos.below(1),
+						loot ? MoreoreLootTables.GREEN_DUNGEON : MoreoreLootTables.EMPTY);
+			}
+			if (function.equals("chest_r")) {
+				worldIn.setBlock(pos, Blocks.COBWEB.defaultBlockState(), 3);
+				LockableLootTileEntity.setLootTable(worldIn, rand, pos.below(1),
+						loot ? MoreoreLootTables.GREEN_DUNGEON : MoreoreLootTables.EMPTY);
 			}
 		}
 	}

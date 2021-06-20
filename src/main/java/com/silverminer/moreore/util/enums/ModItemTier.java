@@ -13,13 +13,13 @@ import net.minecraft.util.LazyValue;
 public enum ModItemTier implements IItemTier {
 
 	EMERALD(3, 1561, 7.0F, 2.5F, 14, () -> {
-		return Ingredient.fromItems(Items.EMERALD);
+		return Ingredient.of(Items.EMERALD);
 	}), SAPHIR(3, 500, 7.0F, 2.5F, 14, () -> {
-		return Ingredient.fromItems(OreItems.SAPHIR.get());
+		return Ingredient.of(OreItems.SAPHIR.get());
 	}), RUBIN(3, 500, 7.0F, 2.5F, 14, () -> {
-		return Ingredient.fromItems(OreItems.RUBIN.get());
+		return Ingredient.of(OreItems.RUBIN.get());
 	}), RAINBOW(4, 2378, 8.0F, 3.5F, 10, () -> {
-		return Ingredient.fromItems(RuneItems.RAINBOW_RUNE.get());
+		return Ingredient.of(RuneItems.RAINBOW_RUNE.get());
 	});
 
 	private final int harvestLevel;
@@ -40,32 +40,32 @@ public enum ModItemTier implements IItemTier {
 	}
 
 	@Override
-	public int getMaxUses() {
+	public int getUses() {
 		return this.maxUses;
 	}
 
 	@Override
-	public float getEfficiency() {
+	public float getSpeed() {
 		return this.efficiency;
 	}
 
 	@Override
-	public float getAttackDamage() {
+	public float getAttackDamageBonus() {
 		return this.attackDamage;
 	}
 
 	@Override
-	public int getHarvestLevel() {
+	public int getLevel() {
 		return this.harvestLevel;
 	}
 
 	@Override
-	public int getEnchantability() {
+	public int getEnchantmentValue() {
 		return this.enchantability;
 	}
 
 	@Override
-	public Ingredient getRepairMaterial() {
-		return this.repairMaterial.getValue();
+	public Ingredient getRepairIngredient() {
+		return this.repairMaterial.get();
 	}
 }

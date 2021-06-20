@@ -28,17 +28,17 @@ public class LavaSpongeBlock extends SpongeBlock {
 	}
 
 	@Override
-	public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
-		if (!oldState.isIn(state.getBlock())) {
-			this.tryAbsorb(worldIn, pos);
+	public void onPlace(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
+		if (!oldState.is(state.getBlock())) {
+			this.tryAbsorbWater(worldIn, pos);
 		}
 	}
 
 	@Override
-	protected void tryAbsorb(World worldIn, BlockPos pos) {
+	protected void tryAbsorbWater(World worldIn, BlockPos pos) {
 		if (this.absorb(worldIn, pos)) {
-			worldIn.setBlockState(pos, InitBlocks.BURNED_OUT_LAVA_SPONGE.get().getDefaultState(), 2);
-			worldIn.playEvent(2001, pos, Block.getStateId(Blocks.LAVA.getDefaultState()));
+			worldIn.setBlock(pos, InitBlocks.BURNED_OUT_LAVA_SPONGE.get().defaultBlockState(), 2);
+			worldIn.globalLevelEvent(2001, pos, Block.getId(Blocks.LAVA.defaultBlockState()));
 		}
 	}
 
@@ -53,30 +53,30 @@ public class LavaSpongeBlock extends SpongeBlock {
 			int j = tuple.getB();
 
 			for (Direction direction : Direction.values()) {
-				BlockPos blockpos1 = blockpos.offset(direction);
+				BlockPos blockpos1 = blockpos.relative(direction);
 				BlockState blockstate = worldIn.getBlockState(blockpos1);
 				FluidState ifluidstate = worldIn.getFluidState(blockpos1);
 				Material material = blockstate.getMaterial();
-				if (ifluidstate.isTagged(FluidTags.LAVA)) {
+				if (ifluidstate.is(FluidTags.LAVA)) {
 					if (blockstate.getBlock() instanceof IBucketPickupHandler
-							&& ((IBucketPickupHandler) blockstate.getBlock()).pickupFluid(worldIn, blockpos1,
+							&& ((IBucketPickupHandler) blockstate.getBlock()).takeLiquid(worldIn, blockpos1,
 									blockstate) != Fluids.EMPTY) {
 						++i;
 						if (j < 6) {
 							queue.add(new Tuple<>(blockpos1, j + 1));
 						}
 					} else if (blockstate.getBlock() instanceof FlowingFluidBlock) {
-						worldIn.setBlockState(blockpos1, Blocks.AIR.getDefaultState(), 3);
+						worldIn.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
 						++i;
 						if (j < 6) {
 							queue.add(new Tuple<>(blockpos1, j + 1));
 						}
-					} else if (material == Material.OCEAN_PLANT || material == Material.SEA_GRASS) {
+					} else if (material == Material.CORAL || material == Material.WATER_PLANT) {
 						TileEntity tileentity = blockstate.getBlock().hasTileEntity(blockstate)
-								? worldIn.getTileEntity(blockpos1)
+								? worldIn.getBlockEntity(blockpos1)
 								: null;
-						spawnDrops(blockstate, worldIn, blockpos1, tileentity);
-						worldIn.setBlockState(blockpos1, Blocks.AIR.getDefaultState(), 3);
+						dropResources(blockstate, worldIn, blockpos1, tileentity);
+						worldIn.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
 						++i;
 						if (j < 6) {
 							queue.add(new Tuple<>(blockpos1, j + 1));

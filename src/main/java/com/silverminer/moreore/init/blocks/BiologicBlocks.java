@@ -12,6 +12,7 @@ import com.silverminer.moreore.common.world.gen.tree.NutBush;
 import com.silverminer.moreore.common.world.gen.tree.SilverTree;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.FenceBlock;
@@ -31,91 +32,91 @@ public class BiologicBlocks {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MoreOre.MODID);
 
 	public static final RegistryObject<Block> SILVER_SAPLING = InitBlocks.registerCutout("silver_saplings",
-			() -> new Sapling(() -> new SilverTree(), Block.Properties.from(Blocks.OAK_SAPLING)));
+			() -> new Sapling(() -> new SilverTree(), AbstractBlock.Properties.copy(Blocks.OAK_SAPLING)));
 
 	public static final RegistryObject<Block> SILVER_PLANKS = BLOCKS.register("silver_planks",
-			() -> new Block(Block.Properties.from(Blocks.OAK_PLANKS)));
+			() -> new Block(AbstractBlock.Properties.copy(Blocks.OAK_PLANKS)));
 
 	public static final RegistryObject<Block> LETUCE = InitBlocks.registerCutout("letuce",
-			() -> new LetuceBlock(Block.Properties.from(Blocks.WHEAT)));
+			() -> new LetuceBlock(AbstractBlock.Properties.copy(Blocks.WHEAT)));
 
 	public static final RegistryObject<Block> STRIPPED_SILVER_LOG = BLOCKS.register("stripped_silver_logs",
-			() -> new ModLogBlock(Block.Properties.from(Blocks.STRIPPED_OAK_LOG)));
+			() -> new ModLogBlock(AbstractBlock.Properties.copy(Blocks.STRIPPED_OAK_LOG)));
 
 	public static final RegistryObject<Block> SILVER_LOG = BLOCKS.register("silver_logs",
-			() -> new ModLogBlock(Block.Properties.from(Blocks.OAK_LOG), () -> STRIPPED_SILVER_LOG.get()));
+			() -> new ModLogBlock(Block.Properties.copy(Blocks.OAK_LOG), () -> STRIPPED_SILVER_LOG.get()));
 
 	public static final RegistryObject<Block> SILVER_LEAVES = InitBlocks.registerCutout("silver_leaves",
-			() -> new LeavesBlock(Block.Properties.from(Blocks.OAK_LEAVES)));
+			() -> new LeavesBlock(Block.Properties.copy(Blocks.OAK_LEAVES)));
 
 	public static final RegistryObject<Block> GOLD_LEAVES = BLOCKS.register("gold_leaves",
-			() -> new LeavesBlock(Block.Properties.from(Blocks.OAK_LEAVES)));
+			() -> new LeavesBlock(Block.Properties.copy(Blocks.OAK_LEAVES)));
 
 	public static final RegistryObject<Block> SILVER_WOOD = BLOCKS.register("silver_wood",
-			() -> new Block(Block.Properties.from(Blocks.OAK_WOOD)));
+			() -> new Block(Block.Properties.copy(Blocks.OAK_WOOD)));
 
 	public static final RegistryObject<Block> BANANA = InitBlocks.registerCutout("banana",
-			() -> new BananaBlock(Block.Properties.from(Blocks.COCOA)));
+			() -> new BananaBlock(Block.Properties.copy(Blocks.COCOA)));
 
 	public static final RegistryObject<Block> SILVER_DOOR = InitBlocks.registerCutout("silver_door",
-			() -> new DoorBlock(Block.Properties.from(Blocks.OAK_DOOR)));
+			() -> new DoorBlock(Block.Properties.copy(Blocks.OAK_DOOR)));
 
 	public static final RegistryObject<Block> SILVER_STAIRS = BLOCKS.register("silver_stairs",
-			() -> new StairsBlock(() -> BiologicBlocks.SILVER_PLANKS.get().getDefaultState(),
-					Block.Properties.from(Blocks.OAK_STAIRS)));
+			() -> new StairsBlock(() -> BiologicBlocks.SILVER_PLANKS.get().defaultBlockState(),
+					Block.Properties.copy(Blocks.OAK_STAIRS)));
 
 	public static final RegistryObject<Block> SILVER_FENCE = BLOCKS.register("silver_fence",
-			() -> new FenceBlock(Block.Properties.from(Blocks.OAK_FENCE)));
+			() -> new FenceBlock(Block.Properties.copy(Blocks.OAK_FENCE)));
 
 	public static final RegistryObject<Block> SILVER_FENCE_GATE = BLOCKS.register("silver_fence_gate",
-			() -> new FenceGateBlock(Block.Properties.from(Blocks.OAK_FENCE_GATE)));
+			() -> new FenceGateBlock(Block.Properties.copy(Blocks.OAK_FENCE_GATE)));
 
 	public static final RegistryObject<Block> SILVER_SLAB = BLOCKS.register("silver_slab",
-			() -> new SlabBlock(Block.Properties.from(BiologicBlocks.SILVER_PLANKS.get())));
+			() -> new SlabBlock(Block.Properties.copy(BiologicBlocks.SILVER_PLANKS.get())));
 
 	public static final RegistryObject<Block> SILVER_WALL = BLOCKS.register("silver_wall",
-			() -> new WallBlock(Block.Properties.from(BiologicBlocks.SILVER_PLANKS.get())));
+			() -> new WallBlock(Block.Properties.copy(BiologicBlocks.SILVER_PLANKS.get())));
 
 	public static final RegistryObject<Block> SILVER_TRAPDOOR = BLOCKS.register("silver_trapdoor",
-			() -> new TrapDoorBlock(Block.Properties.from(Blocks.OAK_TRAPDOOR)));
+			() -> new TrapDoorBlock(Block.Properties.copy(Blocks.OAK_TRAPDOOR)));
 
 	public static final RegistryObject<Block> GOLD_SAPLING = InitBlocks.registerCutout("gold_saplings",
-			() -> new Sapling(() -> new GoldTree(), Block.Properties.from(Blocks.OAK_SAPLING)));
+			() -> new Sapling(() -> new GoldTree(), Block.Properties.copy(Blocks.OAK_SAPLING)));
 
 	public static final RegistryObject<Block> ICE_LEAVES = InitBlocks.registerCutout("ice_leaves",
-			() -> new LeavesBlock(Block.Properties.from(Blocks.OAK_LEAVES)));
+			() -> new LeavesBlock(Block.Properties.copy(Blocks.OAK_LEAVES)));
 
 	public static final RegistryObject<Block> ICE_SAPLING = InitBlocks.registerCutout("ice_saplings",
-			() -> new Sapling(() -> new IceTree(), Block.Properties.from(Blocks.OAK_SAPLING)));
+			() -> new Sapling(() -> new IceTree(), Block.Properties.copy(Blocks.OAK_SAPLING)));
 
 	public static final RegistryObject<Block> GLASS_DOOR = InitBlocks.registerCutout("glass_door",
-			() -> new DoorBlock(Block.Properties.from(Blocks.OAK_DOOR)));
+			() -> new DoorBlock(Block.Properties.copy(Blocks.OAK_DOOR)));
 
 	public static final RegistryObject<Block> SILVER_WOOD_BUTTON = BLOCKS.register("silver_wood_button",
-			() -> new WoodButtonBlock(Block.Properties.from(Blocks.OAK_BUTTON)));
+			() -> new WoodButtonBlock(Block.Properties.copy(Blocks.OAK_BUTTON)));
 
 	public static final RegistryObject<Block> POTTET_ICE_SAPLING = BLOCKS.register("pottet_ice_saplings",
 			() -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, () -> BiologicBlocks.ICE_SAPLING.get(),
-					Block.Properties.from(Blocks.FLOWER_POT)));
+					Block.Properties.copy(Blocks.FLOWER_POT)));
 
 	public static final RegistryObject<Block> POTTET_SILVER_SAPLING = BLOCKS.register("pottet_silver_saplings",
 			() -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT,
-					() -> BiologicBlocks.SILVER_SAPLING.get(), Block.Properties.from(Blocks.FLOWER_POT)));
+					() -> BiologicBlocks.SILVER_SAPLING.get(), Block.Properties.copy(Blocks.FLOWER_POT)));
 
 	public static final RegistryObject<Block> POTTET_GOLD_SAPLING = BLOCKS.register("pottet_gold_saplings",
 			() -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, () -> BiologicBlocks.GOLD_SAPLING.get(),
-					Block.Properties.from(Blocks.POTTED_OAK_SAPLING)));
+					Block.Properties.copy(Blocks.POTTED_OAK_SAPLING)));
 
 	public static final RegistryObject<Block> POTTET_NUT_BUSH_SAPLING = BLOCKS.register("pottet_nut_bush_sapling",
 			() -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, () -> BiologicBlocks.NUT_BUSH_SAPLING.get(),
-					Block.Properties.from(Blocks.POTTED_OAK_SAPLING)));
+					Block.Properties.copy(Blocks.POTTED_OAK_SAPLING)));
 
 	public static final RegistryObject<Block> NUT_BUSH_SAPLING = InitBlocks.registerCutout("nut_bush_sapling",
-			() -> new Sapling(() -> new NutBush(), Block.Properties.from(Blocks.OAK_SAPLING)));
+			() -> new Sapling(() -> new NutBush(), Block.Properties.copy(Blocks.OAK_SAPLING)));
 
 	public static final RegistryObject<Block> NUT_BUSH_LOG = BLOCKS.register("nut_bush_log",
-			() -> new ModLogBlock(Block.Properties.from(Blocks.OAK_LOG).notSolid()));
+			() -> new ModLogBlock(Block.Properties.copy(Blocks.OAK_LOG).noOcclusion()));
 
 	public static final RegistryObject<Block> NUT_BUSH_LEAVES = InitBlocks.registerCutout("nut_bush_leaves",
-			() -> new NutBushLeavesBlock(Block.Properties.from(Blocks.OAK_LEAVES)));
+			() -> new NutBushLeavesBlock(Block.Properties.copy(Blocks.OAK_LEAVES)));
 }

@@ -14,8 +14,8 @@ public class RuneBlocks {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MoreOre.MODID);
 
 	public static final RegistryObject<Block> RUNETABLE = BLOCKS.register("rune_table",
-			() -> new RunetableBlock(Block.Properties.from(Blocks.SMITHING_TABLE)));
+			() -> new RunetableBlock(Block.Properties.copy(Blocks.SMITHING_TABLE)));
 
 	public static final RegistryObject<Block> RUNE_BASE_BLOCK = BLOCKS.register("rune_base_block",
-			() -> new RuneBaseBlock(Block.Properties.from(Blocks.GOLD_BLOCK)));
+			() -> new RuneBaseBlock(Block.Properties.copy(Blocks.GOLD_BLOCK)));
 }
